@@ -1,4 +1,4 @@
-@XmlSchema(namespace = "https://nervousync.com/cache/config", elementFormDefault = XmlNsForm.QUALIFIED)
+@XmlSchema(namespace = "https://cache.nervousync.org/configure", elementFormDefault = XmlNsForm.QUALIFIED)
 package org.nervousync.cache.config;
 
 import jakarta.xml.bind.annotation.XmlNsForm;

@@ -8,7 +8,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>lettuce-jdk11</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
     <name>Lettuce Provider</name>
     <url>https://nervousync.org/project/cache/lettuce</url>
@@ -21,7 +21,7 @@
         <dependency>
             <groupId>org.nervousync.cache</groupId>
             <artifactId>core-jdk11</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
         <!-- Netty Support -->
         <dependency>

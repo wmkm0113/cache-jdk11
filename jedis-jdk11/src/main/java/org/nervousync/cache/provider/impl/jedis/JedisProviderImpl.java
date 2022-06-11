@@ -18,7 +18,7 @@ package org.nervousync.cache.provider.impl.jedis;
 
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.nervousync.cache.annotation.CacheProvider;
-import org.nervousync.cache.config.CacheServer;
+import org.nervousync.cache.config.CacheConfig.CacheServer;
 import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.cache.provider.impl.AbstractProvider;
 import org.nervousync.commons.core.Globals;
@@ -28,6 +28,7 @@ import redis.clients.jedis.*;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -73,74 +74,75 @@ public final class JedisProviderImpl extends AbstractProvider {
 	@Override
 	protected void initializeConnection(final List<CacheServer> serverConfigList,
 	                                    final String userName, final String passWord) {
-		if (serverConfigList.isEmpty()) {
-			return;
-		}
-		if (serverConfigList.size() == 1) {
-			GenericObjectPoolConfig<Jedis> jedisPoolConfig = new GenericObjectPoolConfig<>();
+		switch (serverConfigList.size()) {
+			case 0:
+				break;
+			case 1:
+				GenericObjectPoolConfig<Jedis> jedisPoolConfig = new GenericObjectPoolConfig<>();
 
-			jedisPoolConfig.setMaxTotal(this.getMaximumClient());
-			jedisPoolConfig.setMaxIdle(this.getClientPoolSize());
-			jedisPoolConfig.setMaxWait(Duration.ofMillis(this.getConnectTimeout() * 1000L));
-			jedisPoolConfig.setTestOnBorrow(Boolean.TRUE);
-			jedisPoolConfig.setTestWhileIdle(Boolean.TRUE);
+				jedisPoolConfig.setMaxTotal(this.getMaximumClient());
+				jedisPoolConfig.setMaxIdle(this.getClientPoolSize());
+				jedisPoolConfig.setMaxWait(Duration.ofMillis(this.getConnectTimeout() * 1000L));
+				jedisPoolConfig.setTestOnBorrow(Boolean.TRUE);
+				jedisPoolConfig.setTestWhileIdle(Boolean.TRUE);
 
-			CacheServer cachedServer = serverConfigList.get(0);
+				CacheServer cachedServer = serverConfigList.get(0);
+				int connectTimeout = this.getConnectTimeout() * 1000;
 
-			int serverPort = cachedServer.getServerPort();
-			if (serverPort == Globals.DEFAULT_VALUE_INT) {
-				serverPort = this.getDefaultPort();
-			}
-
-			if (StringUtils.isEmpty(passWord)) {
-				this.jedisPool = new JedisPool(jedisPoolConfig, cachedServer.getServerAddress(), serverPort,
-						this.getConnectTimeout() * 1000);
-			} else {
-				if (StringUtils.isEmpty(userName)) {
-					this.jedisPool = new JedisPool(jedisPoolConfig, cachedServer.getServerAddress(), serverPort,
-							this.getConnectTimeout() * 1000, passWord);
+				if (StringUtils.isEmpty(passWord)) {
+					this.jedisPool = new JedisPool(jedisPoolConfig, cachedServer.getServerAddress(),
+							super.serverPort(cachedServer.getServerPort()), connectTimeout);
 				} else {
-					this.jedisPool = new JedisPool(jedisPoolConfig, cachedServer.getServerAddress(), serverPort,
-							this.getConnectTimeout() * 1000, userName, passWord);
+					if (StringUtils.isEmpty(userName)) {
+						this.jedisPool = new JedisPool(jedisPoolConfig, cachedServer.getServerAddress(),
+								super.serverPort(cachedServer.getServerPort()), connectTimeout, passWord);
+					} else {
+						this.jedisPool = new JedisPool(jedisPoolConfig, cachedServer.getServerAddress(),
+								super.serverPort(cachedServer.getServerPort()), connectTimeout, userName, passWord);
+					}
 				}
-			}
-			this.singleMode = true;
-		} else {
-			GenericObjectPoolConfig<Connection> jedisPoolConfig = new GenericObjectPoolConfig<>();
+				this.singleMode = Boolean.TRUE;
+				break;
+			default:
+				GenericObjectPoolConfig<Connection> clusterConfig = new GenericObjectPoolConfig<>();
 
-			jedisPoolConfig.setMaxTotal(this.getMaximumClient());
-			jedisPoolConfig.setMaxIdle(this.getClientPoolSize());
-			jedisPoolConfig.setMaxWait(Duration.ofMillis(this.getConnectTimeout() * 1000L));
-			jedisPoolConfig.setTestOnBorrow(Boolean.TRUE);
-			jedisPoolConfig.setTestWhileIdle(Boolean.TRUE);
+				int connectionTimeout = this.getConnectTimeout() * 1000;
+				clusterConfig.setMaxTotal(this.getMaximumClient());
+				clusterConfig.setMaxIdle(this.getClientPoolSize());
+				clusterConfig.setMaxWait(Duration.ofMillis(connectionTimeout));
+				clusterConfig.setTestOnBorrow(Boolean.TRUE);
+				clusterConfig.setTestWhileIdle(Boolean.TRUE);
 
-			Set<HostAndPort> readServers = serverConfigList
-					.stream()
-					.filter(CacheServer::isReadOnly)
-					.map(serverConfig ->
-							new HostAndPort(serverConfig.getServerAddress(), serverConfig.getServerPort()))
-					.collect(Collectors.toSet());
-			Set<HostAndPort> writeServers = serverConfigList
-					.stream()
-					.map(serverConfig ->
-							new HostAndPort(serverConfig.getServerAddress(), serverConfig.getServerPort()))
-					.collect(Collectors.toSet());
+				Set<HostAndPort> readServers = serverConfigList
+						.stream()
+						.filter(CacheServer::isReadOnly)
+						.map(serverConfig ->
+								new HostAndPort(serverConfig.getServerAddress(), serverConfig.getServerPort()))
+						.collect(Collectors.toSet());
+				Set<HostAndPort> writeServers = serverConfigList
+						.stream()
+						.map(serverConfig ->
+								new HostAndPort(serverConfig.getServerAddress(), serverConfig.getServerPort()))
+						.collect(Collectors.toSet());
 
-			if (StringUtils.notBlank(passWord)) {
-				JedisClientConfig jedisClientConfig;
-				if (StringUtils.isEmpty(userName)) {
-					jedisClientConfig =
-							DefaultJedisClientConfig.builder().clientName(userName).password(passWord).build();
+				if (StringUtils.notBlank(passWord)) {
+					DefaultJedisClientConfig.Builder clientBuilder =
+							DefaultJedisClientConfig.builder().password(passWord)
+									.connectionTimeoutMillis(connectionTimeout);
+					if (StringUtils.notBlank(userName)) {
+						clientBuilder.clientName(userName);
+					}
+					this.readCluster =
+							new JedisCluster(readServers, clientBuilder.build(), this.getRetryCount(), clusterConfig);
+					this.writeCluster =
+							new JedisCluster(writeServers, clientBuilder.build(), this.getRetryCount(), clusterConfig);
 				} else {
-					jedisClientConfig =
-							DefaultJedisClientConfig.builder().password(passWord).build();
+					this.readCluster =
+							new JedisCluster(readServers, connectionTimeout, this.getRetryCount(), clusterConfig);
+					this.writeCluster =
+							new JedisCluster(writeServers, connectionTimeout, this.getRetryCount(), clusterConfig);
 				}
-				this.readCluster = new JedisCluster(readServers, jedisClientConfig, 1, jedisPoolConfig);
-				this.writeCluster = new JedisCluster(writeServers, jedisClientConfig, 1, jedisPoolConfig);
-			} else {
-				this.readCluster = new JedisCluster(readServers, jedisPoolConfig);
-				this.writeCluster = new JedisCluster(writeServers, jedisPoolConfig);
-			}
+				break;
 		}
 	}
 
@@ -178,9 +180,11 @@ public final class JedisProviderImpl extends AbstractProvider {
 	@Override
 	public void expire(String key, int expire) {
 		if (this.singleMode) {
-			Jedis jedis = this.singleClient();
-			jedis.expire(key, expire);
-			jedis.close();
+			Optional.ofNullable(this.singleClient())
+					.ifPresent(jedis -> {
+						jedis.expire(key, expire);
+						jedis.close();
+					});
 		} else {
 			this.writeCluster.expire(key, expire);
 		}
@@ -193,9 +197,11 @@ public final class JedisProviderImpl extends AbstractProvider {
 	@Override
 	public void touch(String... keys) {
 		if (this.singleMode) {
-			Jedis jedis = this.singleClient();
-			jedis.touch(keys);
-			jedis.close();
+			Optional.ofNullable(this.singleClient())
+					.ifPresent(jedis -> {
+						jedis.touch(keys);
+						jedis.close();
+					});
 		} else {
 			this.writeCluster.touch(keys);
 		}
@@ -208,9 +214,11 @@ public final class JedisProviderImpl extends AbstractProvider {
 	@Override
 	public void delete(String key) {
 		if (this.singleMode) {
-			Jedis jedis = this.singleClient();
-			jedis.del(key);
-			jedis.close();
+			Optional.ofNullable(this.singleClient())
+					.ifPresent(jedis -> {
+						jedis.del(key);
+						jedis.close();
+					});
 		} else {
 			this.writeCluster.del(key);
 		}
@@ -224,9 +232,13 @@ public final class JedisProviderImpl extends AbstractProvider {
 	public String get(String key) {
 		byte[] objectData;
 		if (this.singleMode) {
-			Jedis jedis = this.singleClient();
-			objectData = jedis.get(key.getBytes());
-			jedis.close();
+			objectData = Optional.ofNullable(this.singleClient())
+					.map(jedis -> {
+						byte[] readData = jedis.get(key.getBytes());
+						jedis.close();
+						return readData;
+					})
+					.orElse(null);
 		} else {
 			objectData = this.readCluster.get(key.getBytes());
 		}
@@ -237,9 +249,13 @@ public final class JedisProviderImpl extends AbstractProvider {
 	public long incr(String key, long step) {
 		long result;
 		if (this.singleMode) {
-			Jedis jedis = this.singleClient();
-			result = jedis.incrBy(key, step);
-			jedis.close();
+			result = Optional.ofNullable(this.singleClient())
+					.map(jedis -> {
+						long operateResult = jedis.incrBy(key, step);
+						jedis.close();
+						return operateResult;
+					})
+					.orElse(Globals.DEFAULT_VALUE_LONG);
 		} else {
 			result = this.readCluster.incrBy(key, step);
 		}
@@ -250,9 +266,13 @@ public final class JedisProviderImpl extends AbstractProvider {
 	public long decr(String key, long step) {
 		long result;
 		if (this.singleMode) {
-			Jedis jedis = this.singleClient();
-			result = jedis.decrBy(key, step);
-			jedis.close();
+			result = Optional.ofNullable(this.singleClient())
+					.map(jedis -> {
+						long operateResult = jedis.decrBy(key, step);
+						jedis.close();
+						return operateResult;
+					})
+					.orElse(Globals.DEFAULT_VALUE_LONG);
 		} else {
 			result = this.readCluster.decrBy(key, step);
 		}
@@ -279,14 +299,25 @@ public final class JedisProviderImpl extends AbstractProvider {
 	}
 	
 	private Jedis singleClient() {
-		return this.jedisPool.getResource();
+		Jedis jedis = this.jedisPool.getResource();
+		int retryCount = 0;
+		while (jedis == null || !jedis.isConnected()) {
+			if (retryCount >= this.getRetryCount()) {
+				break;
+			}
+			retryCount++;
+			jedis = this.jedisPool.getResource();
+		}
+		return jedis;
 	}
 
 	private void process(String key, String value, int expiry) {
 		if (this.singleMode) {
-			Jedis jedis = this.singleClient();
-			jedis.setex(key.getBytes(), expiry, ConvertUtils.convertToByteArray(value));
-			jedis.close();
+			Optional.ofNullable(this.singleClient())
+					.ifPresent(jedis -> {
+						jedis.setex(key.getBytes(), expiry, ConvertUtils.convertToByteArray(value));
+						jedis.close();
+					});
 		} else {
 			this.writeCluster.setex(key.getBytes(), expiry, ConvertUtils.convertToByteArray(value));
 		}

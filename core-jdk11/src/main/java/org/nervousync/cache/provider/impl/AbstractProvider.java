@@ -18,7 +18,9 @@ package org.nervousync.cache.provider.impl;
 
 import java.util.List;
 
+import jakarta.xml.bind.annotation.XmlElement;
 import org.nervousync.cache.annotation.CacheProvider;
+import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.cache.provider.Provider;
 import org.nervousync.security.factory.SecureFactory;
@@ -28,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.nervousync.cache.config.CacheConfig;
-import org.nervousync.cache.config.CacheServer;
+import org.nervousync.cache.config.CacheConfig.CacheServer;
 import org.nervousync.commons.core.Globals;
 
 /**
@@ -62,6 +64,12 @@ public abstract class AbstractProvider implements Provider {
 	 * <span class="zhs">连接池大小</span>
 	 */
 	private int clientPoolSize = Globals.DEFAULT_VALUE_INT;
+	/**
+	 * <span class="en">Connect retry count</span>
+	 * <span class="zhs">连接超时重试次数</span>
+	 */
+	@XmlElement(name = "retry_count")
+	private int retryCount = CacheGlobals.DEFAULT_RETRY_COUNT;
 	/**
 	 * <span class="en">Limit size of generated client instance</span>
 	 * <span class="zhs">客户端实例阈值</span>
@@ -97,6 +105,7 @@ public abstract class AbstractProvider implements Provider {
 	public void initialize(CacheConfig cacheConfig) {
 		this.connectTimeout = cacheConfig.getConnectTimeout();
 		this.clientPoolSize = cacheConfig.getClientPoolSize();
+		this.retryCount = cacheConfig.getRetryCount();
 		this.maximumClient = cacheConfig.getMaximumClient();
 		this.expireTime = cacheConfig.getExpireTime();
 		String passWord = cacheConfig.getPassWord();
@@ -140,6 +149,17 @@ public abstract class AbstractProvider implements Provider {
 	 */
 	public int getClientPoolSize() {
 		return clientPoolSize;
+	}
+
+	/**
+	 * <h3 class="en">Retrieve server connect retry count</h3>
+	 * <h3 class="zhs">读取缓存服务器的连接超时重试次数</h3>
+	 *
+	 * @return  <span class="en">Connect retry count</span>
+	 *          <span class="zhs">连接超时重试次数</span>
+	 */
+	public int getRetryCount() {
+		return retryCount;
 	}
 
 	/**
@@ -212,6 +232,10 @@ public abstract class AbstractProvider implements Provider {
 		this.replace(key, value, this.expireTime);
 	}
 
+	protected final int serverPort(final int serverPort) {
+		return serverPort == Globals.DEFAULT_VALUE_INT ? this.defaultPort : serverPort;
+	}
+
 	/**
 	 * <h3 class="en">Set expire time to new given expire value which cache key was given</h3>
 	 * <h3 class="zhs">将指定的缓存键值过期时间设置为指定的新值</h3>
@@ -222,99 +246,4 @@ public abstract class AbstractProvider implements Provider {
 	 *                  <span class="zhs">新的过期时间</span>
 	 */
 	public abstract void expire(String key, int expire);
-
-	/**
-	 * <h3 class="en">Set key-value to cache server and set expire time</h3>
-	 * <h3 class="zhs">使用指定的过期时间设置缓存信息</h3>
-	 *
-	 * @param key       <span class="en">Cache key</span>
-	 *                  <span class="zhs">缓存键值</span>
-	 * @param value		<span class="en">Cache value</span>
-	 *                  <span class="zhs">缓存数据</span>
-	 * @param expiry	<span class="en">Expire time</span>
-	 *                  <span class="zhs">过期时间</span>
-	 */
-	public abstract void set(String key, String value, int expiry);
-
-	/**
-	 * <h3 class="en">Add a new key-value to cache server and set expire time</h3>
-	 * <h3 class="zhs">使用指定的过期时间添加缓存信息</h3>
-	 *
-	 * @param key       <span class="en">Cache key</span>
-	 *                  <span class="zhs">缓存键值</span>
-	 * @param value		<span class="en">Cache value</span>
-	 *                  <span class="zhs">缓存数据</span>
-	 * @param expire	<span class="en">Expire time</span>
-	 *                  <span class="zhs">过期时间</span>
-	 */
-	public abstract void add(String key, String value, int expire);
-
-	/**
-	 * <h3 class="en">Replace exists value of given key by given value and set expire time</h3>
-	 * <h3 class="zhs">使用指定的过期时间替换已存在的缓存信息</h3>
-	 *
-	 * @param key       <span class="en">Cache key</span>
-	 *                  <span class="zhs">缓存键值</span>
-	 * @param value		<span class="en">Cache value</span>
-	 *                  <span class="zhs">缓存数据</span>
-	 * @param expire	<span class="en">Expire time</span>
-	 *                  <span class="zhs">过期时间</span>
-	 */
-	public abstract void replace(String key, String value, int expire);
-
-	/**
-	 * Operate touch to given keys
-	 * @param keys      Keys
-	 */
-	public abstract void touch(String... keys);
-
-	/**
-	 * <h3 class="en">Remove cache key-value from cache server</h3>
-	 * <h3 class="zhs">移除指定的缓存键值</h3>
-	 *
-	 * @param key       <span class="en">Cache key</span>
-	 *                  <span class="zhs">缓存键值</span>
-	 */
-	public abstract void delete(String key);
-
-	/**
-	 * <h3 class="en">Read cache value from cache key which cache key was given</h3>
-	 * <h3 class="zhs">读取指定缓存键值对应的缓存数据</h3>
-	 *
-	 * @param key       <span class="en">Cache key</span>
-	 *                  <span class="zhs">缓存键值</span>
-	 * @return  <span class="en">Cache value or null if cache key was not exists or it was expired</span>
-	 *          <span class="zhs">读取的缓存数据，如果缓存键值不存在或已过期，则返回null</span>
-	 */
-	public abstract String get(String key);
-
-	/**
-	 * <h3 class="en">Increment data by given cache key and value</h3>
-	 *
-	 * @param key       <span class="en">Cache key</span>
-	 *                  <span class="zhs">缓存键值</span>
-	 * @param step      <span class="en">Increment step value</span>
-	 *                  <span class="zhs">自增步进值</span>
-	 * @return  <span class="en">Operate result</span>
-	 *          <span class="zhs">操作结果</span>
-	 */
-	public abstract long incr(String key, long step);
-
-	/**
-	 * <h3 class="en">Decrement data by given cache key and value</h3>
-	 *
-	 * @param key       <span class="en">Cache key</span>
-	 *                  <span class="zhs">缓存键值</span>
-	 * @param step      <span class="en">Decrement step value</span>
-	 *                  <span class="zhs">自减步进值</span>
-	 * @return  <span class="en">Operate result</span>
-	 *          <span class="zhs">操作结果</span>
-	 */
-	public abstract long decr(String key, long step);
-
-	/**
-	 * <h3 class="en">Destroy agent instance</h3>
-	 * <h3 class="zhs">销毁缓存对象</h3>
-	 */
-	public abstract void destroy();
 }

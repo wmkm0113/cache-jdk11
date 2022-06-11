@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.nervousync.cache</groupId>
     <artifactId>jdk11</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <modules>
         <module>core-jdk11</module>
         <module>jedis-jdk11</module>
@@ -14,7 +14,7 @@
     </modules>
     <packaging>pom</packaging>
     <name>Cache Package</name>
-    <url>https://nervousync.org/project/cache</url>
+    <url>https://cache.nervousync.org/index.shtml</url>
     <description>Cache Package, development by Nervousync Studio (NSYC)</description>
     <issueManagement>
         <url>https://github.com/Nervousync/Cache/issues</url>
@@ -34,7 +34,7 @@
         <developerConnection>scm:git:https://github.com/Nervousync/Cache.git</developerConnection>
     </scm>
     <organization>
-        <url>https://nervousync.org/</url>
+        <url>https://nervousync.org/index.shtml</url>
         <name>Nervousync Studio</name>
     </organization>
     <developers>
@@ -69,7 +69,7 @@
         <dependency>
             <groupId>org.nervousync</groupId>
             <artifactId>utils-jdk11</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.0.2</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -172,6 +172,9 @@
                         <version>${maven.resource.version}</version>
                         <configuration>
                             <encoding>UTF-8</encoding>
+                            <nonFilteredFileExtensions>
+                                <nonFilteredFileExtension>xsd</nonFilteredFileExtension>
+                            </nonFilteredFileExtensions>
                         </configuration>
                     </plugin>
                     <plugin>

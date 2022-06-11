@@ -1,5 +1,6 @@
 package org.nervousync.cache.test.lettuce;
 
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.nervousync.cache.builder.CacheConfigBuilder;
@@ -37,6 +38,8 @@ public final class LettuceTest {
 						Boolean.parseBoolean(PROPERTIES.getProperty("ReadOnly")))
 				.authorization(PROPERTIES.getProperty("UserName"), PROPERTIES.getProperty("PassWord"))
 				.confirmConfig();
+		Assert.assertNotNull(cacheConfig);
+		this.logger.info("Generated configure: \r\n {}", cacheConfig.toXML(Boolean.TRUE));
 
 		this.logger.info("Register cache result: {}", CacheCore.registerCache("Jedis", cacheConfig));
 		CacheCore.cacheAgent("Jedis")

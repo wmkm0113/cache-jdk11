@@ -25,14 +25,14 @@ import io.lettuce.core.cluster.RedisClusterClient;
 import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
 import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
 import org.nervousync.cache.annotation.CacheProvider;
+import org.nervousync.cache.config.CacheConfig.CacheServer;
 import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.cache.provider.impl.AbstractProvider;
-import org.nervousync.cache.config.CacheServer;
 import org.nervousync.utils.StringUtils;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * The type Lettuce provider.
@@ -66,17 +66,15 @@ public final class LettuceProviderImpl extends AbstractProvider {
 	@Override
 	protected void initializeConnection(final List<CacheServer> serverConfigList,
 	                                    final String userName, final String passWord) {
-		if (serverConfigList.isEmpty()) {
-			return;
-		}
-		this.singleMode = (serverConfigList.size() == 1);
-		if (serverConfigList.size() > 1) {
-			Vector<RedisURI> vector = new Vector<>(serverConfigList.size());
-			serverConfigList.forEach(cacheServer -> {
+		switch (serverConfigList.size()) {
+			case 0:
+				break;
+			case 1:
+				CacheServer cacheServer = serverConfigList.get(0);
 				RedisURI.Builder builder = RedisURI.builder()
 						.withHost(cacheServer.getServerAddress())
-						.withPort(cacheServer.getServerPort())
-						.withTimeout(Duration.ofMillis(this.getConnectTimeout() * 1000L));
+						.withPort(cacheServer.getServerPort());
+				builder.withTimeout(Duration.ofMillis(this.getConnectTimeout() * 1000L));
 				if (StringUtils.notBlank(passWord)) {
 					if (StringUtils.isEmpty(userName)) {
 						builder.withPassword(passWord.toCharArray());
@@ -84,26 +82,34 @@ public final class LettuceProviderImpl extends AbstractProvider {
 						builder.withAuthentication(userName, passWord.toCharArray());
 					}
 				}
-				vector.add(builder.build());
-			});
-			RedisClusterClient clusterClient = RedisClusterClient.create(vector);
-			this.clusterConnection = clusterClient.connect();
-			this.clusterCommands = this.clusterConnection.sync();
-		} else {
-			CacheServer cacheServer = serverConfigList.get(0);
-			RedisURI.Builder builder = RedisURI.builder()
-					.withHost(cacheServer.getServerAddress())
-					.withPort(cacheServer.getServerPort());
-			if (StringUtils.notBlank(passWord)) {
-				if (StringUtils.isEmpty(userName)) {
-					builder.withPassword(passWord.toCharArray());
-				} else {
-					builder.withAuthentication(userName, passWord.toCharArray());
-				}
-			}
-			RedisClient redisClient = RedisClient.create(builder.build());
-			this.singleConnection = redisClient.connect();
-			this.singleCommands = this.singleConnection.sync();
+				RedisClient redisClient = RedisClient.create(builder.build());
+				this.singleConnection = redisClient.connect();
+				this.singleCommands = this.singleConnection.sync();
+				this.singleMode = Boolean.TRUE;
+				break;
+			default:
+				List<RedisURI> serverList = new ArrayList<>(serverConfigList.size());
+				serverConfigList.forEach(serverConfig -> {
+					RedisURI.Builder serverBuilder = RedisURI.builder()
+							.withHost(serverConfig.getServerAddress())
+							.withPort(serverConfig.getServerPort())
+							.withTimeout(Duration.ofMillis(this.getConnectTimeout() * 1000L));
+					if (StringUtils.notBlank(passWord)) {
+						if (StringUtils.isEmpty(userName)) {
+							serverBuilder.withPassword(passWord.toCharArray());
+						} else {
+							serverBuilder.withAuthentication(userName, passWord.toCharArray());
+						}
+					}
+					serverList.add(serverBuilder.build());
+				});
+				RedisClusterClient clusterClient = RedisClusterClient.create(serverList);
+				this.clusterConnection = clusterClient.connect();
+				this.clusterCommands = this.clusterConnection.sync();
+				this.singleMode = Boolean.FALSE;
+				break;
+
+
 		}
 	}
 

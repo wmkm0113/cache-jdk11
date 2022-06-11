@@ -8,29 +8,29 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>nodeps-jdk11</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
     <name>Cache NoDeps</name>
     <dependencies>
         <dependency>
             <groupId>org.nervousync.cache</groupId>
             <artifactId>core-jdk11</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.nervousync.cache</groupId>
             <artifactId>jedis-jdk11</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.nervousync.cache</groupId>
             <artifactId>lettuce-jdk11</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.nervousync.cache</groupId>
             <artifactId>xmemcached-jdk11</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
     </dependencies>
     <build>
@@ -48,7 +48,7 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <include>org.nervousync:*</include>
+                                    <include>org.nervousync.cache:*</include>
                                 </includes>
                                 <excludes>
                                     <exclude>org.nervousync:utils-jdk11</exclude>
