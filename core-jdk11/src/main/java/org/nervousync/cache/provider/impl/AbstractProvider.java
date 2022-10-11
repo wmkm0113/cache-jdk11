@@ -24,7 +24,6 @@ import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.cache.provider.Provider;
 import org.nervousync.security.factory.SecureFactory;
-import org.nervousync.utils.ConvertUtils;
 import org.nervousync.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,22 +110,9 @@ public abstract class AbstractProvider implements Provider {
 		String passWord = cacheConfig.getPassWord();
 		if (StringUtils.notBlank(passWord) && StringUtils.notBlank(cacheConfig.getSecureName())
 				&& SecureFactory.getInstance().registeredConfig(cacheConfig.getSecureName())) {
-			byte[] decryptData =
-					SecureFactory.getInstance().decrypt(cacheConfig.getSecureName(), StringUtils.base64Decode(passWord));
-			passWord = ConvertUtils.convertToString(decryptData);
+			passWord = SecureFactory.getInstance().decrypt(cacheConfig.getSecureName(), passWord);
 		}
 		this.initializeConnection(cacheConfig.getServerConfigList(), cacheConfig.getUserName(), passWord);
-	}
-
-	/**
-	 * <h3 class="en">Retrieve default port</h3>
-	 * <h3 class="zhs">读取缓存服务器的默认端口号</h3>
-	 *
-	 * @return  <span class="en">Default port number</span>
-	 *          <span class="zhs">默认端口号</span>
-	 */
-	public int getDefaultPort() {
-		return defaultPort;
 	}
 
 	/**

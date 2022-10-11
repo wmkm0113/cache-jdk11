@@ -74,3 +74,5 @@ Temporary Items
 /bin/
 /.idea/
 *.iml
+*/src/test/resources/authorization.xml
+/nodeps-jdk11/dependency-reduced-pom.xml

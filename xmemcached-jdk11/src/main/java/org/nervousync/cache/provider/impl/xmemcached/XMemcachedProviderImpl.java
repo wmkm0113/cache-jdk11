@@ -81,7 +81,7 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 
 		MemcachedClientBuilder clientBuilder =
 				new XMemcachedClientBuilder(AddrUtil.getAddresses(serverAddresses.toString().trim()), serverWeightList);
-		//  Using binary protocol instead of text protocol, if use memcached 1.4.0 or later
+		//  Using binary protocol instead of text protocol, if we use memcached 1.4.0 or later
 		clientBuilder.setCommandFactory(new BinaryCommandFactory());
 
 		if (serverConfigList.size() > 1) {

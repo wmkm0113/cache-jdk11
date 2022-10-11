@@ -1,5 +1,6 @@
 package org.nervousync.cache.test.xmemcached;
 
+import org.apache.log4j.BasicConfigurator;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,6 +20,10 @@ public final class XmemcachedTest {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private static Properties PROPERTIES = null;
 
+	static {
+		BasicConfigurator.configure();
+	}
+
 	@BeforeClass
 	public static void initialize() {
 		PROPERTIES = PropertiesUtils.loadProperties("src/test/resources/authorization.xml");
@@ -26,6 +31,10 @@ public final class XmemcachedTest {
 
 	@Test
 	public void testXmemcached() {
+		if (PROPERTIES.isEmpty()) {
+			this.logger.info("Can't found authorization file, ignore...");
+			return;
+		}
 		CacheConfig cacheConfig = CacheConfigBuilder.builder()
 				.providerName("XMemcachedProvider")
 				.secureName(Globals.DEFAULT_VALUE_STRING)
@@ -41,8 +50,8 @@ public final class XmemcachedTest {
 		Assert.assertNotNull(cacheConfig);
 		this.logger.info("Generated configure info: \r\n {}", cacheConfig.toXML(Boolean.TRUE));
 
-		this.logger.info("Register cache result: {}", CacheCore.registerCache("Jedis", cacheConfig));
-		CacheCore.cacheAgent("Jedis")
+		this.logger.info("Register cache result: {}", CacheCore.registerCache("TestCache", cacheConfig));
+		CacheCore.cacheAgent("TestCache")
 				.ifPresent(agent -> {
 					agent.add("test", "Test add");
 					this.logger.info("Read key: {}, value: {}", "test", agent.get("test"));

@@ -6,7 +6,6 @@ import org.nervousync.cache.config.CacheConfig.CacheServer;
 import org.nervousync.cache.core.CacheCore;
 import org.nervousync.commons.core.Globals;
 import org.nervousync.security.factory.SecureFactory;
-import org.nervousync.utils.ConvertUtils;
 import org.nervousync.utils.StringUtils;
 
 import java.util.List;
@@ -84,28 +83,11 @@ public final class CacheConfigBuilder {
      *          <span class="zhs">当前缓存配置构建器</span>
      */
     public CacheConfigBuilder secureName(final String secureName) {
-        if (StringUtils.notBlank(secureName)) {
-            if (!secureName.equalsIgnoreCase(this.cacheConfig.getSecureName())) {
-                if (StringUtils.notBlank(this.cacheConfig.getPassWord())) {
-                    String renewPassword;
-                    if (StringUtils.isEmpty(this.cacheConfig.getSecureName())) {
-                        renewPassword = this.encryptPassword(secureName, this.cacheConfig.getPassWord());
-                    } else {
-                        renewPassword = this.encryptPassword(secureName,
-                                this.decryptPassword(this.cacheConfig.getSecureName(), this.cacheConfig.getPassWord()));
-                    }
-                    this.cacheConfig.setPassWord(renewPassword);
-                }
-                this.modified = Boolean.TRUE;
-            }
-            this.cacheConfig.setSecureName(secureName);
-        } else {
-            if (StringUtils.notBlank(this.cacheConfig.getSecureName())) {
-                this.cacheConfig.setPassWord(
-                        this.decryptPassword(this.cacheConfig.getSecureName(), this.cacheConfig.getPassWord()));
-                this.modified = Boolean.TRUE;
-            }
-            this.cacheConfig.setSecureName(Globals.DEFAULT_VALUE_STRING);
+        if (SecureFactory.initialized()) {
+            this.cacheConfig.setPassWord(
+                    SecureFactory.getInstance().update(this.cacheConfig.getPassWord(),
+                            this.cacheConfig.getSecureName(), secureName));
+            this.cacheConfig.setSecureName(StringUtils.notBlank(secureName) ? secureName : Globals.DEFAULT_VALUE_STRING);
         }
         return this;
     }
@@ -256,9 +238,7 @@ public final class CacheConfigBuilder {
         if (StringUtils.notBlank(passWord)) {
             String encPassword;
             if (StringUtils.notBlank(this.cacheConfig.getSecureName())) {
-                byte[] encBytes = SecureFactory.getInstance().encrypt(this.cacheConfig.getSecureName(),
-                        ConvertUtils.convertToByteArray(passWord));
-                encPassword = StringUtils.base64Encode(encBytes);
+                encPassword = SecureFactory.getInstance().encrypt(this.cacheConfig.getSecureName(), passWord);
             } else {
                 encPassword = passWord;
             }
@@ -355,15 +335,5 @@ public final class CacheConfigBuilder {
      */
     public boolean isModified() {
         return this.modified;
-    }
-
-    private String decryptPassword(final String secureName, final String passWord) {
-        byte[] decryptData = SecureFactory.getInstance().decrypt(secureName, StringUtils.base64Decode(passWord));
-        return ConvertUtils.convertToString(decryptData);
-    }
-
-    private String encryptPassword(final String secureName, final String passWord) {
-        byte[] encryptData = SecureFactory.getInstance().encrypt(secureName, ConvertUtils.convertToByteArray(passWord));
-        return StringUtils.base64Encode(encryptData);
     }
 }

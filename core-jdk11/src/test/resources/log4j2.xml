@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright © 2003 Nervousync® Studio, Inc. All rights reserved.
+  ~ This software is the confidential and proprietary information of
+  ~ Nervousync Studio, Inc. You shall not disclose such Confidential
+  ~ Information and shall use it only in accordance with the terms of the
+  ~ license agreement you entered into with Nervousync Studio.
+  -->
+
+<!DOCTYPE configuration>
+<configuration status="INFO">
+	<appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+	</appenders>
+	<loggers>
+		<Logger name="org.nervousync" level="info" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Root level="info">
+			<appender-ref ref="Console" />
+		</Root>
+	</loggers>
+</configuration>

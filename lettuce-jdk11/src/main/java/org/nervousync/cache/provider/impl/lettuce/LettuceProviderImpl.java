@@ -17,6 +17,7 @@
 
 package org.nervousync.cache.provider.impl.lettuce;
 
+import io.lettuce.core.AbstractRedisClient;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
@@ -47,6 +48,7 @@ public final class LettuceProviderImpl extends AbstractProvider {
 	 * Is single server mode
 	 */
 	private boolean singleMode = Boolean.FALSE;
+	private AbstractRedisClient redisClient;
 
 	private StatefulRedisClusterConnection<String, String> clusterConnection = null;
 	private RedisAdvancedClusterCommands<String, String> clusterCommands = null;
@@ -82,8 +84,8 @@ public final class LettuceProviderImpl extends AbstractProvider {
 						builder.withAuthentication(userName, passWord.toCharArray());
 					}
 				}
-				RedisClient redisClient = RedisClient.create(builder.build());
-				this.singleConnection = redisClient.connect();
+				this.redisClient = RedisClient.create(builder.build());
+				this.singleConnection = ((RedisClient) this.redisClient).connect();
 				this.singleCommands = this.singleConnection.sync();
 				this.singleMode = Boolean.TRUE;
 				break;
@@ -103,8 +105,8 @@ public final class LettuceProviderImpl extends AbstractProvider {
 					}
 					serverList.add(serverBuilder.build());
 				});
-				RedisClusterClient clusterClient = RedisClusterClient.create(serverList);
-				this.clusterConnection = clusterClient.connect();
+				this.redisClient = RedisClusterClient.create(serverList);
+				this.clusterConnection = ((RedisClusterClient) this.redisClient).connect();
 				this.clusterCommands = this.clusterConnection.sync();
 				this.singleMode = Boolean.FALSE;
 				break;
@@ -204,6 +206,7 @@ public final class LettuceProviderImpl extends AbstractProvider {
 		} else {
 			this.clusterConnection.close();
 		}
+		this.redisClient.close();
 	}
 
 	private void process(String key, String value, int expiry) {

@@ -1,7 +1,10 @@
 # Cache Utils
 Nervousync® Cache Utils. Provider implement class loaded by Java SPI.
 
-**Redis Client:** Jedis 4.2.3, Lettuce 6.1.8.RELEASE
+[![Build Status](https://app.travis-ci.com/wmkm0113/Cache.svg?branch=mainline)](https://app.travis-ci.com/wmkm0113/Cache)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.nervousync.cache/cache-jdk11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.nervousync.cache/cache-jdk11/)
+
+**Redis Client:** Jedis 4.2.3, Lettuce 6.2.0.RELEASE
 
 **Memcached Client:** Xmemcached 2.4.7
 

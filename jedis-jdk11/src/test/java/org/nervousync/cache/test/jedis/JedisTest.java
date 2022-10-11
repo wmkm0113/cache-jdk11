@@ -1,5 +1,6 @@
 package org.nervousync.cache.test.jedis;
 
+import org.apache.log4j.BasicConfigurator;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,6 +20,10 @@ public final class JedisTest {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private static Properties PROPERTIES = null;
 
+	static {
+		BasicConfigurator.configure();
+	}
+
 	@BeforeClass
 	public static void initialize() {
 		PROPERTIES = PropertiesUtils.loadProperties("src/test/resources/authorization.xml");
@@ -26,6 +31,10 @@ public final class JedisTest {
 
 	@Test
 	public void testJedis() {
+		if (PROPERTIES.isEmpty()) {
+			this.logger.info("Can't found authorization file, ignore...");
+			return;
+		}
 		SecureFactory.initConfig(SecureFactory.SecureAlgorithm.AES256).ifPresent(SecureFactory::initialize);
 		SecureFactory.initConfig(SecureFactory.SecureAlgorithm.AES256)
 				.ifPresent(secureConfig -> SecureFactory.getInstance().register("SecureCache", secureConfig));
@@ -44,8 +53,8 @@ public final class JedisTest {
 		Assert.assertNotNull(cacheConfig);
 		this.logger.info("Generated configure: \r\n {}", cacheConfig.toXML(Boolean.TRUE));
 
-		this.logger.info("Register cache result: {}", CacheCore.registerCache("Jedis", cacheConfig));
-		CacheCore.cacheAgent("Jedis")
+		this.logger.info("Register cache result: {}", CacheCore.registerCache("TestCache", cacheConfig));
+		CacheCore.cacheAgent("TestCache")
 				.ifPresent(agent -> {
 					agent.add("test", "Test add");
 					this.logger.info("Read key: {}, value: {}", "test", agent.get("test"));

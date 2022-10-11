@@ -1,5 +1,6 @@
 package org.nervousync.cache.test.builder;
 
+import org.apache.log4j.BasicConfigurator;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -16,6 +17,10 @@ import org.slf4j.LoggerFactory;
 public final class ConfigureBuilderTest {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	static {
+		BasicConfigurator.configure();
+	}
 
 	@Test
 	public void test000Config() {
@@ -36,9 +41,12 @@ public final class ConfigureBuilderTest {
 				.secureName(secureName)
 				.connectTimeout(CacheGlobals.DEFAULT_CONNECTION_TIMEOUT)
 				.expireTime(CacheGlobals.DEFAULT_EXPIRE_TIME)
+				.retryCount(3)
 				.clientPoolSize(CacheGlobals.DEFAULT_CLIENT_POOL_SIZE)
 				.maximumClient(CacheGlobals.DEFAULT_MAXIMUM_CLIENT)
-				.configServer("192.168.166.51", 11211, CacheGlobals.DEFAULT_CACHE_SERVER_WEIGHT, Boolean.FALSE)
+				.configServer("ServerAddress", 11211, CacheGlobals.DEFAULT_CACHE_SERVER_WEIGHT, Boolean.FALSE)
+				.configServer("ServerAddress1", 11211, CacheGlobals.DEFAULT_CACHE_SERVER_WEIGHT, Boolean.FALSE)
+				.removeServer("ServerAddress1", 11211)
 				.authorization("userName", "passWord");
 		this.logger.info("Configure modified: {}", cacheConfigBuilder.isModified());
 		String xmlContent = cacheConfigBuilder.confirmConfig().toXML();
