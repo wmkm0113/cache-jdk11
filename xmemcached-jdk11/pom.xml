@@ -3,12 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>cache-jdk11</artifactId>
-        <groupId>org.nervousync.cache</groupId>
-        <version>1.0.1</version>
+        <groupId>org.nervousync</groupId>
+        <version>1.0.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>xmemcached-jdk11</artifactId>
-    <version>1.0.1</version>
+    <artifactId>cache-xmemcached-jdk11</artifactId>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
     <name>XMemcached Provider</name>
     <url>https://cache.nervousync.org/xmemcached/index.shtml</url>
@@ -18,9 +18,9 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.nervousync.cache</groupId>
-            <artifactId>core-jdk11</artifactId>
-            <version>1.0.1</version>
+            <groupId>org.nervousync</groupId>
+            <artifactId>cache-core-jdk11</artifactId>
+            <version>1.0.2</version>
         </dependency>
         <!-- XMemcached Support -->
         <dependency>

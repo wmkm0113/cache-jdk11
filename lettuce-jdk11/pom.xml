@@ -3,25 +3,25 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>cache-jdk11</artifactId>
-        <groupId>org.nervousync.cache</groupId>
-        <version>1.0.1</version>
+        <groupId>org.nervousync</groupId>
+        <version>1.0.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>lettuce-jdk11</artifactId>
-    <version>1.0.1</version>
+    <artifactId>cache-lettuce-jdk11</artifactId>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
     <name>Lettuce Provider</name>
     <url>https://cache.nervousync.org/lettuce/index.shtml</url>
     <description>Cache Provider Implements By Lettuce, development by Nervousync Studio (NSYC)</description>
     <properties>
-        <netty.version>4.1.82.Final</netty.version>
-        <lettuce.version>6.2.0.RELEASE</lettuce.version>
+        <netty.version>4.1.84.Final</netty.version>
+        <lettuce.version>6.2.1.RELEASE</lettuce.version>
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.nervousync.cache</groupId>
-            <artifactId>core-jdk11</artifactId>
-            <version>1.0.1</version>
+            <groupId>org.nervousync</groupId>
+            <artifactId>cache-core-jdk11</artifactId>
+            <version>1.0.2</version>
         </dependency>
         <!-- Netty Support -->
         <dependency>
@@ -32,7 +32,7 @@
         <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-core</artifactId>
-            <version>3.4.23</version>
+            <version>3.4.24</version>
             <exclusions>
                 <exclusion>
                     <artifactId>reactive-streams</artifactId>

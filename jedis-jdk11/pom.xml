@@ -3,24 +3,24 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>cache-jdk11</artifactId>
-        <groupId>org.nervousync.cache</groupId>
-        <version>1.0.1</version>
+        <groupId>org.nervousync</groupId>
+        <version>1.0.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>jedis-jdk11</artifactId>
-    <version>1.0.1</version>
+    <artifactId>cache-jedis-jdk11</artifactId>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
     <name>Jedis Provider</name>
     <url>https://cache.nervousync.org/jedis/index.shtml</url>
     <description>Cache Provider Implements By Jedis, development by Nervousync Studio (NSYC)</description>
     <properties>
-        <jedis.version>4.2.3</jedis.version>
+        <jedis.version>4.3.0</jedis.version>
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.nervousync.cache</groupId>
-            <artifactId>core-jdk11</artifactId>
-            <version>1.0.1</version>
+            <groupId>org.nervousync</groupId>
+            <artifactId>cache-core-jdk11</artifactId>
+            <version>1.0.2</version>
         </dependency>
         <!-- Jedis Support -->
         <dependency>
