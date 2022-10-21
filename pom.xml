@@ -27,7 +27,7 @@
         </license>
     </licenses>
     <scm>
-        <tag>mainline</tag>
+        <tag>v1.0.2</tag>
         <url>https://github.com/wmkm0113/Cache</url>
         <connection>scm:git:https://github.com/wmkm0113/Cache.git</connection>
         <developerConnection>scm:git:https://github.com/wmkm0113/Cache.git</developerConnection>
