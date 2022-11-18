@@ -4,12 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.nervousync</groupId>
     <artifactId>cache-jdk11</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <modules>
         <module>core-jdk11</module>
         <module>jedis-jdk11</module>
         <module>lettuce-jdk11</module>
         <module>xmemcached-jdk11</module>
+        <module>api-jdk11</module>
     </modules>
     <packaging>pom</packaging>
     <name>Cache Package</name>
@@ -27,7 +28,7 @@
         </license>
     </licenses>
     <scm>
-        <tag>v1.0.2</tag>
+        <tag>v1.0.3</tag>
         <url>https://github.com/wmkm0113/Cache</url>
         <connection>scm:git:https://github.com/wmkm0113/Cache.git</connection>
         <developerConnection>scm:git:https://github.com/wmkm0113/Cache.git</developerConnection>
@@ -75,7 +76,7 @@
         <dependency>
             <groupId>org.nervousync</groupId>
             <artifactId>utils-jdk11</artifactId>
-            <version>1.0.4</version>
+            <version>1.0.5</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

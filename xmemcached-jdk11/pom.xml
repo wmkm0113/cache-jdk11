@@ -4,11 +4,11 @@
     <parent>
         <artifactId>cache-jdk11</artifactId>
         <groupId>org.nervousync</groupId>
-        <version>1.0.2</version>
+        <version>1.0.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>cache-xmemcached-jdk11</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <packaging>jar</packaging>
     <name>XMemcached Provider</name>
     <url>https://cache.nervousync.org/xmemcached/index.shtml</url>
@@ -20,7 +20,7 @@
         <dependency>
             <groupId>org.nervousync</groupId>
             <artifactId>cache-core-jdk11</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
         </dependency>
         <!-- XMemcached Support -->
         <dependency>

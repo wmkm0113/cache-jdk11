@@ -4,15 +4,16 @@ import org.apache.log4j.BasicConfigurator;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.nervousync.cache.CacheUtils;
 import org.nervousync.cache.builder.CacheConfigBuilder;
 import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.config.CacheConfig;
-import org.nervousync.cache.core.CacheCore;
 import org.nervousync.commons.core.Globals;
 import org.nervousync.utils.PropertiesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
 import java.util.Properties;
 
 public final class LettuceTest {
@@ -50,28 +51,27 @@ public final class LettuceTest {
 		Assert.assertNotNull(cacheConfig);
 		this.logger.info("Generated configure: \r\n {}", cacheConfig.toXML(Boolean.TRUE));
 
-		this.logger.info("Register cache result: {}", CacheCore.registerCache("TestCache", cacheConfig));
-		CacheCore.cacheAgent("TestCache")
-				.ifPresent(agent -> {
-					agent.add("test", "Test add");
-					this.logger.info("Read key: {}, value: {}", "test", agent.get("test"));
-					agent.set("test", "Test set");
-					this.logger.info("Read key: {}, after set operate. Read value: {}", "test", agent.get("test"));
-					agent.replace("test", "Test replace");
-					this.logger.info("Read key: {}, after replace operate. Read value: {}", "test", agent.get("test"));
-					agent.expire("test", 1);
-					this.logger.info("Read key: {}, after expire operate. Read value: {}", "test", agent.get("test"));
-					agent.delete("test");
-					this.logger.info("Read key: {}, after delete operate. Read value: {}", "test", agent.get("test"));
-					agent.add("testNum", "10000000");
-					long incrReturn = agent.incr("testNum", 2);
-					this.logger.info("Read key: {}, after incr operate. Read value: {}, return value: {}", "testNum", agent.get("testNum"), incrReturn);
-					long decrReturn = agent.decr("testNum", 2);
-					this.logger.info("Read key: {}, after decr operate. Read value: {}, return value: {}", "testNum", agent.get("testNum"), decrReturn);
+		this.logger.info("Register cache result: {}", CacheUtils.register("TestCache", cacheConfig));
+		Optional.ofNullable(CacheUtils.client("TestCache"))
+				.ifPresent(client -> {
+					client.add("test", "Test add");
+					this.logger.info("Read key: {}, value: {}", "test", client.get("test"));
+					client.set("test", "Test set");
+					this.logger.info("Read key: {}, after set operate. Read value: {}", "test", client.get("test"));
+					client.replace("test", "Test replace");
+					this.logger.info("Read key: {}, after replace operate. Read value: {}", "test", client.get("test"));
+					client.expire("test", 1);
+					this.logger.info("Read key: {}, after expire operate. Read value: {}", "test", client.get("test"));
+					client.delete("test");
+					this.logger.info("Read key: {}, after delete operate. Read value: {}", "test", client.get("test"));
+					client.add("testNum", "10000000");
+					long incrReturn = client.incr("testNum", 2);
+					this.logger.info("Read key: {}, after incr operate. Read value: {}, return value: {}", "testNum", client.get("testNum"), incrReturn);
+					long decrReturn = client.decr("testNum", 2);
+					this.logger.info("Read key: {}, after decr operate. Read value: {}, return value: {}", "testNum", client.get("testNum"), decrReturn);
 				});
 
-		CacheCore.destroyCache("Jedis");
-		CacheCore.removeProvider("Jedis");
-		CacheCore.destroy();
+		CacheUtils.deregister("TestCache");
+		CacheUtils.destroy();
 	}
 }

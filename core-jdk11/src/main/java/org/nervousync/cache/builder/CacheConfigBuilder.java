@@ -3,7 +3,7 @@ package org.nervousync.cache.builder;
 import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.cache.config.CacheConfig.CacheServer;
-import org.nervousync.cache.core.CacheCore;
+import org.nervousync.cache.provider.ProviderManager;
 import org.nervousync.commons.core.Globals;
 import org.nervousync.security.factory.SecureFactory;
 import org.nervousync.utils.StringUtils;
@@ -64,7 +64,7 @@ public final class CacheConfigBuilder {
      *          <span class="zhs">当前缓存配置构建器</span>
      */
     public CacheConfigBuilder providerName(final String providerName) {
-        if (StringUtils.notBlank(providerName) && CacheCore.registeredProvider(providerName)) {
+        if (StringUtils.notBlank(providerName) && ProviderManager.registeredProvider(providerName)) {
             if (!providerName.equalsIgnoreCase(this.cacheConfig.getProviderName())) {
                 this.modified = Boolean.TRUE;
             }

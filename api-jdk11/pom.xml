@@ -7,17 +7,15 @@
         <version>1.0.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>cache-core-jdk11</artifactId>
+    <artifactId>cache-api-jdk11</artifactId>
     <version>1.0.3</version>
     <packaging>jar</packaging>
-    <name>CacheCore Package</name>
-    <url>https://nervousync.org/project/cache/core</url>
-    <description>Cache Core Package, development by Nervousync Studio (NSYC)</description>
-    <dependencies>
-        <dependency>
-            <groupId>org.nervousync</groupId>
-            <artifactId>cache-api-jdk11</artifactId>
-            <version>1.0.3</version>
-        </dependency>
-    </dependencies>
+    <name>Cache API Package</name>
+    <url>https://nervousync.org/project/cache/api</url>
+    <description>Cache API Package, development by Nervousync Studio (NSYC)</description>
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 </project>
