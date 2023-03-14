@@ -1,4 +1,3 @@
-
 /*
  * Licensed to the Nervousync Studio (NSYC) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -18,6 +17,9 @@
 package org.nervousync.cache.exceptions;
 
 /**
+ * <h2 class="en">Cache Exception</h2>
+ * <h2 class="zh-CN">缓存异常</h2>
+ *
  * @author Steven Wee	<a href="mailto:wmkm0113@Hotmail.com">wmkm0113@Hotmail.com</a>
  * @version $Revision: 1.0 $ $Date: Apr 25, 2017 6:30:42 PM $
  */
@@ -29,24 +31,29 @@ public final class CacheException extends Exception {
     private static final long serialVersionUID = -156775157749202954L;
 
     /**
-     * Creates a new instance of CachedException without detail message.
+     * <h3 class="en">Constructs an instance of CachedException.</h3>
+     * <h3 class="zh-CN">默认构造器</h3>
      */
     public CacheException() {
     }
 
     /**
-     * Constructs an instance of CachedException with the specified detail message.
+     * <h3 class="en">Constructs an instance of CachedException with the specified detail message.</h3>
+     * <h3 class="zh-CN">使用给定的异常信息构造CachedException实例</h3>
      *
-     * @param errorMessage The detail message.
+     * @param errorMessage  <span class="en">The detail message.</span>
+     *                      <span class="zh-CN">异常信息详情</span>
      */
     public CacheException(String errorMessage) {
         super(errorMessage);
     }
 
     /**
-     * Creates an instance of CachedException with nested exception
+     * <h3 class="en">Constructs an instance of CachedException with nested exception.</h3>
+     * <h3 class="zh-CN">使用给定的异常实例构造CachedException实例</h3>
      *
-     * @param e Nested exception
+     * @param e     <span class="en">Nested exception.</span>
+     *              <span class="zh-CN">异常实例</span>
      */
     public CacheException(Exception e) {
         super(e);

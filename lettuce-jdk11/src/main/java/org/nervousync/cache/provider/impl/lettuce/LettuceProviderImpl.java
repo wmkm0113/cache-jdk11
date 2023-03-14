@@ -18,15 +18,19 @@
 package org.nervousync.cache.provider.impl.lettuce;
 
 import io.lettuce.core.AbstractRedisClient;
+import io.lettuce.core.ReadFrom;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
-import io.lettuce.core.api.sync.RedisCommands;
+import io.lettuce.core.cluster.ClusterClientOptions;
 import io.lettuce.core.cluster.RedisClusterClient;
 import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
-import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
+import io.lettuce.core.cluster.api.sync.RedisClusterCommands;
+import io.lettuce.core.codec.StringCodec;
+import io.lettuce.core.masterreplica.MasterReplica;
+import io.lettuce.core.masterreplica.StatefulRedisMasterReplicaConnection;
 import org.nervousync.cache.annotation.CacheProvider;
-import org.nervousync.cache.config.CacheConfig.CacheServer;
+import org.nervousync.cache.config.CacheConfig.ServerConfig;
 import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.cache.provider.impl.AbstractProvider;
 import org.nervousync.utils.StringUtils;
@@ -36,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The type Lettuce provider.
+ * Redis cache provider using Lettuce
  *
  * @author Steven Wee	<a href="mailto:wmkm0113@Hotmail.com">wmkm0113@Hotmail.com</a>
  * @version $Revision : 1.0 $ $Date: 8/25/2020 4:07 PM $
@@ -44,176 +48,206 @@ import java.util.List;
 @CacheProvider(name = "LettuceProvider", defaultPort = 6379)
 public final class LettuceProviderImpl extends AbstractProvider {
 
-	/**
-	 * Is single server mode
-	 */
-	private boolean singleMode = Boolean.FALSE;
-	private AbstractRedisClient redisClient;
+    private AbstractRedisClient redisClient;
 
-	private StatefulRedisClusterConnection<String, String> clusterConnection = null;
-	private RedisAdvancedClusterCommands<String, String> clusterCommands = null;
+    private StatefulRedisClusterConnection<String, String> clusterConnection = null;
 
-	private StatefulRedisConnection<String, String> singleConnection = null;
-	private RedisCommands<String, String> singleCommands = null;
+    private StatefulRedisConnection<String, String> redisConnection = null;
+    private RedisClusterCommands<String, String> redisCommands = null;
 
-	/**
-	 * Instantiates a new Lettuce provider.
-	 *
-	 * @throws CacheException the cache exception
-	 */
-	public LettuceProviderImpl() throws CacheException {
-		super();
-	}
+    /**
+     * Instantiates a new Lettuce provider.
+     *
+     * @throws CacheException the cache exception
+     */
+    public LettuceProviderImpl() throws CacheException {
+        super();
+    }
 
-	@Override
-	protected void initializeConnection(final List<CacheServer> serverConfigList,
-	                                    final String userName, final String passWord) {
-		switch (serverConfigList.size()) {
-			case 0:
-				break;
-			case 1:
-				CacheServer cacheServer = serverConfigList.get(0);
-				RedisURI.Builder builder = RedisURI.builder()
-						.withHost(cacheServer.getServerAddress())
-						.withPort(cacheServer.getServerPort());
-				builder.withTimeout(Duration.ofMillis(this.getConnectTimeout() * 1000L));
-				if (StringUtils.notBlank(passWord)) {
-					if (StringUtils.isEmpty(userName)) {
-						builder.withPassword(passWord.toCharArray());
-					} else {
-						builder.withAuthentication(userName, passWord.toCharArray());
-					}
-				}
-				this.redisClient = RedisClient.create(builder.build());
-				this.singleConnection = ((RedisClient) this.redisClient).connect();
-				this.singleCommands = this.singleConnection.sync();
-				this.singleMode = Boolean.TRUE;
-				break;
-			default:
-				List<RedisURI> serverList = new ArrayList<>(serverConfigList.size());
-				serverConfigList.forEach(serverConfig -> {
-					RedisURI.Builder serverBuilder = RedisURI.builder()
-							.withHost(serverConfig.getServerAddress())
-							.withPort(serverConfig.getServerPort())
-							.withTimeout(Duration.ofMillis(this.getConnectTimeout() * 1000L));
-					if (StringUtils.notBlank(passWord)) {
-						if (StringUtils.isEmpty(userName)) {
-							serverBuilder.withPassword(passWord.toCharArray());
-						} else {
-							serverBuilder.withAuthentication(userName, passWord.toCharArray());
-						}
-					}
-					serverList.add(serverBuilder.build());
-				});
-				this.redisClient = RedisClusterClient.create(serverList);
-				this.clusterConnection = ((RedisClusterClient) this.redisClient).connect();
-				this.clusterCommands = this.clusterConnection.sync();
-				this.singleMode = Boolean.FALSE;
-				break;
+    /**
+     * (non-Javadoc)
+     * @see org.nervousync.cache.provider.Provider#set(String, String, int)
+     */
+    @Override
+    public void set(final String key, final String value, final int expire) {
+        this.process(key, value, expire);
+    }
 
+    /**
+     * (non-Javadoc)
+     * @see org.nervousync.cache.provider.Provider#add(String, String, int)
+     */
+    @Override
+    public void add(final String key, final String value, final int expire) {
+        this.process(key, value, expire);
+    }
 
-		}
-	}
+    /**
+     * (non-Javadoc)
+     * @see org.nervousync.cache.provider.Provider#replace(String, String, int)
+     */
+    @Override
+    public void replace(final String key, final String value, final int expire) {
+        this.process(key, value, expire);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.nervousync.cache.provider.CacheProvider#set(java.lang.String, java.lang.Object, int)
-	 */
-	@Override
-	public void set(String key, String value, int expiry) {
-		this.process(key, value, expiry);
-	}
+    /**
+     * (non-Javadoc)
+     * @see AbstractProvider#expire(String, int)
+     */
+    @Override
+    public void expire(final String key, final int expire) {
+        if (this.logger.isDebugEnabled()) {
+            this.logger.debug("TTL: {}", this.redisCommands.ttl(key));
+        }
+        this.redisCommands.expire(key, expire);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.nervousync.cache.provider.CacheProvider#add(java.lang.String, java.lang.Object, int)
-	 */
-	@Override
-	public void add(String key, String value, int expiry) {
-		this.process(key, value, expiry);
-	}
+    /**
+     * (non-Javadoc)
+     * @see org.nervousync.cache.provider.Provider#touch(String...)
+     */
+    @Override
+    public void touch(final String... keys) {
+        this.redisCommands.touch(keys);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.nervousync.cache.provider.CacheProvider#replace(java.lang.String, java.lang.Object, int)
-	 */
-	@Override
-	public void replace(String key, String value, int expiry) {
-		this.process(key, value, expiry);
-	}
+    /**
+     * (non-Javadoc)
+     * @see org.nervousync.cache.provider.Provider#delete(String)
+     */
+    @Override
+    public void delete(final String key) {
+        this.redisCommands.del(key);
+    }
 
-	@Override
-	public void expire(String key, int expire) {
-		if (this.singleMode) {
-			this.singleCommands.expire(key, expire);
-		} else {
-			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("TTL: {}", this.clusterCommands.ttl(key));
-			}
-			this.clusterCommands.expire(key, expire);
-		}
-	}
+    /**
+     * (non-Javadoc)
+     * @see org.nervousync.cache.provider.Provider#get(String)
+     */
+    @Override
+    public String get(final String key) {
+        return this.redisCommands.get(key);
+    }
 
-	@Override
-	public void touch(String... keys) {
-		if (this.singleMode) {
-			this.singleCommands.touch(keys);
-		} else {
-			this.clusterCommands.touch(keys);
-		}
-	}
+    /**
+     * (non-Javadoc)
+     * @see org.nervousync.cache.provider.Provider#incr(String, long)
+     */
+    @Override
+    public long incr(final String key, final long step) {
+        return this.redisCommands.incrby(key, step);
+    }
 
-	@Override
-	public void delete(String key) {
-		if (this.singleMode) {
-			this.singleCommands.del(key);
-		} else {
-			this.clusterCommands.del(key);
-		}
-	}
+    /**
+     * (non-Javadoc)
+     * @see org.nervousync.cache.provider.Provider#decr(String, long)
+     */
+    @Override
+    public long decr(final String key, final long step) {
+        return this.redisCommands.decrby(key, step);
+    }
 
-	@Override
-	public String get(String key) {
-		return this.singleMode ? this.singleCommands.get(key) : this.clusterCommands.get(key);
-	}
+    /**
+     * (non-Javadoc)
+     * @see org.nervousync.cache.provider.Provider#destroy()
+     */
+    @Override
+    public void destroy() {
+        if (this.redisConnection != null) {
+            this.redisConnection.close();
+            this.redisConnection = null;
+        }
+        if (this.clusterConnection != null) {
+            this.clusterConnection.close();
+            this.clusterConnection = null;
+        }
+        this.redisClient.close();
+        this.redisClient.shutdown();
+    }
 
-	@Override
-	public long incr(String key, long step) {
-		long result;
-		if (this.singleMode) {
-			result = this.singleCommands.incrby(key, step);
-		} else {
-			result = this.clusterCommands.incrby(key, step);
-		}
-		return result;
-	}
+    /**
+     * (non-Javadoc)
+     * @see AbstractProvider#singletonMode(ServerConfig, String, String)
+     */
+    protected void singletonMode(final ServerConfig serverConfig, final String userName, final String passWord) {
+        this.redisClient = RedisClient.create(this.create(serverConfig, userName, passWord));
+        this.redisConnection = ((RedisClient) this.redisClient).connect(StringCodec.UTF8);
+        this.redisCommands = this.redisConnection.sync();
+    }
 
-	@Override
-	public long decr(String key, long step) {
-		long result;
-		if (this.singleMode) {
-			result = this.singleCommands.decrby(key, step);
-		} else {
-			result = this.clusterCommands.decrby(key, step);
-		}
-		return result;
-	}
+    /**
+     * (non-Javadoc)
+     * @see AbstractProvider#clusterMode(List, String, String, String)
+     */
+    protected void clusterMode(final List<ServerConfig> serverConfigList, final String masterName,
+                             final String userName, final String passWord) {
+        if (serverConfigList.size() == 0) {
+            return;
+        }
+        if (serverConfigList.size() == 1) {
+            this.singletonMode(serverConfigList.get(0), userName, passWord);
+            return;
+        }
 
-	@Override
-	public void destroy() {
-		if (this.singleMode) {
-			this.singleConnection.close();
-		} else {
-			this.clusterConnection.close();
-		}
-		this.redisClient.close();
-	}
+        switch (this.getClusterMode()) {
+            case Sentinel:
+                RedisURI.Builder sentinelBuilder = this.newBuilder().withSentinelMasterId(masterName);
+                serverConfigList.forEach(serverConfig ->
+                        sentinelBuilder.withSentinel(this.create(serverConfig, userName, passWord)));
+                this.redisClient = RedisClient.create(sentinelBuilder.build());
+                this.redisConnection = ((RedisClient) this.redisClient).connect(StringCodec.UTF8);
+                this.redisCommands = this.redisConnection.sync();
+                break;
+            case Master_Slave:
+                List<RedisURI> masterList = new ArrayList<>(serverConfigList.size());
+                List<RedisURI> slaveList = new ArrayList<>(serverConfigList.size());
+                serverConfigList.forEach(serverConfig -> {
+                    if (serverConfig.getServerAddress().equalsIgnoreCase(masterName)) {
+                        masterList.add(this.create(serverConfig, userName, passWord));
+                    } else {
+                        slaveList.add(this.create(serverConfig, userName, passWord));
+                    }
+                });
+                List<RedisURI> serverList = new ArrayList<>();
+                serverList.addAll(masterList);
+                serverList.addAll(slaveList);
+                this.redisClient = RedisClient.create();
+                this.redisConnection = MasterReplica.connect((RedisClient) this.redisClient, StringCodec.UTF8, serverList);
+                ((StatefulRedisMasterReplicaConnection<String, String>) this.redisConnection).setReadFrom(ReadFrom.REPLICA);
+                this.redisCommands = this.redisConnection.sync();
+                break;
+            case Cluster:
+                List<RedisURI> clusterList = new ArrayList<>(serverConfigList.size());
+                serverConfigList.forEach(serverConfig -> clusterList.add(this.create(serverConfig, userName, passWord)));
+                this.redisClient = RedisClusterClient.create(clusterList);
+                ((RedisClusterClient) this.redisClient)
+                        .setOptions(ClusterClientOptions.builder().autoReconnect(Boolean.TRUE).maxRedirects(1).build());
+                this.clusterConnection = ((RedisClusterClient) this.redisClient).connect(StringCodec.UTF8);
+                this.redisCommands = this.clusterConnection.sync();
+                break;
+        }
+    }
 
-	private void process(String key, String value, int expiry) {
-		if (this.singleMode) {
-			this.singleCommands.setex(key, expiry, value);
-		} else {
-			this.clusterCommands.setex(key, expiry, value);
-		}
-	}
+    private void process(final String key, final String value, final int expire) {
+        this.redisCommands.setex(key, super.expiryTime(expire), value);
+    }
+
+    private RedisURI.Builder newBuilder() {
+        return RedisURI.builder().withTimeout(Duration.ofMillis(this.getConnectTimeout() * 1000L));
+    }
+
+    private RedisURI create(final ServerConfig serverConfig, final String userName, final String passWord) {
+        RedisURI.Builder serverBuilder = this.newBuilder()
+                .withHost(serverConfig.getServerAddress())
+                .withPort(serverConfig.getServerPort());
+        if (StringUtils.notBlank(passWord)) {
+            if (StringUtils.isEmpty(userName)) {
+                serverBuilder.withPassword(passWord.toCharArray());
+            } else {
+                serverBuilder.withAuthentication(userName, passWord.toCharArray());
+            }
+        }
+        return serverBuilder.build();
+    }
 }

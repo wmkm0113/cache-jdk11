@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.nervousync.cache.test.jedis;
+package org.nervousync.cache.test.redisson;
 
 import org.apache.log4j.BasicConfigurator;
 import org.junit.Assert;
@@ -26,7 +26,6 @@ import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.commons.core.Globals;
 import org.nervousync.exceptions.builder.BuilderException;
-import org.nervousync.security.factory.SecureFactory;
 import org.nervousync.utils.PropertiesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 import java.util.Properties;
 
-public final class JedisTest {
+public final class RedissonTest {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private static Properties PROPERTIES = null;
@@ -49,17 +48,14 @@ public final class JedisTest {
 	}
 
 	@Test
-	public void testJedis() throws BuilderException {
+	public void testRedisson() throws BuilderException {
 		if (PROPERTIES.isEmpty()) {
 			this.logger.info("Can't found authorization file, ignore...");
 			return;
 		}
-		SecureFactory.initConfig(SecureFactory.SecureAlgorithm.AES256).ifPresent(SecureFactory::initialize);
-		SecureFactory.initConfig(SecureFactory.SecureAlgorithm.AES256)
-				.ifPresent(secureConfig -> SecureFactory.getInstance().register("SecureCache", secureConfig));
 		CacheConfig cacheConfig = CacheConfigBuilder.newBuilder()
-				.providerName("JedisProvider")
-				.secureName("SecureCache")
+				.providerName("RedissonProvider")
+				.secureName(Globals.DEFAULT_VALUE_STRING)
 				.connectTimeout(CacheGlobals.DEFAULT_CONNECTION_TIMEOUT)
 				.expireTime(5)
 				.clientPoolSize(CacheGlobals.DEFAULT_CLIENT_POOL_SIZE)
@@ -73,7 +69,7 @@ public final class JedisTest {
 				.authorization(PROPERTIES.getProperty("UserName"), PROPERTIES.getProperty("PassWord"))
 				.confirm();
 		Assert.assertNotNull(cacheConfig);
-		this.logger.info("Generated configure: \r\n {}", cacheConfig.toXML(Boolean.TRUE));
+		this.logger.info("Generated configure info: \r\n {}", cacheConfig.toXML(Boolean.TRUE));
 
 		CacheUtils cacheUtils;
         try {
@@ -104,7 +100,6 @@ public final class JedisTest {
 					long decrReturn = client.decr("testNum", 2);
 					this.logger.info("Read key: {}, after decr operate. Read value: {}, return value: {}", "testNum", client.get("testNum"), decrReturn);
 				});
-
 		cacheUtils.deregister("TestCache");
 		CacheUtils.destroy();
 	}

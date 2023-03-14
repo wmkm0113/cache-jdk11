@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 
 /**
  * <h2 class="en">Cache provider annotation</h2>
- * <h2 class="zhs">缓存适配器注解</h2>
+ * <h2 class="zh-CN">缓存适配器注解</h2>
  *
  * @author Steven Wee	<a href="mailto:wmkm0113@Hotmail.com">wmkm0113@Hotmail.com</a>
  * @version $Revision: 1.0 $ $Date: 2018-12-26 17:23 $
@@ -34,19 +34,19 @@ public @interface CacheProvider {
 
 	/**
 	 * <h3 class="en">Provider name. Configure file using current name to identify provider</h3>
-	 * <h3 class="zhs">适配器名称，在配置文件中使用此名称识别适配器</h3>
+	 * <h3 class="zh-CN">适配器名称，在配置文件中使用此名称识别适配器</h3>
 	 *
 	 * @return  <span class="en">Provider name</span>
-	 *          <span class="zhs">适配器名称</span>
+	 *          <span class="zh-CN">适配器名称</span>
 	 */
 	String name();
 
 	/**
 	 * <h3 class="en">Default service port number. System using this value to connect cache server if configure file setting server_port is -1</h3>
-	 * <h3 class="zhs">默认服务端口号，如果配置文件中的服务器端口设置为-1，则系统使用此端口连接缓存服务器</h3>
+	 * <h3 class="zh-CN">默认服务端口号，如果配置文件中的服务器端口设置为-1，则系统使用此端口连接缓存服务器</h3>
 	 *
 	 * @return  <span class="en">Service port number</span>
-	 *          <span class="zhs">服务端口号</span>
+	 *          <span class="zh-CN">默认服务端口号</span>
 	 */
 	int defaultPort();
 }

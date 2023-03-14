@@ -1,3 +1,19 @@
+/*
+ * Licensed to the Nervousync Studio (NSYC) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.nervousync.cache.test.lettuce;
 
 import org.apache.log4j.BasicConfigurator;
@@ -9,6 +25,7 @@ import org.nervousync.cache.builder.CacheConfigBuilder;
 import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.commons.core.Globals;
+import org.nervousync.exceptions.builder.BuilderException;
 import org.nervousync.utils.PropertiesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,28 +48,41 @@ public final class LettuceTest {
 	}
 
 	@Test
-	public void testLettuce() {
+	public void testLettuce() throws BuilderException {
 		if (PROPERTIES.isEmpty()) {
 			this.logger.info("Can't found authorization file, ignore...");
 			return;
 		}
-		CacheConfig cacheConfig = CacheConfigBuilder.builder()
+		CacheConfig cacheConfig = CacheConfigBuilder.newBuilder()
 				.providerName("LettuceProvider")
 				.secureName(Globals.DEFAULT_VALUE_STRING)
 				.connectTimeout(CacheGlobals.DEFAULT_CONNECTION_TIMEOUT)
 				.expireTime(5)
 				.clientPoolSize(CacheGlobals.DEFAULT_CLIENT_POOL_SIZE)
 				.maximumClient(CacheGlobals.DEFAULT_MAXIMUM_CLIENT)
-				.configServer(PROPERTIES.getProperty("ServerAddress"), Integer.parseInt(PROPERTIES.getProperty("ServerPort")),
-						CacheGlobals.DEFAULT_CACHE_SERVER_WEIGHT,
-						Boolean.parseBoolean(PROPERTIES.getProperty("ReadOnly")))
+				.serverBuilder()
+				.serverConfig(PROPERTIES.getProperty("ServerAddress"), Integer.parseInt(PROPERTIES.getProperty("ServerPort")))
+				.serverWeight(PROPERTIES.containsKey("ServerWeight")
+								? Integer.parseInt(PROPERTIES.getProperty("ServerWeight"))
+								: Globals.DEFAULT_VALUE_INT)
+				.confirm()
 				.authorization(PROPERTIES.getProperty("UserName"), PROPERTIES.getProperty("PassWord"))
-				.confirmConfig();
+				.confirm();
 		Assert.assertNotNull(cacheConfig);
 		this.logger.info("Generated configure: \r\n {}", cacheConfig.toXML(Boolean.TRUE));
 
-		this.logger.info("Register cache result: {}", CacheUtils.register("TestCache", cacheConfig));
-		Optional.ofNullable(CacheUtils.client("TestCache"))
+		CacheUtils cacheUtils;
+        try {
+            cacheUtils = CacheUtils.getInstance();
+        } catch (Exception e) {
+            this.logger.error("Retrieve cache utils instance error! ");
+            if (this.logger.isDebugEnabled()) {
+                this.logger.debug("Error message: ", e);
+            }
+            return;
+        }
+		this.logger.info("Register cache result: {}", cacheUtils.register("TestCache", cacheConfig));
+		Optional.ofNullable(cacheUtils.client("TestCache"))
 				.ifPresent(client -> {
 					client.add("test", "Test add");
 					this.logger.info("Read key: {}, value: {}", "test", client.get("test"));
@@ -71,7 +101,7 @@ public final class LettuceTest {
 					this.logger.info("Read key: {}, after decr operate. Read value: {}, return value: {}", "testNum", client.get("testNum"), decrReturn);
 				});
 
-		CacheUtils.deregister("TestCache");
+		cacheUtils.deregister("TestCache");
 		CacheUtils.destroy();
 	}
 }

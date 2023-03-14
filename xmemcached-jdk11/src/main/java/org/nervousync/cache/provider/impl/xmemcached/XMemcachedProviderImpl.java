@@ -25,18 +25,23 @@ import net.rubyeye.xmemcached.exception.MemcachedException;
 import net.rubyeye.xmemcached.impl.KetamaMemcachedSessionLocator;
 import net.rubyeye.xmemcached.utils.AddrUtil;
 import org.nervousync.cache.annotation.CacheProvider;
-import org.nervousync.cache.config.CacheConfig.CacheServer;
+import org.nervousync.cache.commons.CacheGlobals;
+import org.nervousync.cache.config.CacheConfig.ServerConfig;
 import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.cache.provider.impl.AbstractProvider;
 import org.nervousync.commons.core.Globals;
 import org.nervousync.utils.StringUtils;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
 /**
- * The type X memcached provider.
+ * Memcached cache provider using xmemcached
  *
  * @author Steven Wee	<a href="mailto:wmkm0113@Hotmail.com">wmkm0113@Hotmail.com</a>
  * @version $Revision : 1.0 $ $Date: 12/23/2020 13:43 PM $
@@ -58,62 +63,14 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		super();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.nervousync.cache.provider.CacheProvider#initializeConnection(java.util.List)
-	 */
+    /**
+     * (non-Javadoc)
+     * @see org.nervousync.cache.provider.Provider#set(String, String, int)
+     */
 	@Override
-	protected void initializeConnection(final List<CacheServer> serverConfigList,
-	                                    final String userName, final String passWord) {
-		int[] serverWeightList = new int[serverConfigList.size()];
-
-		int index = 0;
-
-		StringBuilder serverAddresses = new StringBuilder();
-		for (CacheServer memcachedServer : serverConfigList) {
-			serverAddresses.append(" ")
-					.append(memcachedServer.getServerAddress())
-					.append(":")
-					.append(memcachedServer.getServerPort());
-			serverWeightList[index] = memcachedServer.getServerWeight();
-			index++;
-		}
-
-		MemcachedClientBuilder clientBuilder =
-				new XMemcachedClientBuilder(AddrUtil.getAddresses(serverAddresses.toString().trim()), serverWeightList);
-		//  Using binary protocol instead of text protocol, if we use memcached 1.4.0 or later
-		clientBuilder.setCommandFactory(new BinaryCommandFactory());
-
-		if (serverConfigList.size() > 1) {
-			//  Consistent Hash
-			clientBuilder.setSessionLocator(new KetamaMemcachedSessionLocator());
-			clientBuilder.setConnectionPoolSize(this.getClientPoolSize());
-		}
-
-		if (StringUtils.notBlank(userName) && StringUtils.notBlank(passWord)) {
-			for (CacheServer memcachedServer : serverConfigList) {
-				String serverAddress = memcachedServer.getServerAddress() + ":" + memcachedServer.getServerPort();
-				clientBuilder.addAuthInfo(AddrUtil.getOneAddress(serverAddress),
-						AuthInfo.plain(userName, passWord));
-			}
-		}
+	public void set(final String key, final String value, final int expire) {
 		try {
-			this.memcachedClient = clientBuilder.build();
-		} catch (IOException e) {
-			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("Initialize memcached client error! ", e);
-			}
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.nervousync.cache.provider.CacheProvider#set(java.lang.String, java.lang.Object, int)
-	 */
-	@Override
-	public void set(String key, String value, int expiry) {
-		try {
-			this.memcachedClient.set(key, expiry, value);
+			this.memcachedClient.set(key, super.expiryTime(expire), value);
 		} catch (InterruptedException e) {
 			this.logger.error("Process set data operate error! ");
 			this.printStackMessage(e);
@@ -124,20 +81,14 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-	private void printStackMessage(Exception e) {
-		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("Stack message: ", e);
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.nervousync.cache.provider.CacheProvider#add(java.lang.String, java.lang.Object, int)
-	 */
+    /**
+     * (non-Javadoc)
+     * @see org.nervousync.cache.provider.Provider#add(String, String, int)
+     */
 	@Override
-	public void add(String key, String value, int expiry) {
+	public void add(final String key, final String value, final int expire) {
 		try {
-			this.memcachedClient.add(key, expiry, value);
+			this.memcachedClient.add(key, super.expiryTime(expire), value);
 		} catch (InterruptedException e) {
 			this.logger.error("Process add data operate error! ");
 			this.printStackMessage(e);
@@ -148,14 +99,14 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.nervousync.cache.provider.CacheProvider#replace(java.lang.String, java.lang.Object, int)
-	 */
+    /**
+     * (non-Javadoc)
+     * @see org.nervousync.cache.provider.Provider#replace(String, String, int)
+     */
 	@Override
-	public void replace(String key, String value, int expiry) {
+	public void replace(final String key, final String value, final int expire) {
 		try {
-			this.memcachedClient.replace(key, expiry, value);
+			this.memcachedClient.replace(key, super.expiryTime(expire), value);
 		} catch (InterruptedException e) {
 			this.logger.error("Process replace data operate error! ");
 			this.printStackMessage(e);
@@ -166,14 +117,14 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.nervousync.cache.provider.CacheProvider#expire(java.lang.String, int)
-	 */
+    /**
+     * (non-Javadoc)
+     * @see AbstractProvider#expire(String, int)
+     */
 	@Override
-	public void expire(String key, int expiry) {
+	public void expire(final String key, final int expire) {
 		try {
-			this.memcachedClient.touch(key, expiry);
+			this.memcachedClient.touch(key, super.expiryTime(expire));
 		} catch (InterruptedException e) {
 			this.logger.error("Process expire data operate error! ");
 			this.printStackMessage(e);
@@ -184,15 +135,15 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.nervousync.cache.provider.CacheProvider#touch(java.lang.String)
-	 */
+    /**
+     * (non-Javadoc)
+     * @see org.nervousync.cache.provider.Provider#touch(String...)
+     */
 	@Override
-	public void touch(String... keys) {
+	public void touch(final String... keys) {
 		try {
 			for (String key : keys) {
-				this.memcachedClient.touch(key, this.getExpireTime());
+				this.memcachedClient.touch(key, super.expiryTime(Globals.DEFAULT_VALUE_INT));
 			}
 		} catch (InterruptedException e) {
 			this.logger.error("Process touch data operate error! ");
@@ -204,12 +155,12 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.nervousync.cache.provider.CacheProvider#delete(java.lang.String)
-	 */
+    /**
+     * (non-Javadoc)
+     * @see org.nervousync.cache.provider.Provider#delete(String)
+     */
 	@Override
-	public void delete(String key) {
+	public void delete(final String key) {
 		try {
 			this.memcachedClient.delete(key);
 		} catch (InterruptedException e) {
@@ -222,12 +173,12 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.nervousync.cache.provider.CacheProvider#get(java.lang.String)
-	 */
+    /**
+     * (non-Javadoc)
+     * @see org.nervousync.cache.provider.Provider#get(String)
+     */
 	@Override
-	public String get(String key) {
+	public String get(final String key) {
 		try {
 			return this.memcachedClient.get(key);
 		} catch (InterruptedException e) {
@@ -241,8 +192,12 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		return null;
 	}
 
+    /**
+     * (non-Javadoc)
+     * @see org.nervousync.cache.provider.Provider#incr(String, long)
+     */
 	@Override
-	public long incr(String key, long step) {
+	public long incr(final String key, final long step) {
 		try {
 			return this.memcachedClient.incr(key, step);
 		} catch (InterruptedException e) {
@@ -256,8 +211,12 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		return Globals.DEFAULT_VALUE_LONG;
 	}
 
+    /**
+     * (non-Javadoc)
+     * @see org.nervousync.cache.provider.Provider#decr(String, long)
+     */
 	@Override
-	public long decr(String key, long step) {
+	public long decr(final String key, final long step) {
 		try {
 			return this.memcachedClient.decr(key, step);
 		} catch (InterruptedException e) {
@@ -271,10 +230,10 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		return Globals.DEFAULT_VALUE_LONG;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.nervousync.cache.provider.CacheProvider#destroy()
-	 */
+    /**
+     * (non-Javadoc)
+     * @see org.nervousync.cache.provider.Provider#destroy()
+     */
 	@Override
 	public void destroy() {
 		if (this.memcachedClient != null && !this.memcachedClient.isShutdown()) {
@@ -286,6 +245,80 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 					this.logger.debug("Stack message: ", e);
 				}
 			}
+		}
+	}
+
+	private void printStackMessage(Exception e) {
+		if (this.logger.isDebugEnabled()) {
+			this.logger.debug("Stack message: ", e);
+		}
+	}
+	
+    /**
+     * (non-Javadoc)
+     * @see AbstractProvider#singletonMode(ServerConfig, String, String)
+     */
+    protected void singletonMode(final ServerConfig serverConfig,
+								 final String userName, final String passWord) throws CacheException {
+		this.initConnection(Collections.singletonList(AddrUtil.getOneAddress(this.serverAddress(serverConfig))), 
+				new int[]{CacheGlobals.DEFAULT_CACHE_SERVER_WEIGHT}, userName, passWord);
+	}
+
+    /**
+     * (non-Javadoc)
+     * @see AbstractProvider#clusterMode(List, String, String, String)
+     */
+    protected void clusterMode(final List<ServerConfig> serverConfigList, final String masterName, 
+							   final String userName, final String passWord) throws CacheException {
+		final List<InetSocketAddress> serverList = new ArrayList<>();
+		final List<Integer> weightList = new ArrayList<>();
+		serverConfigList.forEach(serverConfig -> 
+				Optional.ofNullable(this.serverAddress(serverConfig))
+						.ifPresent(serverAddress -> {
+							serverList.add(AddrUtil.getOneAddress(serverAddress));
+							weightList.add(serverConfig.getServerWeight());
+						}));
+		int[] serverWeights = new int[weightList.size()];
+		for (int i = 0 ; i < weightList.size() ; i++) {
+			serverWeights[i] = weightList.get(i);
+		}
+		this.initConnection(serverList, serverWeights, userName, passWord);
+	}
+	
+	private String serverAddress(final ServerConfig serverConfig) {
+		if (serverConfig == null) {
+			return null;
+		}
+		return serverConfig.getServerAddress() + ":" + super.serverPort(serverConfig.getServerPort());
+	}
+	
+	private void initConnection(final List<InetSocketAddress> serverList, final int[] serverWeights, 
+								final String userName, final String passWord) throws CacheException {
+		if (serverList == null || serverWeights == null || serverList.size() != serverWeights.length) {
+			return;
+		}
+		MemcachedClientBuilder clientBuilder =
+				new XMemcachedClientBuilder(serverList, serverWeights);
+		//  Using binary protocol instead of text protocol, if we use memcached 1.4.0 or later
+		clientBuilder.setCommandFactory(new BinaryCommandFactory());
+
+		if (serverList.size() > 1) {
+			//  Consistent Hash
+			clientBuilder.setSessionLocator(new KetamaMemcachedSessionLocator());
+			clientBuilder.setConnectionPoolSize(this.getClientPoolSize());
+		}
+
+		if (StringUtils.notBlank(userName) && StringUtils.notBlank(passWord)) {
+			serverList.forEach(socketAddress -> 
+					clientBuilder.addAuthInfo(socketAddress, AuthInfo.plain(userName, passWord)));
+		}
+		try {
+			this.memcachedClient = clientBuilder.build();
+		} catch (IOException e) {
+			if (this.logger.isDebugEnabled()) {
+				this.logger.debug("Initialize memcached client error! ", e);
+			}
+			throw new CacheException(e);
 		}
 	}
 }
