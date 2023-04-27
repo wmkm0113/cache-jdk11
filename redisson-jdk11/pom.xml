@@ -5,11 +5,11 @@
     <parent>
         <groupId>org.nervousync</groupId>
         <artifactId>cache-jdk11</artifactId>
-        <version>1.1.1</version>
+        <version>1.1.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>cache-redisson-jdk11</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <packaging>jar</packaging>
     <name>Redisson Provider</name>
     <url>https://nervousync.org/projects/cache/provider/redisson/index.shtml</url>
@@ -21,13 +21,13 @@
         <dependency>
             <groupId>org.nervousync</groupId>
             <artifactId>cache-api-jdk11</artifactId>
-            <version>1.1.1</version>
+            <version>1.1.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.nervousync</groupId>
             <artifactId>cache-core-jdk11</artifactId>
-            <version>1.1.1</version>
+            <version>1.1.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

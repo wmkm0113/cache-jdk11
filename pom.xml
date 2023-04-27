@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.nervousync</groupId>
     <artifactId>cache-jdk11</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <modules>
         <module>core-jdk11</module>
         <module>jedis-jdk11</module>
@@ -52,8 +52,8 @@
         <argLine>-Dfile.encoding=UTF-8</argLine>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <junit.jupiter.version>5.9.2</junit.jupiter.version>
-        <junit.platform.version>1.9.2</junit.platform.version>
+        <junit.jupiter.version>5.9.3</junit.jupiter.version>
+        <junit.platform.version>1.9.3</junit.platform.version>
         <maven.compiler.version>3.11.0</maven.compiler.version>
         <maven.jar.version>3.3.0</maven.jar.version>
         <maven.resource.version>3.3.0</maven.resource.version>
@@ -73,11 +73,6 @@
             <artifactId>junit-platform-runner</artifactId>
             <version>${junit.platform.version}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.nervousync</groupId>
-            <artifactId>utils-jdk11</artifactId>
-            <version>1.1.1</version>
         </dependency>
     </dependencies>
     <build>
