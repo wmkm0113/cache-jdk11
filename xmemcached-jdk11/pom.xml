@@ -4,14 +4,14 @@
     <parent>
         <artifactId>cache-jdk11</artifactId>
         <groupId>org.nervousync</groupId>
-        <version>1.1.0</version>
+        <version>1.1.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>cache-xmemcached-jdk11</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <packaging>jar</packaging>
     <name>XMemcached Provider</name>
-    <url>https://cache.nervousync.org/xmemcached/index.shtml</url>
+    <url>https://nervousync.org/projects/cache/provider/xmemcached/index.shtml</url>
     <description>Cache Provider Implements By XMemcached, development by Nervousync Studio (NSYC)</description>
     <properties>
         <memcached.version>2.4.7</memcached.version>
@@ -19,8 +19,15 @@
     <dependencies>
         <dependency>
             <groupId>org.nervousync</groupId>
+            <artifactId>cache-api-jdk11</artifactId>
+            <version>1.1.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.nervousync</groupId>
             <artifactId>cache-core-jdk11</artifactId>
-            <version>1.1.0</version>
+            <version>1.1.1</version>
+            <scope>provided</scope>
         </dependency>
         <!-- XMemcached Support -->
         <dependency>

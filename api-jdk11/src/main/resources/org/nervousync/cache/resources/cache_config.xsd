@@ -2,6 +2,74 @@
 <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:cache="https://nervousync.org/schemas/cache"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="https://nervousync.org/schemas/cache"
             elementFormDefault="qualified" version="1.0">
+    <xsd:complexType name="cache_config">
+        <xsd:sequence>
+            <xsd:element name="provider_name" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>Cache provider name</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="secure_name" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>Cache config using secure name</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="connect_timeout" type="xsd:integer" default="1">
+                <xsd:annotation>
+                    <xsd:documentation>Cache connect timeout</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="retry_count" type="xsd:integer" default="3">
+                <xsd:annotation>
+                    <xsd:documentation>Cache connect retry count</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="expire_time" type="xsd:integer" default="-1">
+                <xsd:annotation>
+                    <xsd:documentation>Default expire time</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="client_pool_size" type="xsd:integer" default="5">
+                <xsd:annotation>
+                    <xsd:documentation>Cache client pool size</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="maximum_client" type="xsd:integer" default="500">
+                <xsd:annotation>
+                    <xsd:documentation>Limit size of cache client</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="cluster_mode">
+                <xsd:annotation>
+                    <xsd:documentation>Cache cluster mode</xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="Cluster"/>
+                        <xsd:enumeration value="Sentinel"/>
+                        <xsd:enumeration value="Master_Slave"/>
+                        <xsd:enumeration value="Singleton"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="master_name" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>Cache server master name</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="username" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>Authorization user name</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="password" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>Authorization password</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="server_config_list" type="cache:server_list"/>
+        </xsd:sequence>
+    </xsd:complexType>
     <xsd:complexType name="server_list">
         <xsd:sequence>
             <xsd:element name="server_config" maxOccurs="unbounded">
@@ -15,74 +83,5 @@
             </xsd:element>
         </xsd:sequence>
     </xsd:complexType>
-    <xsd:element name="cache_config">
-        <xsd:complexType>
-            <xsd:sequence>
-                <xsd:element name="provider_name" type="xsd:string">
-                    <xsd:annotation>
-                        <xsd:documentation>Cache provider name</xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
-                <xsd:element name="secure_name" type="xsd:string">
-                    <xsd:annotation>
-                        <xsd:documentation>Cache config using secure name</xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
-                <xsd:element name="connect_timeout" type="xsd:integer" default="1">
-                    <xsd:annotation>
-                        <xsd:documentation>Cache connect timeout</xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
-                <xsd:element name="retry_count" type="xsd:integer" default="3">
-                    <xsd:annotation>
-                        <xsd:documentation>Cache connect retry count</xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
-                <xsd:element name="expire_time" type="xsd:integer" default="-1">
-                    <xsd:annotation>
-                        <xsd:documentation>Default expire time</xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
-                <xsd:element name="client_pool_size" type="xsd:integer" default="5">
-                    <xsd:annotation>
-                        <xsd:documentation>Cache client pool size</xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
-                <xsd:element name="maximum_client" type="xsd:integer" default="500">
-                    <xsd:annotation>
-                        <xsd:documentation>Limit size of cache client</xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
-                <xsd:element name="cluster_mode">
-                    <xsd:annotation>
-                        <xsd:documentation>Cache cluster mode</xsd:documentation>
-                    </xsd:annotation>
-                    <xsd:simpleType>
-                        <xsd:restriction base="xsd:string">
-                            <xsd:enumeration value="Cluster"/>
-                            <xsd:enumeration value="Sentinel"/>
-                            <xsd:enumeration value="Master_Slave"/>
-                            <xsd:enumeration value="Singleton"/>
-                        </xsd:restriction>
-                    </xsd:simpleType>
-                </xsd:element>
-                <xsd:element name="master_name" type="xsd:string">
-                    <xsd:annotation>
-                        <xsd:documentation>Cache server master name</xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
-                <xsd:element name="username" type="xsd:string">
-                    <xsd:annotation>
-                        <xsd:documentation>Authorization user name</xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
-                <xsd:element name="password" type="xsd:string">
-                    <xsd:annotation>
-                        <xsd:documentation>Authorization password</xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
-                <xsd:element name="server_config_list" type="cache:server_list"/>
-            </xsd:sequence>
-        </xsd:complexType>
-    </xsd:element>
+    <xsd:element name="cache_config" type="cache:cache_config" />
 </xsd:schema>

@@ -83,7 +83,7 @@ public final class ConfigureBuilderTest {
 				.confirm();
 		String xmlContent = cacheConfig.toXML();
 		this.logger.info("Secure name: {}, generated config: {}", secureName, xmlContent);
-		CacheConfig parsedConfig = StringUtils.stringToObject(xmlContent, CacheConfig.class,
+		CacheConfig parsedConfig = StringUtils.xmlToObject(xmlContent, CacheConfig.class,
 				"src/main/resources/org/nervousync/cache/resources/cache_config.xsd");
 		this.logger.info("Parsed config: {}", parsedConfig.toFormattedJson());
 	}

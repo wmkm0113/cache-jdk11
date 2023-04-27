@@ -1,7 +1,6 @@
 # Cache Utils
 Nervousync® Cache Utils. Provider implement class loaded by Java SPI.
 
-[![Build Status](https://app.travis-ci.com/wmkm0113/Cache.svg?branch=mainline)](https://app.travis-ci.com/wmkm0113/Cache)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.nervousync/cache-jdk11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.nervousync/cache-jdk11/)
 [![License](https://img.shields.io/github/license/wmkm0113/Cache.svg)](https://github.com/wmkm0113/Cache/blob/master/LICENSE)
 

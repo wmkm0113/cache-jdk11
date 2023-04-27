@@ -36,6 +36,15 @@ public interface CacheManager {
 	boolean register(final String cacheName, final CacheConfig cacheConfig);
 
 	/**
+	 * <h3 class="en">Check given cache name was registered</h3>
+	 * <h3 class="zh-CN">使用指定的缓存名称、配置信息注册缓存</h3>
+	 *
+	 * @param cacheName     <span class="en">Cache identify name</span>
+	 *                      <span class="zh-CN">缓存识别名称</span>
+	 */
+	boolean registered(final String cacheName);
+
+	/**
 	 * <h3 class="en">Retrieve cache client instance by given cache name</h3>
 	 * <h3 class="zh-CN">使用指定的缓存名称获取缓存操作客户端</h3>
 	 *

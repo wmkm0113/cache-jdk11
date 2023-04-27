@@ -20,7 +20,6 @@ import org.nervousync.builder.AbstractBuilder;
 import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.cache.enumeration.ClusterMode;
-import org.nervousync.cache.provider.ProviderManager;
 import org.nervousync.commons.core.Globals;
 import org.nervousync.exceptions.builder.BuilderException;
 import org.nervousync.security.factory.SecureFactory;
@@ -41,7 +40,7 @@ public abstract class AbstractCacheConfigBuilder<T> extends AbstractBuilder<T> {
      * <span class="en">Cache config instance</span>
      * <span class="zh-CN">缓存配置信息</span>
      */
-    private final CacheConfig cacheConfig;
+    protected final CacheConfig cacheConfig;
 
     /**
      * <h3 class="en">Constructor for cache configure builder</h3>
@@ -68,7 +67,7 @@ public abstract class AbstractCacheConfigBuilder<T> extends AbstractBuilder<T> {
      *          <span class="zh-CN">当前缓存配置构建器</span>
      */
     public final AbstractCacheConfigBuilder<T> providerName(final String providerName) {
-        if (StringUtils.notBlank(providerName) && ProviderManager.registeredProvider(providerName)) {
+        if (StringUtils.notBlank(providerName)) {
             this.cacheConfig.setProviderName(providerName);
         }
         return this;
@@ -223,7 +222,7 @@ public abstract class AbstractCacheConfigBuilder<T> extends AbstractBuilder<T> {
      *
      * @param clusterMode   <span class="en">Cache Cluster Mode</span>
      *                      <span class="zh-CN">缓存集群类型</span>
-     * @see org.nervousync.cache.enumeration.ClusterMode
+     * @see ClusterMode
      *
      * @return  <span class="en">Current cache configure builder</span>
      *          <span class="zh-CN">当前缓存配置构建器</span>

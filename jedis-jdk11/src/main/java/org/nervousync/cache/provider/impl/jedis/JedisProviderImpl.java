@@ -339,11 +339,11 @@ public final class JedisProviderImpl extends AbstractProvider {
         if (this.singleMode) {
             Optional.ofNullable(this.singleClient())
                     .ifPresent(jedis -> {
-                        jedis.setex(key.getBytes(), expiry, ConvertUtils.convertToByteArray(value));
+                        jedis.setex(key.getBytes(), expiry, ConvertUtils.objectToByteArray(value));
                         jedis.close();
                     });
         } else {
-            this.writeCluster.setex(key.getBytes(), expiry, ConvertUtils.convertToByteArray(value));
+            this.writeCluster.setex(key.getBytes(), expiry, ConvertUtils.objectToByteArray(value));
         }
     }
 

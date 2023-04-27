@@ -43,11 +43,8 @@ public final class CacheUtils {
      * <h3 class="en">Constructor for cache utilities</h3>
      * <h3 class="zh-CN">缓存工具类构建方法</h3>
 	 */
-	private CacheUtils() throws Exception {
-		/* Loading implements class by Java SPI */
-		this.cacheManager = ServiceLoader.load(CacheManager.class)
-				.findFirst()
-				.orElseThrow(() -> new Exception("Unknown cache manager! "));
+	private CacheUtils(final CacheManager cacheManager) {
+		this.cacheManager = cacheManager;
 	}
 
 	/**
@@ -56,14 +53,24 @@ public final class CacheUtils {
 	 *
      * @return  <span class="en">Instance of cache utilities</span>
      *          <span class="zh-CN">缓存工具类的单例实例</span>
+	 */
+	public static CacheUtils getInstance() {
+		return CacheUtils.INSTANCE;
+	}
+
+	/**
+	 * <h3 class="en">Initialize cache utilities instance</h3>
+	 * <h3 class="zh-CN">初始化缓存工具类</h3>
+	 *
 	 * @throws Exception	<span class="en">Not found cache manager implements class</span>
 	 * 						<span class="zh-CN">未找到缓存管理器的实现类</span>
 	 */
-	public static CacheUtils getInstance() throws Exception {
+	public static void initialize() throws Exception {
 		if (CacheUtils.INSTANCE == null) {
-			CacheUtils.INSTANCE = new CacheUtils();
+			CacheUtils.INSTANCE = new CacheUtils(ServiceLoader.load(CacheManager.class)
+				.findFirst()
+				.orElseThrow(() -> new Exception("Unknown cache manager! ")));
 		}
-		return CacheUtils.INSTANCE;
 	}
 
 	/**
@@ -80,6 +87,17 @@ public final class CacheUtils {
 	 */
 	public boolean register(final String cacheName, final CacheConfig cacheConfig) {
 		return this.cacheManager.register(cacheName, cacheConfig);
+	}
+
+	/**
+	 * <h3 class="en">Check given cache name was registered</h3>
+	 * <h3 class="zh-CN">使用指定的缓存名称、配置信息注册缓存</h3>
+	 *
+	 * @param cacheName     <span class="en">Cache identify name</span>
+	 *                      <span class="zh-CN">缓存识别名称</span>
+	 */
+	public boolean registered(final String cacheName) {
+		return this.cacheManager.registered(cacheName);
 	}
 
 	/**
@@ -103,8 +121,11 @@ public final class CacheUtils {
 	 * @param cacheName		<span class="en">Cache identify name</span>
 	 *                      <span class="zh-CN">缓存识别名称</span>
 	 */
-	public void deregister(final String cacheName) {
-		this.cacheManager.deregister(cacheName);
+	public static void deregister(final String cacheName) {
+		if (CacheUtils.INSTANCE == null) {
+			return;
+		}
+		INSTANCE.cacheManager.deregister(cacheName);
 	}
 
 	/**

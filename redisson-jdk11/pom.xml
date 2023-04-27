@@ -5,23 +5,30 @@
     <parent>
         <groupId>org.nervousync</groupId>
         <artifactId>cache-jdk11</artifactId>
-        <version>1.1.0</version>
+        <version>1.1.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>cache-redisson-jdk11</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <packaging>jar</packaging>
     <name>Redisson Provider</name>
-    <url>https://cache.nervousync.org/redisson/index.shtml</url>
+    <url>https://nervousync.org/projects/cache/provider/redisson/index.shtml</url>
     <description>Cache Provider Implements By Redisson, development by Nervousync Studio (NSYC)</description>
     <properties>
-        <redisson.version>3.20.0</redisson.version>
+        <redisson.version>3.20.1</redisson.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.nervousync</groupId>
+            <artifactId>cache-api-jdk11</artifactId>
+            <version>1.1.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.nervousync</groupId>
             <artifactId>cache-core-jdk11</artifactId>
-            <version>1.1.0</version>
+            <version>1.1.1</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.redisson</groupId>

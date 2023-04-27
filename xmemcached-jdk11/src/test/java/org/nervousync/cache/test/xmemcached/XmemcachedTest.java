@@ -26,7 +26,7 @@ import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.commons.core.Globals;
 import org.nervousync.exceptions.builder.BuilderException;
-import org.nervousync.utils.PropertiesUtils;
+import org.nervousync.utils.ConvertUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,11 +40,16 @@ public final class XmemcachedTest {
 
 	static {
 		BasicConfigurator.configure();
+		try {
+			CacheUtils.initialize();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@BeforeClass
 	public static void initialize() {
-		PROPERTIES = PropertiesUtils.loadProperties("src/test/resources/authorization.xml");
+		PROPERTIES = ConvertUtils.loadProperties("src/test/resources/authorization.xml");
 	}
 
 	@Test
@@ -71,17 +76,9 @@ public final class XmemcachedTest {
 		Assert.assertNotNull(cacheConfig);
 		this.logger.info("Generated configure info: \r\n {}", cacheConfig.toXML(Boolean.TRUE));
 
-		CacheUtils cacheUtils;
-        try {
-            cacheUtils = CacheUtils.getInstance();
-        } catch (Exception e) {
-            this.logger.error("Retrieve cache utils instance error! ");
-            if (this.logger.isDebugEnabled()) {
-                this.logger.debug("Error message: ", e);
-            }
-            return;
-        }
+		CacheUtils cacheUtils = CacheUtils.getInstance();
 		this.logger.info("Register cache result: {}", cacheUtils.register("TestCache", cacheConfig));
+		this.logger.info("Cache {} registered: {}", "TestCache", cacheUtils.registered("TestCache"));
 		Optional.ofNullable(cacheUtils.client("TestCache"))
 				.ifPresent(client -> {
 					client.add("test", "Test add");
@@ -101,7 +98,7 @@ public final class XmemcachedTest {
 					this.logger.info("Read key: {}, after decr operate. Read value: {}, return value: {}", "testNum", client.get("testNum"), decrReturn);
 				});
 
-		cacheUtils.deregister("TestCache");
+		CacheUtils.deregister("TestCache");
 		CacheUtils.destroy();
 	}
 }
