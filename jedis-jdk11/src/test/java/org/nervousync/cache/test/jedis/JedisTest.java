@@ -24,8 +24,10 @@ import org.nervousync.cache.CacheUtils;
 import org.nervousync.cache.builder.CacheConfigBuilder;
 import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.config.CacheConfig;
+import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.commons.core.Globals;
 import org.nervousync.exceptions.builder.BuilderException;
+import org.nervousync.security.factory.SecureConfig;
 import org.nervousync.security.factory.SecureFactory;
 import org.nervousync.utils.ConvertUtils;
 import org.slf4j.Logger;
@@ -54,7 +56,7 @@ public final class JedisTest {
 	}
 
 	@Test
-	public void testJedis() throws BuilderException {
+	public void testJedis() throws BuilderException, CacheException {
 		if (PROPERTIES.isEmpty()) {
 			this.logger.info("Can't found authorization file, ignore...");
 			return;
@@ -103,5 +105,13 @@ public final class JedisTest {
 				});
 		CacheUtils.deregister("TestCache");
 		CacheUtils.destroy();
+
+		SecureConfig secureConfig = SecureFactory.initConfig(SecureFactory.SecureAlgorithm.AES256)
+				.filter(config -> SecureFactory.getInstance().register("SecureNew", config))
+				.orElse(null);
+		CacheConfig updateConfig = CacheConfigBuilder.newBuilder(cacheConfig)
+				.secureConfig("SecureNew", secureConfig)
+				.confirm();
+		this.logger.info("Updatable configure: \r\n {}", updateConfig.toXML(Boolean.TRUE));
 	}
 }

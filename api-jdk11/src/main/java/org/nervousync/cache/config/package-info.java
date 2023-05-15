@@ -14,8 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@XmlSchema(namespace = "https://nervousync.org/schemas/cache", elementFormDefault = XmlNsForm.QUALIFIED)
+@XmlSchema(namespace = "https://nervousync.org/schemas/cache", elementFormDefault = XmlNsForm.QUALIFIED,
+        location = "https://nervousync.org/schemas/cache_config_1.0.xsd",
+        xmlns = {
+            @XmlNs(prefix = "cache", namespaceURI = "https://nervousync.org/schemas/cache"),
+            @XmlNs(prefix = "secure", namespaceURI = "https://nervousync.org/schemas/secure")
+        })
 package org.nervousync.cache.config;
 
+import jakarta.xml.bind.annotation.XmlNs;
 import jakarta.xml.bind.annotation.XmlNsForm;
 import jakarta.xml.bind.annotation.XmlSchema;

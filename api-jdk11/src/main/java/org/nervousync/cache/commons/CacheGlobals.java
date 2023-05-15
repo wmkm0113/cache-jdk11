@@ -52,4 +52,14 @@ public final class CacheGlobals {
      * <span class="zh-CN">默认服务器权重</span>
      */
     public static final int DEFAULT_CACHE_SERVER_WEIGHT = 1;
+    /**
+     * <span class="en">Secure config file path key in System properties</span>
+     * <span class="zh-CN">安全配置文件位置的系统属性Key</span>
+     */
+    public static final String DEFAULT_CACHE_SECURE_PROPERTY_KEY = "org.nervousync.cache.secure.config";
+    /**
+     * <span class="en">Default secure name</span>
+     * <span class="zh-CN">默认安全配置名称</span>
+     */
+    public static final String DEFAULT_CACHE_SECURE_NAME = "Cache_Secure";
 }

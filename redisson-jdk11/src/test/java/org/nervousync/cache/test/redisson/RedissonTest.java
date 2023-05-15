@@ -24,6 +24,7 @@ import org.nervousync.cache.CacheUtils;
 import org.nervousync.cache.builder.CacheConfigBuilder;
 import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.config.CacheConfig;
+import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.commons.core.Globals;
 import org.nervousync.exceptions.builder.BuilderException;
 import org.nervousync.utils.ConvertUtils;
@@ -53,7 +54,7 @@ public final class RedissonTest {
 	}
 
 	@Test
-	public void testRedisson() throws BuilderException {
+	public void testRedisson() throws BuilderException, CacheException {
 		if (PROPERTIES.isEmpty()) {
 			this.logger.info("Can't found authorization file, ignore...");
 			return;

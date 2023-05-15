@@ -22,10 +22,12 @@ import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.cache.enumeration.ClusterMode;
 import org.nervousync.commons.core.Globals;
 import org.nervousync.exceptions.builder.BuilderException;
+import org.nervousync.security.factory.SecureConfig;
 import org.nervousync.security.factory.SecureFactory;
 import org.nervousync.utils.StringUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <h2 class="en">Abstract cache configure builder</h2>
@@ -46,10 +48,10 @@ public abstract class AbstractCacheConfigBuilder<T> extends AbstractBuilder<T> {
      * <h3 class="en">Constructor for cache configure builder</h3>
      * <h3 class="zh-CN">缓存配置构造器构建方法</h3>
      *
-     * @param parentBuilder     <span class="en">Parent builder instance</span>
-     *                          <span class="zh-CN">上级构建器实例</span>
-     * @param cacheConfig       <span class="en">Current configure instance or null for generate new configure</span>
-     *                          <span class="zh-CN">当前的缓存配置，如果传入null则生成一个新的配置</span>
+     * @param parentBuilder <span class="en">Parent builder instance</span>
+     *                      <span class="zh-CN">上级构建器实例</span>
+     * @param cacheConfig   <span class="en">Current configure instance or null for generate new configure</span>
+     *                      <span class="zh-CN">当前的缓存配置，如果传入null则生成一个新的配置</span>
      */
     protected AbstractCacheConfigBuilder(final T parentBuilder, final CacheConfig cacheConfig) {
         super(parentBuilder);
@@ -62,9 +64,8 @@ public abstract class AbstractCacheConfigBuilder<T> extends AbstractBuilder<T> {
      *
      * @param providerName <span class="en">Cache provider name</span>
      *                     <span class="zh-CN">缓存适配器名称</span>
-     *
-     * @return  <span class="en">Current cache configure builder</span>
-     *          <span class="zh-CN">当前缓存配置构建器</span>
+     * @return <span class="en">Current cache configure builder</span>
+     * <span class="zh-CN">当前缓存配置构建器</span>
      */
     public final AbstractCacheConfigBuilder<T> providerName(final String providerName) {
         if (StringUtils.notBlank(providerName)) {
@@ -79,16 +80,55 @@ public abstract class AbstractCacheConfigBuilder<T> extends AbstractBuilder<T> {
      *
      * @param secureName <span class="en">Secure name</span>
      *                   <span class="zh-CN">安全配置名称</span>
-     *
-     * @return  <span class="en">Current cache configure builder</span>
-     *          <span class="zh-CN">当前缓存配置构建器</span>
+     * @return <span class="en">Current cache configure builder</span>
+     * <span class="zh-CN">当前缓存配置构建器</span>
      */
     public final AbstractCacheConfigBuilder<T> secureName(final String secureName) {
         if (SecureFactory.initialized()) {
-            this.cacheConfig.setPassWord(
-                    SecureFactory.getInstance().update(this.cacheConfig.getPassWord(),
-                            this.cacheConfig.getSecureName(), secureName));
+            if (StringUtils.notBlank(this.cacheConfig.getSecureName())
+                    || !Objects.equals(this.cacheConfig.getSecureName(), secureName)) {
+                this.cacheConfig.setPassWord(
+                        SecureFactory.getInstance().update(this.cacheConfig.getPassWord(),
+                                this.cacheConfig.getSecureName(), secureName));
+            }
+            if (this.cacheConfig.getSecureConfig() != null
+                    && !Objects.equals(this.cacheConfig.getSecureName(), secureName)) {
+                SecureFactory.getInstance().deregister(this.cacheConfig.getSecureName());
+            }
+            this.cacheConfig.setSecureConfig(null);
             this.cacheConfig.setSecureName(StringUtils.notBlank(secureName) ? secureName : Globals.DEFAULT_VALUE_STRING);
+        }
+        return this;
+    }
+
+    /**
+     * <h3 class="en">Configure secure config information</h3>
+     * <h3 class="zh-CN">设置用于保护密码的安全配置</h3>
+     *
+     * @param secureName   <span class="en">Secure name</span>
+     *                     <span class="zh-CN">安全配置名称</span>
+     * @param secureConfig <span class="en">Secure config information</span>
+     *                     <span class="zh-CN">安全配置信息</span>
+     * @return <span class="en">Current cache configure builder</span>
+     * <span class="zh-CN">当前缓存配置构建器</span>
+     */
+    public final AbstractCacheConfigBuilder<T> secureConfig(final String secureName, final SecureConfig secureConfig) {
+        if (SecureFactory.initialized() && StringUtils.notBlank(secureName) && secureConfig != null) {
+            SecureFactory secureFactory = SecureFactory.getInstance();
+            if (StringUtils.notBlank(this.cacheConfig.getPassWord())) {
+                secureFactory.register(Globals.DEFAULT_TEMPLATE_SECURE_NAME, secureConfig);
+                String passWord = this.cacheConfig.getPassWord();
+                if (StringUtils.notBlank(this.cacheConfig.getSecureName())) {
+                    passWord = secureFactory.update(passWord, this.cacheConfig.getSecureName(),
+                            Globals.DEFAULT_TEMPLATE_SECURE_NAME);
+                } else {
+                    passWord = secureFactory.encrypt(passWord, Globals.DEFAULT_TEMPLATE_SECURE_NAME);
+                }
+                this.cacheConfig.setPassWord(passWord);
+                secureFactory.deregister(Globals.DEFAULT_TEMPLATE_SECURE_NAME);
+            }
+            this.cacheConfig.setSecureName(secureName);
+            this.cacheConfig.setSecureConfig(secureConfig);
         }
         return this;
     }
@@ -99,9 +139,8 @@ public abstract class AbstractCacheConfigBuilder<T> extends AbstractBuilder<T> {
      *
      * @param connectTimeout <span class="en">Connect timeout</span>
      *                       <span class="zh-CN">连接超时时间</span>
-     *
-     * @return  <span class="en">Current cache configure builder</span>
-     *          <span class="zh-CN">当前缓存配置构建器</span>
+     * @return <span class="en">Current cache configure builder</span>
+     * <span class="zh-CN">当前缓存配置构建器</span>
      */
     public final AbstractCacheConfigBuilder<T> connectTimeout(final int connectTimeout) {
         if (connectTimeout > 0) {
@@ -118,9 +157,8 @@ public abstract class AbstractCacheConfigBuilder<T> extends AbstractBuilder<T> {
      *
      * @param expireTime <span class="en">Default expire time</span>
      *                   <span class="zh-CN">默认过期时间</span>
-     *
-     * @return  <span class="en">Current cache configure builder</span>
-     *          <span class="zh-CN">当前缓存配置构建器</span>
+     * @return <span class="en">Current cache configure builder</span>
+     * <span class="zh-CN">当前缓存配置构建器</span>
      */
     public final AbstractCacheConfigBuilder<T> expireTime(final int expireTime) {
         if (expireTime > 0) {
@@ -137,9 +175,8 @@ public abstract class AbstractCacheConfigBuilder<T> extends AbstractBuilder<T> {
      *
      * @param clientPoolSize <span class="en">Client pool size</span>
      *                       <span class="zh-CN">连接池大小</span>
-     *
-     * @return  <span class="en">Current cache configure builder</span>
-     *          <span class="zh-CN">当前缓存配置构建器</span>
+     * @return <span class="en">Current cache configure builder</span>
+     * <span class="zh-CN">当前缓存配置构建器</span>
      */
     public final AbstractCacheConfigBuilder<T> clientPoolSize(final int clientPoolSize) {
         if (clientPoolSize > 0) {
@@ -156,9 +193,8 @@ public abstract class AbstractCacheConfigBuilder<T> extends AbstractBuilder<T> {
      *
      * @param maximumClient <span class="en">Limit size of generated client instance</span>
      *                      <span class="zh-CN">客户端实例阈值</span>
-     *
-     * @return  <span class="en">Current cache configure builder</span>
-     *          <span class="zh-CN">当前缓存配置构建器</span>
+     * @return <span class="en">Current cache configure builder</span>
+     * <span class="zh-CN">当前缓存配置构建器</span>
      */
     public final AbstractCacheConfigBuilder<T> maximumClient(final int maximumClient) {
         if (maximumClient > 0) {
@@ -175,9 +211,8 @@ public abstract class AbstractCacheConfigBuilder<T> extends AbstractBuilder<T> {
      *
      * @param retryCount <span class="en">Connect retry count</span>
      *                   <span class="zh-CN">连接超时重试次数</span>
-     *
-     * @return  <span class="en">Current cache configure builder</span>
-     *          <span class="zh-CN">当前缓存配置构建器</span>
+     * @return <span class="en">Current cache configure builder</span>
+     * <span class="zh-CN">当前缓存配置构建器</span>
      */
     public final AbstractCacheConfigBuilder<T> retryCount(final int retryCount) {
         if (retryCount > 0) {
@@ -196,9 +231,8 @@ public abstract class AbstractCacheConfigBuilder<T> extends AbstractBuilder<T> {
      *                 <span class="zh-CN">缓存服务器用户名</span>
      * @param passWord <span class="en">Cache server password</span>
      *                 <span class="zh-CN">缓存服务器密码</span>
-     *
-     * @return  <span class="en">Current cache configure builder</span>
-     *          <span class="zh-CN">当前缓存配置构建器</span>
+     * @return <span class="en">Current cache configure builder</span>
+     * <span class="zh-CN">当前缓存配置构建器</span>
      */
     public final AbstractCacheConfigBuilder<T> authorization(final String userName, final String passWord) {
         this.cacheConfig.setUserName(userName);
@@ -220,12 +254,11 @@ public abstract class AbstractCacheConfigBuilder<T> extends AbstractBuilder<T> {
      * <h3 class="en">Configure cache cluster mode</h3>
      * <h3 class="zh-CN">设置缓存服务器的集群类型</h3>
      *
-     * @param clusterMode   <span class="en">Cache Cluster Mode</span>
-     *                      <span class="zh-CN">缓存集群类型</span>
+     * @param clusterMode <span class="en">Cache Cluster Mode</span>
+     *                    <span class="zh-CN">缓存集群类型</span>
+     * @return <span class="en">Current cache configure builder</span>
+     * <span class="zh-CN">当前缓存配置构建器</span>
      * @see ClusterMode
-     *
-     * @return  <span class="en">Current cache configure builder</span>
-     *          <span class="zh-CN">当前缓存配置构建器</span>
      */
     public final AbstractCacheConfigBuilder<T> clusterMode(final ClusterMode clusterMode) {
         this.cacheConfig.setClusterMode(clusterMode.toString());
@@ -236,11 +269,10 @@ public abstract class AbstractCacheConfigBuilder<T> extends AbstractBuilder<T> {
      * <h3 class="en">Configure cache cluster mode</h3>
      * <h3 class="zh-CN">设置缓存服务器的集群类型</h3>
      *
-     * @param masterName    <span class="en">Master server name</span>
-     *                      <span class="zh-CN">主服务器名称</span>
-     *
-     * @return  <span class="en">Current cache configure builder</span>
-     *          <span class="zh-CN">当前缓存配置构建器</span>
+     * @param masterName <span class="en">Master server name</span>
+     *                   <span class="zh-CN">主服务器名称</span>
+     * @return <span class="en">Current cache configure builder</span>
+     * <span class="zh-CN">当前缓存配置构建器</span>
      */
     public final AbstractCacheConfigBuilder<T> masterName(final String masterName) {
         this.cacheConfig.setMasterName(masterName);
@@ -251,8 +283,8 @@ public abstract class AbstractCacheConfigBuilder<T> extends AbstractBuilder<T> {
      * <h3 class="en">Configure cache server information</h3>
      * <h3 class="zh-CN">设置缓存服务器相关信息</h3>
      *
-     * @return  <span class="en">Current cache configure builder</span>
-     *          <span class="zh-CN">当前缓存配置构建器</span>
+     * @return <span class="en">Current cache configure builder</span>
+     * <span class="zh-CN">当前缓存配置构建器</span>
      */
     public final CacheServerConfigBuilder<T> serverBuilder() {
         return CacheServerConfigBuilder.newBuilder(this, new CacheConfig.ServerConfig());
@@ -266,9 +298,8 @@ public abstract class AbstractCacheConfigBuilder<T> extends AbstractBuilder<T> {
      *                      <span class="zh-CN">缓存服务器地址</span>
      * @param serverPort    <span class="en">Cache server port</span>
      *                      <span class="zh-CN">缓存服务器端口号</span>
-     *
-     * @return  <span class="en">Current cache configure builder</span>
-     *          <span class="zh-CN">当前缓存配置构建器</span>
+     * @return <span class="en">Current cache configure builder</span>
+     * <span class="zh-CN">当前缓存配置构建器</span>
      */
     public final CacheServerConfigBuilder<T> serverBuilder(final String serverAddress, final int serverPort) {
         return CacheServerConfigBuilder.newBuilder(this,
@@ -287,9 +318,8 @@ public abstract class AbstractCacheConfigBuilder<T> extends AbstractBuilder<T> {
      *                      <span class="zh-CN">缓存服务器地址</span>
      * @param serverPort    <span class="en">Cache server port</span>
      *                      <span class="zh-CN">缓存服务器端口号</span>
-     *
-     * @return  <span class="en">Current cache configure builder</span>
-     *          <span class="zh-CN">当前缓存配置构建器</span>
+     * @return <span class="en">Current cache configure builder</span>
+     * <span class="zh-CN">当前缓存配置构建器</span>
      */
     public final AbstractCacheConfigBuilder<T> removeServer(final String serverAddress, final int serverPort) {
         List<CacheConfig.ServerConfig> serverConfigList = this.cacheConfig.getServerConfigList();
@@ -303,8 +333,8 @@ public abstract class AbstractCacheConfigBuilder<T> extends AbstractBuilder<T> {
      * <h3 class="en">Upsert cache server information</h3>
      * <h3 class="zh-CN">更新缓存服务器信息</h3>
      *
-     * @param serverConfig      <span class="en">Cache server configure information</span>
-     *                          <span class="zh-CN">缓存服务器配置信息</span>
+     * @param serverConfig <span class="en">Cache server configure information</span>
+     *                     <span class="zh-CN">缓存服务器配置信息</span>
      * @throws BuilderException <span class="en">Throws if cache server address is empty</span>
      *                          <span class="zh-CN">如果缓存服务器地址未配置，则抛出异常</span>
      */
