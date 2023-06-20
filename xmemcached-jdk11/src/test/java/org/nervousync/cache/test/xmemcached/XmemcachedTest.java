@@ -16,7 +16,7 @@
  */
 package org.nervousync.cache.test.xmemcached;
 
-import org.apache.log4j.BasicConfigurator;
+import org.apache.logging.log4j.Level;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,6 +28,7 @@ import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.commons.core.Globals;
 import org.nervousync.exceptions.builder.BuilderException;
 import org.nervousync.utils.ConvertUtils;
+import org.nervousync.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,7 @@ public final class XmemcachedTest {
 	private static Properties PROPERTIES = null;
 
 	static {
-		BasicConfigurator.configure();
+		LoggerUtils.initLoggerConfigure(Level.DEBUG);
 		try {
 			CacheUtils.initialize();
 		} catch (Exception e) {

@@ -16,7 +16,7 @@
  */
 package org.nervousync.cache.test.builder;
 
-import org.apache.log4j.BasicConfigurator;
+import org.apache.logging.log4j.Level;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -28,6 +28,7 @@ import org.nervousync.commons.core.Globals;
 import org.nervousync.exceptions.builder.BuilderException;
 import org.nervousync.security.factory.SecureConfig;
 import org.nervousync.security.factory.SecureFactory;
+import org.nervousync.utils.LoggerUtils;
 import org.nervousync.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,7 @@ public final class ConfigureBuilderTest {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     static {
-        BasicConfigurator.configure();
+        LoggerUtils.initLoggerConfigure(Level.DEBUG);
     }
 
     @Test
@@ -85,7 +86,7 @@ public final class ConfigureBuilderTest {
                     .confirm();
             String xmlContent = cacheConfig.toXML();
             this.logger.info("Secure name: {}, generated config: {}", secureName, xmlContent);
-            CacheConfig parsedConfig = StringUtils.xmlToObject(xmlContent, CacheConfig.class,
+            CacheConfig parsedConfig = StringUtils.stringToObject(xmlContent, CacheConfig.class,
                     "https://nervousync.org/schemas/cache");
             this.logger.info("Parsed config: {}", parsedConfig.toFormattedJson());
         } catch (BuilderException e) {

@@ -16,7 +16,7 @@
  */
 package org.nervousync.cache.test.jedis;
 
-import org.apache.log4j.BasicConfigurator;
+import org.apache.logging.log4j.Level;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,6 +30,7 @@ import org.nervousync.exceptions.builder.BuilderException;
 import org.nervousync.security.factory.SecureConfig;
 import org.nervousync.security.factory.SecureFactory;
 import org.nervousync.utils.ConvertUtils;
+import org.nervousync.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +43,7 @@ public final class JedisTest {
 	private static Properties PROPERTIES = null;
 
 	static {
-		BasicConfigurator.configure();
+		LoggerUtils.initLoggerConfigure(Level.DEBUG);
 		try {
 			CacheUtils.initialize();
 		} catch (Exception e) {

@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.nervousync</groupId>
     <artifactId>cache-jdk11</artifactId>
-    <version>1.1.3</version>
+    <version>1.1.5</version>
     <modules>
         <module>core-jdk11</module>
         <module>jedis-jdk11</module>
@@ -12,13 +12,14 @@
         <module>xmemcached-jdk11</module>
         <module>api-jdk11</module>
         <module>redisson-jdk11</module>
+        <module>nodeps-jdk11</module>
     </modules>
     <packaging>pom</packaging>
     <name>Cache Package</name>
-    <url>https://cache.nervousync.org/index.shtml</url>
+    <url>https://nervousync.org/cache-jdk11/index.shtml</url>
     <description>Cache Package, development by Nervousync Studio (NSYC)</description>
     <issueManagement>
-        <url>https://github.com/wmkm0113/Cache/issues</url>
+        <url>https://github.com/wmkm0113/cache-jdk11/issues</url>
         <system>Github Issues</system>
     </issueManagement>
     <licenses>
@@ -29,10 +30,10 @@
         </license>
     </licenses>
     <scm>
-        <tag>v1.1.3</tag>
-        <url>https://github.com/wmkm0113/Cache</url>
-        <connection>scm:git:https://github.com/wmkm0113/Cache.git</connection>
-        <developerConnection>scm:git:https://github.com/wmkm0113/Cache.git</developerConnection>
+        <tag>v1.1.5</tag>
+        <url>https://github.com/wmkm0113/cache-jdk11</url>
+        <connection>scm:git:https://github.com/wmkm0113/cache-jdk11.git</connection>
+        <developerConnection>scm:git:https://github.com/wmkm0113/cache-jdk11.git</developerConnection>
     </scm>
     <organization>
         <url>https://nervousync.org/index.shtml</url>
@@ -60,6 +61,7 @@
         <maven.source.version>3.2.1</maven.source.version>
         <maven.javadoc.version>3.5.0</maven.javadoc.version>
         <maven.gpg.version>3.0.1</maven.gpg.version>
+        <current.version>1.1.5</current.version>
     </properties>
     <dependencies>
         <dependency>
@@ -168,10 +170,13 @@
                                     <manifest>
                                         <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                                         <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                                        <addClasspath>true</addClasspath>
                                     </manifest>
                                     <manifestEntries>
-                                        <Built-By>Nervousync Studio</Built-By>
-                                        <Class-Path>.</Class-Path>
+                                        <Built-By>${project.organization.name}</Built-By>
+                                        <Build-Jdk>${java.vm.name} ${java.vendor.version} (${java.runtime.version})
+                                        </Build-Jdk>
+                                        <Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
                                     </manifestEntries>
                                 </archive>
                             </configuration>
@@ -197,38 +202,38 @@
                             </execution>
                         </executions>
                     </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>${maven.source.version}</version>
-                    <executions>
-                        <execution>
-                            <phase>package</phase>
-                            <id>attach-sources</id>
-                            <goals>
-                                <goal>jar-no-fork</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>${maven.javadoc.version}</version>
-                    <executions>
-                        <execution>
-                            <phase>package</phase>
-                            <id>attach-javadocs</id>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
-                        <doclint>-html</doclint>
-                    </configuration>
-                </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>${maven.source.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${maven.javadoc.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+                            <doclint>-html</doclint>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
