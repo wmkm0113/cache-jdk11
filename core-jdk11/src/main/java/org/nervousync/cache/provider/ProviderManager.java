@@ -17,9 +17,8 @@
 package org.nervousync.cache.provider;
 
 import org.nervousync.cache.annotation.CacheProvider;
+import org.nervousync.utils.LoggerUtils;
 import org.nervousync.utils.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -36,7 +35,7 @@ public final class ProviderManager {
 	 * <span class="en">Logger instance</span>
 	 * <span class="zhs">日志实例</span>
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(ProviderManager.class);
+	private static final LoggerUtils.Logger LOGGER = LoggerUtils.getLogger(ProviderManager.class);
 
 	/**
 	 * <span class="en">Registered cache provider map</span>
@@ -51,7 +50,7 @@ public final class ProviderManager {
 				.filter(provider -> provider.get().getClass().isAnnotationPresent(CacheProvider.class))
 				.forEach(provider -> registerProvider(provider.get().getClass()));
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Registered cache provider number: {}", REGISTERED_PROVIDERS.size());
+			LOGGER.debug("Registered_Providers_Count_Cache_Debug", REGISTERED_PROVIDERS.size());
 		}
 	}
 
@@ -109,7 +108,7 @@ public final class ProviderManager {
 		Optional.ofNullable(providerClass.getAnnotation(CacheProvider.class))
 				.ifPresent(cacheProvider -> {
 					if (REGISTERED_PROVIDERS.containsKey(cacheProvider.name())) {
-						LOGGER.warn("Override cache provider name: {}, replace class: {}, new class: {}",
+						LOGGER.warn("Override_Cache_Provider",
 								cacheProvider.name(), REGISTERED_PROVIDERS.get(cacheProvider.name()).getName(),
 								providerClass.getName());
 					}

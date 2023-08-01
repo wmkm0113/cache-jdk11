@@ -4,18 +4,18 @@
     <parent>
         <artifactId>cache-jdk11</artifactId>
         <groupId>org.nervousync</groupId>
-        <version>1.1.5</version>
+        <version>1.1.6</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>cache-lettuce-jdk11</artifactId>
-    <version>1.1.5</version>
+    <version>1.1.6</version>
     <packaging>jar</packaging>
     <name>Lettuce Provider</name>
     <url>https://nervousync.org/projects/cache-jdk11/provider/lettuce/index.shtml</url>
     <description>Cache Provider Implements By Lettuce, development by Nervousync Studio (NSYC)</description>
     <properties>
-        <netty.version>4.1.93.Final</netty.version>
-        <lettuce.version>6.2.4.RELEASE</lettuce.version>
+        <netty.version>4.1.96.Final</netty.version>
+        <lettuce.version>6.2.5.RELEASE</lettuce.version>
     </properties>
     <dependencies>
         <dependency>
@@ -38,7 +38,7 @@
         <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-core</artifactId>
-            <version>3.5.6</version>
+            <version>3.5.8</version>
             <exclusions>
                 <exclusion>
                     <artifactId>reactive-streams</artifactId>

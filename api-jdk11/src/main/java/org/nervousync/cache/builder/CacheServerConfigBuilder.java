@@ -18,7 +18,7 @@ package org.nervousync.cache.builder;
 
 import org.nervousync.builder.AbstractBuilder;
 import org.nervousync.cache.config.CacheConfig;
-import org.nervousync.commons.core.Globals;
+import org.nervousync.commons.Globals;
 import org.nervousync.exceptions.builder.BuilderException;
 
 /**

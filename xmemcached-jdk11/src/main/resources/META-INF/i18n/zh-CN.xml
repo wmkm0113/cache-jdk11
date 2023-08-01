@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <comment>缓存工具简体中文国际化信息资源</comment>
+    <entry key="Init_Memcached_Cache_Error">初始化Memcached连接出错</entry><!-- 0x000C00000006 -->
+    <entry key="Destroy_Memcached_Cache_Error">销毁Memcached客户端出错</entry>
+    <entry key="Data_Operate_Cache_Error">执行{0}操作时出错</entry>
+</properties>

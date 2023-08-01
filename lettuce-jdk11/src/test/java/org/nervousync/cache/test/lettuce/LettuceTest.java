@@ -25,39 +25,32 @@ import org.nervousync.cache.builder.CacheConfigBuilder;
 import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.cache.exceptions.CacheException;
-import org.nervousync.commons.core.Globals;
+import org.nervousync.commons.Globals;
 import org.nervousync.exceptions.builder.BuilderException;
-import org.nervousync.utils.ConvertUtils;
+import org.nervousync.security.factory.SecureConfig;
+import org.nervousync.security.factory.SecureFactory;
 import org.nervousync.utils.LoggerUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.nervousync.utils.PropertiesUtils;
 
 import java.util.Optional;
 import java.util.Properties;
 
 public final class LettuceTest {
 
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final LoggerUtils.Logger logger = LoggerUtils.getLogger(this.getClass());
 	private static Properties PROPERTIES = null;
 
-	static {
-		LoggerUtils.initLoggerConfigure(Level.DEBUG);
-		try {
-			CacheUtils.initialize();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	@BeforeClass
-	public static void initialize() {
-		PROPERTIES = ConvertUtils.loadProperties("src/test/resources/authorization.xml");
+	public static void initialize() throws CacheException {
+		LoggerUtils.initLoggerConfigure(Level.DEBUG);
+		CacheUtils.initialize();
+		PROPERTIES = PropertiesUtils.loadProperties("src/test/resources/authorization.xml");
 	}
 
 	@Test
 	public void testLettuce() throws BuilderException, CacheException {
 		if (PROPERTIES.isEmpty()) {
-			this.logger.info("Can't found authorization file, ignore...");
+			this.logger.info("No_Auth_File");
 			return;
 		}
 		CacheConfig cacheConfig = CacheConfigBuilder.newBuilder()
@@ -76,31 +69,38 @@ public final class LettuceTest {
 				.authorization(PROPERTIES.getProperty("UserName"), PROPERTIES.getProperty("PassWord"))
 				.confirm();
 		Assert.assertNotNull(cacheConfig);
-		this.logger.info("Generated configure: \r\n {}", cacheConfig.toXML(Boolean.TRUE));
+		this.logger.info("Generated_Configure", cacheConfig.toXML(Boolean.TRUE));
 
 		CacheUtils cacheUtils = CacheUtils.getInstance();
-		this.logger.info("Register cache result: {}", cacheUtils.register("TestCache", cacheConfig));
-		this.logger.info("Cache {} registered: {}", "TestCache", cacheUtils.registered("TestCache"));
+		this.logger.info("Register_Result", cacheUtils.register("TestCache", cacheConfig));
+		this.logger.info("Register_Check", "TestCache", cacheUtils.registered("TestCache"));
 		Optional.ofNullable(cacheUtils.client("TestCache"))
 				.ifPresent(client -> {
 					client.add("test", "Test add");
-					this.logger.info("Read key: {}, value: {}", "test", client.get("test"));
+					this.logger.info("Read_Debug", "test", client.get("test"));
 					client.set("test", "Test set");
-					this.logger.info("Read key: {}, after set operate. Read value: {}", "test", client.get("test"));
+					this.logger.info("Read_After_Debug", "test", "set", client.get("test"));
 					client.replace("test", "Test replace");
-					this.logger.info("Read key: {}, after replace operate. Read value: {}", "test", client.get("test"));
+					this.logger.info("Read_After_Debug", "test", "replace", client.get("test"));
 					client.expire("test", 1);
-					this.logger.info("Read key: {}, after expire operate. Read value: {}", "test", client.get("test"));
+					this.logger.info("Read_After_Debug", "test", "expire", client.get("test"));
 					client.delete("test");
-					this.logger.info("Read key: {}, after delete operate. Read value: {}", "test", client.get("test"));
+					this.logger.info("Read_After_Debug", "test", "delete", client.get("test"));
 					client.add("testNum", "10000000");
 					long incrReturn = client.incr("testNum", 2);
-					this.logger.info("Read key: {}, after incr operate. Read value: {}, return value: {}", "testNum", client.get("testNum"), incrReturn);
+					this.logger.info("Read_After_Return_Debug", "testNum", "incr", client.get("testNum"), incrReturn);
 					long decrReturn = client.decr("testNum", 2);
-					this.logger.info("Read key: {}, after decr operate. Read value: {}, return value: {}", "testNum", client.get("testNum"), decrReturn);
+					this.logger.info("Read_After_Return_Debug", "testNum", "decr", client.get("testNum"), decrReturn);
 				});
-
 		CacheUtils.deregister("TestCache");
 		CacheUtils.destroy();
+
+		SecureConfig secureConfig = SecureFactory.initConfig(SecureFactory.SecureAlgorithm.AES256)
+				.filter(config -> SecureFactory.register("SecureNew", config))
+				.orElse(null);
+		CacheConfig updateConfig = CacheConfigBuilder.newBuilder(cacheConfig)
+				.secureConfig("SecureNew", secureConfig)
+				.confirm();
+		this.logger.info("Updatable_Configure", updateConfig.toXML(Boolean.TRUE));
 	}
 }

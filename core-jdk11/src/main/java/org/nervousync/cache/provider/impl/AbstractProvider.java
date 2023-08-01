@@ -25,13 +25,12 @@ import org.nervousync.cache.enumeration.ClusterMode;
 import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.cache.provider.Provider;
 import org.nervousync.security.factory.SecureFactory;
+import org.nervousync.utils.LoggerUtils;
 import org.nervousync.utils.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.cache.config.CacheConfig.ServerConfig;
-import org.nervousync.commons.core.Globals;
+import org.nervousync.commons.Globals;
 
 /**
  * <h2 class="en">Abstract provider class, all providers must extend this class</h2>
@@ -46,7 +45,7 @@ public abstract class AbstractProvider implements Provider {
      * <span class="en">Logger instance</span>
      * <span class="zh-CN">日志实例</span>
      */
-    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected final LoggerUtils.Logger logger = LoggerUtils.getLogger(this.getClass());
 
     /**
      * <span class="en">Default port number</span>
@@ -92,7 +91,8 @@ public abstract class AbstractProvider implements Provider {
         if (this.getClass().isAnnotationPresent(CacheProvider.class)) {
             this.defaultPort = this.getClass().getAnnotation(CacheProvider.class).defaultPort();
         } else {
-            throw new CacheException("Provider implement class must annotation with " + CacheProvider.class.getName());
+            throw new CacheException(0x000C00000004L, "Annotation_Provider_Cache_Error",
+                    CacheProvider.class.getName());
         }
     }
 
@@ -102,30 +102,30 @@ public abstract class AbstractProvider implements Provider {
      *
      * @param cacheConfig <span class="en">Cache config instance</span>
      *                    <span class="zh-CN">缓存配置实例</span>
+     *
      * @throws CacheException <span class="en">If initialize connection error</span>
      *                        <span class="zh-CN">连接服务器失败时抛出异常</span>
      */
-    public void initialize(CacheConfig cacheConfig) throws CacheException {
+    public void initialize(final CacheConfig cacheConfig) throws CacheException {
         this.connectTimeout = cacheConfig.getConnectTimeout();
         this.clientPoolSize = cacheConfig.getClientPoolSize();
         this.retryCount = cacheConfig.getRetryCount();
         this.maximumClient = cacheConfig.getMaximumClient();
         this.expireTime = cacheConfig.getExpireTime();
         this.clusterMode = ClusterMode.valueOf(cacheConfig.getClusterMode());
+        if (StringUtils.notBlank(cacheConfig.getSecureName()) && cacheConfig.getSecureConfig() != null
+                && !SecureFactory.registeredConfig(cacheConfig.getSecureName())) {
+            SecureFactory.register(cacheConfig.getSecureName(), cacheConfig.getSecureConfig());
+        }
         String passWord = cacheConfig.getPassWord();
-        if (StringUtils.notBlank(passWord)) {
-            String secureName =
-                    StringUtils.notBlank(cacheConfig.getSecureName())
-                            ? cacheConfig.getSecureName()
-                            : CacheGlobals.DEFAULT_CACHE_SECURE_NAME;
-            if (SecureFactory.getInstance().registeredConfig(secureName)) {
-                passWord = SecureFactory.getInstance().decrypt(secureName, passWord);
-            }
+        if (StringUtils.notBlank(passWord) && StringUtils.notBlank(cacheConfig.getSecureName())
+                && SecureFactory.registeredConfig(cacheConfig.getSecureName())) {
+            passWord = SecureFactory.decrypt(cacheConfig.getSecureName(), passWord);
         }
         List<ServerConfig> serverConfigList = cacheConfig.getServerConfigList();
         switch (serverConfigList.size()) {
             case 0:
-                throw new CacheException("Cache server not configured");
+                throw new CacheException(0x000C00000005L, "Server_Not_Configured_Cache_Error");
             case 1:
                 this.singletonMode(serverConfigList.get(0), cacheConfig.getUserName(), passWord);
                 break;
@@ -134,13 +134,12 @@ public abstract class AbstractProvider implements Provider {
                 break;
         }
     }
-
     /**
      * <h3 class="en">Retrieve server connect timeout</h3>
      * <h3 class="zh-CN">读取缓存服务器的连接超时时间</h3>
      *
-     * @return <span class="en">Connect timeout</span>
-     * <span class="zh-CN">连接超时时间</span>
+     * @return  <span class="en">Connect timeout</span>
+     *          <span class="zh-CN">连接超时时间</span>
      */
     public int getConnectTimeout() {
         return connectTimeout;
@@ -150,8 +149,8 @@ public abstract class AbstractProvider implements Provider {
      * <h3 class="en">Retrieve connect client pool size</h3>
      * <h3 class="zh-CN">读取客户端连接池的大小</h3>
      *
-     * @return <span class="en">Client pool size</span>
-     * <span class="zh-CN">连接池大小</span>
+     * @return  <span class="en">Client pool size</span>
+     *          <span class="zh-CN">连接池大小</span>
      */
     public int getClientPoolSize() {
         return clientPoolSize;
@@ -161,8 +160,8 @@ public abstract class AbstractProvider implements Provider {
      * <h3 class="en">Retrieve server connect retry count</h3>
      * <h3 class="zh-CN">读取缓存服务器的连接超时重试次数</h3>
      *
-     * @return <span class="en">Connect retry count</span>
-     * <span class="zh-CN">连接超时重试次数</span>
+     * @return  <span class="en">Connect retry count</span>
+     *          <span class="zh-CN">连接超时重试次数</span>
      */
     public int getRetryCount() {
         return retryCount;
@@ -172,8 +171,8 @@ public abstract class AbstractProvider implements Provider {
      * <h3 class="en">Retrieve limit size of generated client instance</h3>
      * <h3 class="zh-CN">读取允许创建的客户端实例阈值</h3>
      *
-     * @return <span class="en">Limit size of generated client instance</span>
-     * <span class="zh-CN">客户端实例阈值</span>
+     * @return  <span class="en">Limit size of generated client instance</span>
+     *          <span class="zh-CN">客户端实例阈值</span>
      */
     public int getMaximumClient() {
         return maximumClient;
@@ -183,8 +182,8 @@ public abstract class AbstractProvider implements Provider {
      * <h3 class="en">Cache configure cluster mode</h3>
      * <h3 class="zh-CN">缓存配置的集群类型</h3>
      *
-     * @return    <span class="en">Cluster mode instance</span>
-     * <span class="zh-CN">集群类型实例</span>
+     * @return  <span class="en">Cluster mode instance</span>
+     *          <span class="zh-CN">集群类型实例</span>
      */
     protected ClusterMode getClusterMode() {
         return clusterMode;
@@ -200,6 +199,7 @@ public abstract class AbstractProvider implements Provider {
      *                     <span class="zh-CN">身份认证用户名</span>
      * @param passWord     <span class="en">Authenticate password</span>
      *                     <span class="zh-CN">身份认证密码</span>
+     *
      * @throws CacheException <span class="en">If initialize connection error</span>
      *                        <span class="zh-CN">连接服务器失败时抛出异常</span>
      */
@@ -218,6 +218,7 @@ public abstract class AbstractProvider implements Provider {
      *                         <span class="zh-CN">身份认证用户名</span>
      * @param passWord         <span class="en">Authenticate password</span>
      *                         <span class="zh-CN">身份认证密码</span>
+     *
      * @throws CacheException <span class="en">If initialize connection error</span>
      *                        <span class="zh-CN">连接服务器失败时抛出异常</span>
      */

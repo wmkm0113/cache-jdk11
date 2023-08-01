@@ -98,7 +98,7 @@ public final class LettuceProviderImpl extends AbstractProvider {
     @Override
     public void expire(final String key, final int expire) {
         if (this.logger.isDebugEnabled()) {
-            this.logger.debug("TTL: {}", this.redisCommands.ttl(key));
+            this.logger.debug("TTL_Lettuce_Cache_Debug", this.redisCommands.ttl(key));
         }
         this.redisCommands.expire(key, expire);
     }
@@ -182,7 +182,7 @@ public final class LettuceProviderImpl extends AbstractProvider {
      */
     protected void clusterMode(final List<ServerConfig> serverConfigList, final String masterName,
                              final String userName, final String passWord) {
-        if (serverConfigList.size() == 0) {
+        if (serverConfigList.isEmpty()) {
             return;
         }
         if (serverConfigList.size() == 1) {

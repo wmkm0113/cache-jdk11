@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <comment>Cache Utilities Package English (United States) i18n Message Resource</comment>
+    <entry key="Not_Found_Cache_Manager_Impl">Not found cache manager implement class</entry><!-- 0x000C00000001 -->
+    <entry key="Server_Address_Cache_Error">Cache server address not configured</entry><!-- 0x000C00000002 -->
+    <entry key="Register_Cache_Debug">Register cache name: {0}, configure info: {1}</entry>
+    <entry key="Check_Register_Cache_Debug">Check cache name: {0} was registered</entry>
+</properties>

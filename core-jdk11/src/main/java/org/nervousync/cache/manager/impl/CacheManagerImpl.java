@@ -21,9 +21,8 @@ import org.nervousync.cache.api.CacheManager;
 import org.nervousync.cache.client.impl.CacheClientImpl;
 import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.cache.exceptions.CacheException;
+import org.nervousync.utils.LoggerUtils;
 import org.nervousync.utils.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -40,7 +39,7 @@ public final class CacheManagerImpl implements CacheManager {
 	 * <span class="en">Logger instance</span>
 	 * <span class="zh-CN">日志实例</span>
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(CacheManagerImpl.class);
+	private static final LoggerUtils.Logger LOGGER = LoggerUtils.getLogger(CacheManagerImpl.class);
 
 	/**
 	 * <span class="en">Registered cache agent instance map</span>
@@ -66,16 +65,16 @@ public final class CacheManagerImpl implements CacheManager {
 			return Boolean.FALSE;
 		}
 		if (REGISTERED_CACHE.containsKey(cacheName)) {
-			LOGGER.warn("Override cache config, cache name: {}", cacheName);
+			LOGGER.warn("Override_Cache_Config", cacheName);
 		}
 
 		try {
 			REGISTERED_CACHE.put(cacheName, new CacheClientImpl(cacheConfig));
 			return Boolean.TRUE;
 		} catch (CacheException e) {
-			LOGGER.error("Generate nervousync cache instance error! ");
+			LOGGER.error("Register_Cache_Error");
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("Stack message: ", e);
+				LOGGER.debug("Stack_Message_Error", e);
 			}
 			return Boolean.FALSE;
 		}

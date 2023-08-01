@@ -21,11 +21,10 @@ import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.cache.provider.ProviderManager;
 import org.nervousync.cache.provider.impl.AbstractProvider;
-import org.nervousync.commons.core.Globals;
+import org.nervousync.commons.Globals;
+import org.nervousync.utils.LoggerUtils;
 import org.nervousync.utils.ObjectUtils;
 import org.nervousync.utils.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -42,7 +41,7 @@ public final class CacheClientImpl implements CacheClient {
      * <span class="en">Logger instance</span>
      * <span class="zh-CN">日志实例</span>
      */
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final LoggerUtils.Logger logger = LoggerUtils.getLogger(this.getClass());
 
     /**
      * <span class="en">Current cache provider instance</span>
@@ -58,11 +57,11 @@ public final class CacheClientImpl implements CacheClient {
      * @throws CacheException <span class="en">Generate instance of provider failed or provider implement class not extends with AbstractCacheProvider</span>
      *                        <span class="zh-CN">缓存适配器实现类没有继承AbstractCacheProvider或初始化缓存适配器对象出错</span>
      */
-    public CacheClientImpl(CacheConfig cacheConfig) throws CacheException {
+    public CacheClientImpl(final CacheConfig cacheConfig) throws CacheException {
         this.cacheProvider = Optional.ofNullable(ProviderManager.providerClass(cacheConfig.getProviderName()))
                 .filter(AbstractProvider.class::isAssignableFrom)
                 .map(providerClass -> (AbstractProvider) ObjectUtils.newInstance(providerClass))
-                .orElseThrow(() -> new CacheException("Provider implement class is invalid! "));
+                .orElseThrow(() -> new CacheException(0x000C00000003L, "Invalid_Provider_Cache_Error"));
         this.cacheProvider.initialize(cacheConfig);
     }
 
@@ -75,7 +74,7 @@ public final class CacheClientImpl implements CacheClient {
      * @param value <span class="en">Cache value</span>
      *              <span class="zh-CN">缓存数据</span>
      */
-    public void set(String key, String value) {
+    public void set(final String key, final String value) {
         this.logInfo(key, value);
         this.cacheProvider.set(key, value);
     }
@@ -91,7 +90,7 @@ public final class CacheClientImpl implements CacheClient {
      * @param expire <span class="en">Expire time</span>
      *               <span class="zh-CN">过期时间</span>
      */
-    public void set(String key, String value, int expire) {
+    public void set(final String key, final String value, final int expire) {
         this.logInfo(key, value);
         this.cacheProvider.set(key, value, expire);
     }
@@ -105,7 +104,7 @@ public final class CacheClientImpl implements CacheClient {
      * @param value <span class="en">Cache value</span>
      *              <span class="zh-CN">缓存数据</span>
      */
-    public void add(String key, String value) {
+    public void add(final String key, final String value) {
         this.logInfo(key, value);
         this.cacheProvider.add(key, value);
     }
@@ -121,7 +120,7 @@ public final class CacheClientImpl implements CacheClient {
      * @param expire <span class="en">Expire time</span>
      *               <span class="zh-CN">过期时间</span>
      */
-    public void add(String key, String value, int expire) {
+    public void add(final String key, final String value, final int expire) {
         this.logInfo(key, value);
         this.cacheProvider.add(key, value, expire);
     }
@@ -135,7 +134,7 @@ public final class CacheClientImpl implements CacheClient {
      * @param value <span class="en">Cache value</span>
      *              <span class="zh-CN">缓存数据</span>
      */
-    public void replace(String key, String value) {
+    public void replace(final String key, final String value) {
         this.logInfo(key, value);
         this.cacheProvider.replace(key, value);
     }
@@ -151,7 +150,7 @@ public final class CacheClientImpl implements CacheClient {
      * @param expire <span class="en">Expire time</span>
      *               <span class="zh-CN">过期时间</span>
      */
-    public void replace(String key, String value, int expire) {
+    public void replace(final String key, final String value, final int expire) {
         this.logInfo(key, value);
         this.cacheProvider.replace(key, value, expire);
     }
@@ -165,7 +164,7 @@ public final class CacheClientImpl implements CacheClient {
      * @param expire <span class="en">New expire time</span>
      *               <span class="zh-CN">新的过期时间</span>
      */
-    public void expire(String key, int expire) {
+    public void expire(final String key, final int expire) {
         this.cacheProvider.expire(key, expire);
     }
 
@@ -176,7 +175,7 @@ public final class CacheClientImpl implements CacheClient {
      * @param keys <span class="en">Cache keys array strings</span>
      *             <span class="zh-CN">缓存键值数组</span>
      */
-    public void touch(String... keys) {
+    public void touch(final String... keys) {
         this.cacheProvider.touch(keys);
     }
 
@@ -187,7 +186,7 @@ public final class CacheClientImpl implements CacheClient {
      * @param key <span class="en">Cache key</span>
      *            <span class="zh-CN">缓存键值</span>
      */
-    public void delete(String key) {
+    public void delete(final String key) {
         this.cacheProvider.delete(key);
     }
 
@@ -200,7 +199,7 @@ public final class CacheClientImpl implements CacheClient {
      * @return <span class="en">Cache value or null if cache key was not exists or it was expired</span>
      * <span class="zh-CN">读取的缓存数据，如果缓存键值不存在或已过期，则返回null</span>
      */
-    public String get(String key) {
+    public String get(final String key) {
         if (StringUtils.isEmpty(key)) {
             return null;
         }
@@ -217,7 +216,7 @@ public final class CacheClientImpl implements CacheClient {
      * @return <span class="en">Operate result</span>
      * <span class="zh-CN">操作结果</span>
      */
-    public long incr(String key, long step) {
+    public long incr(final String key, final long step) {
         if (StringUtils.isEmpty(key)) {
             return Globals.DEFAULT_VALUE_LONG;
         }
@@ -234,7 +233,7 @@ public final class CacheClientImpl implements CacheClient {
      * @return <span class="en">Operate result</span>
      * <span class="zh-CN">操作结果</span>
      */
-    public long decr(String key, long step) {
+    public long decr(final String key, final long step) {
         if (StringUtils.isEmpty(key)) {
             return Globals.DEFAULT_VALUE_LONG;
         }
@@ -260,8 +259,7 @@ public final class CacheClientImpl implements CacheClient {
      */
     private void logInfo(String key, Object value) {
         if (this.logger.isDebugEnabled()) {
-            this.logger.debug("Cached key: {}", key);
-            this.logger.debug("Cached value: {}", value);
+            this.logger.debug("Info_Cache_Debug", key, value);
         }
     }
 }

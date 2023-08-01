@@ -20,7 +20,7 @@ import jakarta.xml.bind.annotation.*;
 import org.nervousync.beans.core.BeanObject;
 import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.enumeration.ClusterMode;
-import org.nervousync.commons.core.Globals;
+import org.nervousync.commons.Globals;
 import org.nervousync.security.factory.SecureConfig;
 
 import java.util.ArrayList;
@@ -55,6 +55,10 @@ public final class CacheConfig extends BeanObject {
 	 */
 	@XmlElement(name = "secure_name")
 	private String secureName					   = Globals.DEFAULT_VALUE_STRING;
+    /**
+	 * <span class="en">Secure config information</span>
+	 * <span class="zh-CN">安全配置定义</span>
+     */
 	@XmlElement(name = "secure_config", namespace = "https://nervousync.org/schemas/secure")
 	private SecureConfig secureConfig;
 	/**
@@ -131,7 +135,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Retrieve cache provider name</h3>
 	 * <h3 class="zh-CN">读取缓存适配器名称</h3>
 	 *
-	 * @return <span class="en">Cache provider name</span>          <span class="zh-CN">缓存适配器名称</span>
+	 * @return 	<span class="en">Cache provider name</span>
+	 * 			<span class="zh-CN">缓存适配器名称</span>
 	 */
 	public String getProviderName() {
 		return providerName;
@@ -141,7 +146,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Configure cache provider</h3>
 	 * <h3 class="zh-CN">设置缓存适配器</h3>
 	 *
-	 * @param providerName <span class="en">Cache provider name</span>                      <span class="zh-CN">缓存适配器名称</span>
+	 * @param providerName <span class="en">Cache provider name</span>
+	 *                     <span class="zh-CN">缓存适配器名称</span>
 	 */
 	public void setProviderName(final String providerName) {
 		this.providerName = providerName;
@@ -151,7 +157,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Retrieve secure name</h3>
 	 * <h3 class="zh-CN">读取用于保护密码的安全配置名称</h3>
 	 *
-	 * @return <span class="en">Secure name</span>          <span class="zh-CN">安全配置名称</span>
+	 * @return 	<span class="en">Secure name</span>
+	 * 			<span class="zh-CN">安全配置名称</span>
 	 */
 	public String getSecureName() {
 		return secureName;
@@ -161,7 +168,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Configure secure name for protect password</h3>
 	 * <h3 class="zh-CN">设置用于保护密码的安全配置名称</h3>
 	 *
-	 * @param secureName <span class="en">Secure name</span>                      <span class="zh-CN">安全配置名称</span>
+	 * @param secureName <span class="en">Secure name</span>
+	 *                   <span class="zh-CN">安全配置名称</span>
 	 */
 	public void setSecureName(final String secureName) {
 		this.secureName = secureName;
@@ -189,7 +197,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Retrieve cache server authorization username</h3>
 	 * <h3 class="zh-CN">获取缓存服务器的用户名</h3>
 	 *
-	 * @return <span class="en">Cache server username</span>          <span class="zh-CN">缓存服务器用户名</span>
+	 * @return 	<span class="en">Cache server username</span>
+	 * 			<span class="zh-CN">缓存服务器用户名</span>
 	 */
 	public String getUserName() {
 		return userName;
@@ -199,7 +208,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Configure cache server authorization username</h3>
 	 * <h3 class="zh-CN">设置缓存服务器的用户名</h3>
 	 *
-	 * @param userName <span class="en">Cache server username</span>                  <span class="zh-CN">缓存服务器用户名</span>
+	 * @param userName <span class="en">Cache server username</span>
+	 *                 <span class="zh-CN">缓存服务器用户名</span>
 	 */
 	public void setUserName(final String userName) {
 		this.userName = userName;
@@ -209,7 +219,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Retrieve cache server authorization password</h3>
 	 * <h3 class="zh-CN">获取缓存服务器的密码</h3>
 	 *
-	 * @return <span class="en">Cache server password</span>          <span class="zh-CN">缓存服务器密码</span>
+	 * @return 	<span class="en">Cache server password</span>
+	 * 			<span class="zh-CN">缓存服务器密码</span>
 	 */
 	public String getPassWord() {
 		return passWord;
@@ -219,7 +230,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Configure cache server authorization password</h3>
 	 * <h3 class="zh-CN">设置缓存服务器的密码</h3>
 	 *
-	 * @param passWord <span class="en">Cache server password</span>                  <span class="zh-CN">缓存服务器密码</span>
+	 * @param passWord <span class="en">Cache server password</span>
+	 *                 <span class="zh-CN">缓存服务器密码</span>
 	 */
 	public void setPassWord(final String passWord) {
 		this.passWord = passWord;
@@ -239,7 +251,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Configure cache server config list</h3>
 	 * <h3 class="zh-CN">设置缓存服务器列表</h3>
 	 *
-	 * @param serverConfigList <span class="en">Cache server list</span>                          <span class="zh-CN">缓存服务器列表</span>
+	 * @param serverConfigList <span class="en">Cache server list</span>
+	 *                         <span class="zh-CN">缓存服务器列表</span>
 	 */
 	public void setServerConfigList(final List<ServerConfig> serverConfigList) {
 		this.serverConfigList = serverConfigList;
@@ -249,7 +262,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Retrieve server connect timeout</h3>
 	 * <h3 class="zh-CN">读取缓存服务器的连接超时时间</h3>
 	 *
-	 * @return <span class="en">Connect timeout</span>          <span class="zh-CN">连接超时时间</span>
+	 * @return 	<span class="en">Connect timeout</span>
+	 * 			<span class="zh-CN">连接超时时间</span>
 	 */
 	public int getConnectTimeout() {
 		return connectTimeout;
@@ -259,7 +273,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Configure server connect timeout</h3>
 	 * <h3 class="zh-CN">设置缓存服务器的连接超时时间</h3>
 	 *
-	 * @param connectTimeout <span class="en">Connect timeout</span>                           <span class="zh-CN">连接超时时间</span>
+	 * @param connectTimeout <span class="en">Connect timeout</span>
+	 *                       <span class="zh-CN">连接超时时间</span>
 	 */
 	public void setConnectTimeout(final int connectTimeout) {
 		this.connectTimeout = connectTimeout;
@@ -269,7 +284,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Retrieve server connect retry count</h3>
 	 * <h3 class="zh-CN">读取缓存服务器的连接超时重试次数</h3>
 	 *
-	 * @return <span class="en">Connect retry count</span>          <span class="zh-CN">连接超时重试次数</span>
+	 * @return 	<span class="en">Connect retry count</span>
+	 * 			<span class="zh-CN">连接超时重试次数</span>
 	 */
 	public int getRetryCount() {
 		return retryCount;
@@ -279,7 +295,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Configure server connect retry count</h3>
 	 * <h3 class="zh-CN">设置缓存服务器的连接超时时间</h3>
 	 *
-	 * @param retryCount <span class="en">Connect retry count</span>                       <span class="zh-CN">连接超时重试次数</span>
+	 * @param retryCount <span class="en">Connect retry count</span>
+	 *                   <span class="zh-CN">连接超时重试次数</span>
 	 */
 	public void setRetryCount(final int retryCount) {
 		this.retryCount = retryCount;
@@ -289,7 +306,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Retrieve default expire time</h3>
 	 * <h3 class="zh-CN">读取缓存的默认过期时间</h3>
 	 *
-	 * @return <span class="en">Default expire time</span>          <span class="zh-CN">默认过期时间</span>
+	 * @return 	<span class="en">Default expire time</span>
+	 * 			<span class="zh-CN">默认过期时间</span>
 	 */
 	public int getExpireTime() {
 		return expireTime;
@@ -299,7 +317,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Configure default expire time, setting -1 for never expire</h3>
 	 * <h3 class="zh-CN">设置缓存的默认过期时间，设置为-1则永不过期</h3>
 	 *
-	 * @param expireTime <span class="en">Default expire time</span>                      <span class="zh-CN">默认过期时间</span>
+	 * @param expireTime <span class="en">Default expire time</span>
+	 *                   <span class="zh-CN">默认过期时间</span>
 	 */
 	public void setExpireTime(final int expireTime) {
 		this.expireTime = expireTime;
@@ -309,7 +328,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Retrieve connect client pool size</h3>
 	 * <h3 class="zh-CN">读取客户端连接池的大小</h3>
 	 *
-	 * @return <span class="en">Client pool size</span>          <span class="zh-CN">连接池大小</span>
+	 * @return 	<span class="en">Client pool size</span>
+	 * 			<span class="zh-CN">连接池大小</span>
 	 */
 	public int getClientPoolSize() {
 		return clientPoolSize;
@@ -319,7 +339,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Configure connect client pool size</h3>
 	 * <h3 class="zh-CN">设置客户端连接池的大小</h3>
 	 *
-	 * @param clientPoolSize <span class="en">Client pool size</span>                          <span class="zh-CN">连接池大小</span>
+	 * @param clientPoolSize <span class="en">Client pool size</span>
+	 *                       <span class="zh-CN">连接池大小</span>
 	 */
 	public void setClientPoolSize(final int clientPoolSize) {
 		this.clientPoolSize = clientPoolSize;
@@ -329,7 +350,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Retrieve limit size of generated client instance</h3>
 	 * <h3 class="zh-CN">读取允许创建的客户端实例阈值</h3>
 	 *
-	 * @return <span class="en">Limit size of generated client instance</span>          <span class="zh-CN">客户端实例阈值</span>
+	 * @return 	<span class="en">Limit size of generated client instance</span>
+	 * 			<span class="zh-CN">客户端实例阈值</span>
 	 */
 	public int getMaximumClient() {
 		return maximumClient;
@@ -339,7 +361,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Configure limit size of generated client instance</h3>
 	 * <h3 class="zh-CN">设置允许创建的客户端实例阈值</h3>
 	 *
-	 * @param maximumClient <span class="en">Limit size of generated client instance</span>                          <span class="zh-CN">客户端实例阈值</span>
+	 * @param maximumClient <span class="en">Limit size of generated client instance</span>
+	 *                      <span class="zh-CN">客户端实例阈值</span>
 	 */
 	public void setMaximumClient(final int maximumClient) {
 		this.maximumClient = maximumClient;
@@ -349,7 +372,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Retrieve cluster mode</h3>
 	 * <h3 class="zh-CN">读取集群类型</h3>
 	 *
-	 * @return <span class="en">Cluster mode</span>          <span class="zh-CN">集群类型</span>
+	 * @return 	<span class="en">Cluster mode</span>
+	 * 			<span class="zh-CN">集群类型</span>
 	 */
 	public String getClusterMode() {
 		return clusterMode;
@@ -359,7 +383,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Configure cluster mode</h3>
 	 * <h3 class="zh-CN">设置集群类型</h3>
 	 *
-	 * @param clusterMode <span class="en">Cluster mode</span>                          <span class="zh-CN">集群类型</span>
+	 * @param clusterMode <span class="en">Cluster mode</span>
+	 *                    <span class="zh-CN">集群类型</span>
 	 * @see org.nervousync.cache.enumeration.ClusterMode
 	 */
 	public void setClusterMode(final String clusterMode) {
@@ -370,7 +395,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Retrieve cluster master name</h3>
 	 * <h3 class="zh-CN">读取集群主服务器名称</h3>
 	 *
-	 * @return <span class="en">Master name</span>          <span class="zh-CN">主服务器名称</span>
+	 * @return 	<span class="en">Master name</span>
+	 * 			<span class="zh-CN">主服务器名称</span>
 	 */
 	public String getMasterName() {
 		return masterName;
@@ -380,7 +406,8 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en">Configure master name</h3>
 	 * <h3 class="zh-CN">设置集群主服务器名称</h3>
 	 *
-	 * @param masterName <span class="en">Master name</span>                          <span class="zh-CN">主服务器名称</span>
+	 * @param masterName <span class="en">Master name</span>
+	 *                   <span class="zh-CN">主服务器名称</span>
 	 */
 	public void setMasterName(final String masterName) {
 		this.masterName = masterName;
@@ -391,7 +418,7 @@ public final class CacheConfig extends BeanObject {
 	 * <h2 class="zh-CN">缓存服务器配置JavaBean</h2>
 	 *
 	 * @author Steven Wee	<a href="mailto:wmkm0113@Hotmail.com">wmkm0113@Hotmail.com</a>
-	 * @version $Revision : 1.0 $ $Date: Apr 25, 2017 3:09:14 PM $
+	 * @version $Revision: 1.0 $ $Date: Apr 25, 2017 3:09:14 PM $
 	 */
 	@XmlType(name = "server_config", namespace = "https://nervousync.org/schemas/cache")
 	@XmlRootElement(name = "server_config", namespace = "https://nervousync.org/schemas/cache")
@@ -436,19 +463,28 @@ public final class CacheConfig extends BeanObject {
 		 * <h3 class="en">Match given server address/port is same as current config information</h3>
 		 * <h3 class="zh-CN">比对指定的服务器地址/端口是否与当前配置信息一致</h3>
 		 *
-		 * @param serverAddress <span class="en">Cache server address</span>                          <span class="zh-CN">缓存服务器地址</span>
-		 * @param serverPort    <span class="en">Cache server port</span>                          <span class="zh-CN">缓存服务器端口号</span>
-		 * @return <span class="en">Match result</span>          <span class="en">比对结果</span>
+		 * @param serverAddress <span class="en">Cache server address</span>
+		 *                      <span class="zh-CN">缓存服务器地址</span>
+		 * @param serverPort    <span class="en">Cache server port</span>
+		 *                      <span class="zh-CN">缓存服务器端口号</span>
+		 *
+		 * @return 	<span class="en">Match result</span>
+		 * 			<span class="en">比对结果</span>
 		 */
 		public boolean match(final String serverAddress, final int serverPort) {
 			return (this.serverAddress.equalsIgnoreCase(serverAddress) && this.serverPort == serverPort);
 		}
 
 		/**
+		 * <h3 class="en">Match given server configure is same as current config information</h3>
+		 * <h3 class="zh-CN">比对指定的服务器配置信息是否与当前配置信息一致</h3>
 		 * Match boolean.
 		 *
-		 * @param serverConfig the server config
-		 * @return the boolean
+		 * @param serverConfig 	<span class="en">Cache server configure information</span>
+		 *                     	<span class="zh-CN">缓存服务器配置信息</span>
+		 *
+		 * @return 	<span class="en">Match result</span>
+		 * 			<span class="en">比对结果</span>
 		 */
 		public boolean match(final ServerConfig serverConfig) {
 			if (serverConfig == null) {
@@ -462,7 +498,8 @@ public final class CacheConfig extends BeanObject {
 		 * <h3 class="en">Retrieve cache server address</h3>
 		 * <h3 class="zh-CN">读取缓存服务器地址</h3>
 		 *
-		 * @return <span class="en">Cache server address</span>          <span class="zh-CN">缓存服务器地址</span>
+		 * @return 	<span class="en">Cache server address</span>
+		 * 			<span class="zh-CN">缓存服务器地址</span>
 		 */
 		public String getServerAddress() {
 			return serverAddress;
@@ -472,7 +509,8 @@ public final class CacheConfig extends BeanObject {
 		 * <h3 class="en">Configure cache server address</h3>
 		 * <h3 class="zh-CN">设置缓存服务器地址</h3>
 		 *
-		 * @param serverAddress <span class="en">Cache server address</span>                          <span class="zh-CN">缓存服务器地址</span>
+		 * @param serverAddress <span class="en">Cache server address</span>
+		 *                      <span class="zh-CN">缓存服务器地址</span>
 		 */
 		public void setServerAddress(final String serverAddress) {
 			this.serverAddress = serverAddress;
@@ -482,7 +520,8 @@ public final class CacheConfig extends BeanObject {
 		 * <h3 class="en">Retrieve cache server port</h3>
 		 * <h3 class="zh-CN">读取缓存服务器端口号</h3>
 		 *
-		 * @return <span class="en">Cache server port</span>          <span class="zh-CN">缓存服务器端口号</span>
+		 * @return 	<span class="en">Cache server port</span>
+		 * 			<span class="zh-CN">缓存服务器端口号</span>
 		 */
 		public int getServerPort() {
 			return serverPort;
@@ -492,7 +531,8 @@ public final class CacheConfig extends BeanObject {
 		 * <h3 class="en">Configure cache server port</h3>
 		 * <h3 class="zh-CN">设置缓存服务器端口</h3>
 		 *
-		 * @param serverPort <span class="en">Cache server port</span>                          <span class="zh-CN">缓存服务器端口号</span>
+		 * @param serverPort <span class="en">Cache server port</span>
+		 *                   <span class="zh-CN">缓存服务器端口号</span>
 		 */
 		public void setServerPort(final int serverPort) {
 			this.serverPort = serverPort;
@@ -502,7 +542,8 @@ public final class CacheConfig extends BeanObject {
 		 * <h3 class="en">Retrieve cache server weight</h3>
 		 * <h3 class="zh-CN">获取缓存服务器权重值</h3>
 		 *
-		 * @return <span class="en">Cache server weight</span>          <span class="zh-CN">缓存服务器权重值</span>
+		 * @return 	<span class="en">Cache server weight</span>
+		 * 			<span class="zh-CN">缓存服务器权重值</span>
 		 */
 		public int getServerWeight() {
 			return serverWeight;
@@ -512,7 +553,8 @@ public final class CacheConfig extends BeanObject {
 		 * <h3 class="en">Configure cache server weight</h3>
 		 * <h3 class="zh-CN">设置缓存服务器权重值</h3>
 		 *
-		 * @param serverWeight <span class="en">Cache server weight</span>                      <span class="zh-CN">缓存服务器权重值</span>
+		 * @param serverWeight <span class="en">Cache server weight</span>
+		 *                     <span class="zh-CN">缓存服务器权重值</span>
 		 */
 		public void setServerWeight(final int serverWeight) {
 			this.serverWeight = serverWeight;

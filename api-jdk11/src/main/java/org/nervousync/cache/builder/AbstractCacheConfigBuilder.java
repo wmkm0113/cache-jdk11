@@ -20,7 +20,7 @@ import org.nervousync.builder.AbstractBuilder;
 import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.cache.enumeration.ClusterMode;
-import org.nervousync.commons.core.Globals;
+import org.nervousync.commons.Globals;
 import org.nervousync.exceptions.builder.BuilderException;
 import org.nervousync.security.factory.SecureConfig;
 import org.nervousync.security.factory.SecureFactory;
@@ -88,12 +88,12 @@ public abstract class AbstractCacheConfigBuilder<T> extends AbstractBuilder<T> {
             if (StringUtils.notBlank(this.cacheConfig.getSecureName())
                     || !Objects.equals(this.cacheConfig.getSecureName(), secureName)) {
                 this.cacheConfig.setPassWord(
-                        SecureFactory.getInstance().update(this.cacheConfig.getPassWord(),
+                        SecureFactory.update(this.cacheConfig.getPassWord(),
                                 this.cacheConfig.getSecureName(), secureName));
             }
             if (this.cacheConfig.getSecureConfig() != null
                     && !Objects.equals(this.cacheConfig.getSecureName(), secureName)) {
-                SecureFactory.getInstance().deregister(this.cacheConfig.getSecureName());
+                SecureFactory.deregister(this.cacheConfig.getSecureName());
             }
             this.cacheConfig.setSecureConfig(null);
             this.cacheConfig.setSecureName(StringUtils.notBlank(secureName) ? secureName : Globals.DEFAULT_VALUE_STRING);
@@ -114,18 +114,17 @@ public abstract class AbstractCacheConfigBuilder<T> extends AbstractBuilder<T> {
      */
     public final AbstractCacheConfigBuilder<T> secureConfig(final String secureName, final SecureConfig secureConfig) {
         if (SecureFactory.initialized() && StringUtils.notBlank(secureName) && secureConfig != null) {
-            SecureFactory secureFactory = SecureFactory.getInstance();
             if (StringUtils.notBlank(this.cacheConfig.getPassWord())) {
-                secureFactory.register(Globals.DEFAULT_TEMPLATE_SECURE_NAME, secureConfig);
+                SecureFactory.register(Globals.DEFAULT_TEMPORARY_SECURE_NAME, secureConfig);
                 String passWord = this.cacheConfig.getPassWord();
                 if (StringUtils.notBlank(this.cacheConfig.getSecureName())) {
-                    passWord = secureFactory.update(passWord, this.cacheConfig.getSecureName(),
-                            Globals.DEFAULT_TEMPLATE_SECURE_NAME);
+                    passWord = SecureFactory.update(passWord, this.cacheConfig.getSecureName(),
+                            Globals.DEFAULT_TEMPORARY_SECURE_NAME);
                 } else {
-                    passWord = secureFactory.encrypt(passWord, Globals.DEFAULT_TEMPLATE_SECURE_NAME);
+                    passWord = SecureFactory.encrypt(passWord, Globals.DEFAULT_TEMPORARY_SECURE_NAME);
                 }
                 this.cacheConfig.setPassWord(passWord);
-                secureFactory.deregister(Globals.DEFAULT_TEMPLATE_SECURE_NAME);
+                SecureFactory.deregister(Globals.DEFAULT_TEMPORARY_SECURE_NAME);
             }
             this.cacheConfig.setSecureName(secureName);
             this.cacheConfig.setSecureConfig(secureConfig);
@@ -239,7 +238,7 @@ public abstract class AbstractCacheConfigBuilder<T> extends AbstractBuilder<T> {
         if (StringUtils.notBlank(passWord)) {
             String encPassword;
             if (StringUtils.notBlank(this.cacheConfig.getSecureName())) {
-                encPassword = SecureFactory.getInstance().encrypt(this.cacheConfig.getSecureName(), passWord);
+                encPassword = SecureFactory.encrypt(this.cacheConfig.getSecureName(), passWord);
             } else {
                 encPassword = passWord;
             }
@@ -343,7 +342,7 @@ public abstract class AbstractCacheConfigBuilder<T> extends AbstractBuilder<T> {
             return;
         }
         if (StringUtils.isEmpty(serverConfig.getServerAddress())) {
-            throw new BuilderException("Server address not configured");
+            throw new BuilderException(0x000C00000002L, "Server_Address_Cache_Error");
         }
         List<CacheConfig.ServerConfig> serverConfigList = this.cacheConfig.getServerConfigList();
         if (serverConfigList.stream().anyMatch(existsConfig -> existsConfig.match(serverConfig))) {

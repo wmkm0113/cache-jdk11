@@ -22,7 +22,7 @@ import org.nervousync.cache.config.CacheConfig.ServerConfig;
 import org.nervousync.cache.enumeration.ClusterMode;
 import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.cache.provider.impl.AbstractProvider;
-import org.nervousync.commons.core.Globals;
+import org.nervousync.commons.Globals;
 import org.nervousync.utils.ConvertUtils;
 import org.nervousync.utils.StringUtils;
 import redis.clients.jedis.*;
@@ -164,7 +164,7 @@ public final class JedisProviderImpl extends AbstractProvider {
         } else {
             objectData = this.readCluster.get(key.getBytes());
         }
-        return objectData == null ? Globals.DEFAULT_VALUE_STRING : ConvertUtils.convertToString(objectData);
+        return objectData == null ? Globals.DEFAULT_VALUE_STRING : ConvertUtils.toString(objectData);
     }
 
     /**
@@ -339,11 +339,11 @@ public final class JedisProviderImpl extends AbstractProvider {
         if (this.singleMode) {
             Optional.ofNullable(this.singleClient())
                     .ifPresent(jedis -> {
-                        jedis.setex(key.getBytes(), expiry, ConvertUtils.objectToByteArray(value));
+                        jedis.setex(key.getBytes(), expiry, ConvertUtils.toByteArray(value));
                         jedis.close();
                     });
         } else {
-            this.writeCluster.setex(key.getBytes(), expiry, ConvertUtils.objectToByteArray(value));
+            this.writeCluster.setex(key.getBytes(), expiry, ConvertUtils.toByteArray(value));
         }
     }
 

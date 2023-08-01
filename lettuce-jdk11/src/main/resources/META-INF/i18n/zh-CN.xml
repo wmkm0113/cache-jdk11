@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <comment>缓存工具简体中文国际化信息资源</comment>
+    <entry key="TTL_Lettuce_Cache_Debug">TTL值：{0}</entry>
+</properties>

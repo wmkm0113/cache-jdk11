@@ -4,7 +4,7 @@
             elementFormDefault="qualified" version="1.0">
     <xsd:import namespace="https://nervousync.org/schemas/secure" schemaLocation="https://nervousync.org/schemas/secure_config_1.0.xsd" />
     <xsd:complexType name="cache_config">
-        <xsd:sequence>
+        <xsd:all>
             <xsd:element name="provider_name" type="xsd:string">
                 <xsd:annotation>
                     <xsd:documentation>Cache provider name</xsd:documentation>
@@ -17,7 +17,7 @@
             </xsd:element>
             <xsd:element ref="secure:secure_config" minOccurs="0">
                 <xsd:annotation>
-                    <xsd:documentation>Cache custom secure config using default cache secure name</xsd:documentation>
+                    <xsd:documentation>Secure config information</xsd:documentation>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element name="connect_timeout" type="xsd:integer" default="1">
@@ -74,7 +74,7 @@
                 </xsd:annotation>
             </xsd:element>
             <xsd:element name="server_config_list" type="server_list"/>
-        </xsd:sequence>
+        </xsd:all>
     </xsd:complexType>
     <xsd:complexType name="server_list">
         <xsd:sequence>

@@ -6,10 +6,10 @@
     <parent>
         <groupId>org.nervousync</groupId>
         <artifactId>cache-jdk11</artifactId>
-        <version>1.1.5</version>
+        <version>1.1.6</version>
     </parent>
     <artifactId>cache-nodeps-jdk11</artifactId>
-    <version>1.1.5</version>
+    <version>1.1.6</version>
     <packaging>jar</packaging>
     <name>Cache NoDeps</name>
     <dependencies>
@@ -50,7 +50,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.4.1</version>
+                <version>3.5.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>

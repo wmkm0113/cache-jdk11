@@ -29,7 +29,7 @@ import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.config.CacheConfig.ServerConfig;
 import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.cache.provider.impl.AbstractProvider;
-import org.nervousync.commons.core.Globals;
+import org.nervousync.commons.Globals;
 import org.nervousync.utils.StringUtils;
 
 import java.io.IOException;
@@ -72,11 +72,11 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		try {
 			this.memcachedClient.set(key, super.expiryTime(expire), value);
 		} catch (InterruptedException e) {
-			this.logger.error("Process set data operate error! ");
+			this.logger.error("Data_Operate_Cache_Error", "set");
 			this.printStackMessage(e);
 			Thread.currentThread().interrupt();
 		} catch (TimeoutException | MemcachedException e) {
-			this.logger.error("Process set data operate failed! ");
+			this.logger.error("Data_Operate_Cache_Error", "set");
 			this.printStackMessage(e);
 		}
 	}
@@ -90,11 +90,11 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		try {
 			this.memcachedClient.add(key, super.expiryTime(expire), value);
 		} catch (InterruptedException e) {
-			this.logger.error("Process add data operate error! ");
+			this.logger.error("Data_Operate_Cache_Error", "add");
 			this.printStackMessage(e);
 			Thread.currentThread().interrupt();
 		} catch (TimeoutException | MemcachedException e) {
-			this.logger.error("Process add data operate failed! ");
+			this.logger.error("Data_Operate_Cache_Error", "add");
 			this.printStackMessage(e);
 		}
 	}
@@ -108,11 +108,11 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		try {
 			this.memcachedClient.replace(key, super.expiryTime(expire), value);
 		} catch (InterruptedException e) {
-			this.logger.error("Process replace data operate error! ");
+			this.logger.error("Data_Operate_Cache_Error", "replace");
 			this.printStackMessage(e);
 			Thread.currentThread().interrupt();
 		} catch (TimeoutException | MemcachedException e) {
-			this.logger.error("Process replace data operate failed! ");
+			this.logger.error("Data_Operate_Cache_Error", "replace");
 			this.printStackMessage(e);
 		}
 	}
@@ -126,11 +126,11 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		try {
 			this.memcachedClient.touch(key, super.expiryTime(expire));
 		} catch (InterruptedException e) {
-			this.logger.error("Process expire data operate error! ");
+			this.logger.error("Data_Operate_Cache_Error", "expire");
 			this.printStackMessage(e);
 			Thread.currentThread().interrupt();
 		} catch (TimeoutException | MemcachedException e) {
-			this.logger.error("Process expire data operate failed! ");
+			this.logger.error("Data_Operate_Cache_Error", "expire");
 			this.printStackMessage(e);
 		}
 	}
@@ -146,11 +146,11 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 				this.memcachedClient.touch(key, super.expiryTime(Globals.DEFAULT_VALUE_INT));
 			}
 		} catch (InterruptedException e) {
-			this.logger.error("Process touch data operate error! ");
+			this.logger.error("Data_Operate_Cache_Error", "touch");
 			this.printStackMessage(e);
 			Thread.currentThread().interrupt();
 		} catch (TimeoutException | MemcachedException e) {
-			this.logger.error("Process touch data operate failed! ");
+			this.logger.error("Data_Operate_Cache_Error", "touch");
 			this.printStackMessage(e);
 		}
 	}
@@ -164,11 +164,11 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		try {
 			this.memcachedClient.delete(key);
 		} catch (InterruptedException e) {
-			this.logger.error("Process delete data operate error! ");
+			this.logger.error("Data_Operate_Cache_Error", "delete");
 			this.printStackMessage(e);
 			Thread.currentThread().interrupt();
 		} catch (TimeoutException | MemcachedException e) {
-			this.logger.error("Process delete data operate failed! ");
+			this.logger.error("Data_Operate_Cache_Error", "delete");
 			this.printStackMessage(e);
 		}
 	}
@@ -182,11 +182,11 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		try {
 			return this.memcachedClient.get(key);
 		} catch (InterruptedException e) {
-			this.logger.error("Process get data operate error! ");
+			this.logger.error("Data_Operate_Cache_Error", "get");
 			this.printStackMessage(e);
 			Thread.currentThread().interrupt();
 		} catch (TimeoutException | MemcachedException e) {
-			this.logger.error("Process get data operate failed! ");
+			this.logger.error("Data_Operate_Cache_Error", "get");
 			this.printStackMessage(e);
 		}
 		return null;
@@ -201,11 +201,11 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		try {
 			return this.memcachedClient.incr(key, step);
 		} catch (InterruptedException e) {
-			this.logger.error("Process incr data operate error! ");
+			this.logger.error("Data_Operate_Cache_Error", "incr");
 			this.printStackMessage(e);
 			Thread.currentThread().interrupt();
 		} catch (TimeoutException | MemcachedException e) {
-			this.logger.error("Process incr data operate failed! ");
+			this.logger.error("Data_Operate_Cache_Error", "incr");
 			this.printStackMessage(e);
 		}
 		return Globals.DEFAULT_VALUE_LONG;
@@ -220,11 +220,11 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		try {
 			return this.memcachedClient.decr(key, step);
 		} catch (InterruptedException e) {
-			this.logger.error("Process decr data operate error! ");
+			this.logger.error("Data_Operate_Cache_Error", "decr");
 			this.printStackMessage(e);
 			Thread.currentThread().interrupt();
 		} catch (TimeoutException | MemcachedException e) {
-			this.logger.error("Process decr data operate failed! ");
+			this.logger.error("Data_Operate_Cache_Error", "decr");
 			this.printStackMessage(e);
 		}
 		return Globals.DEFAULT_VALUE_LONG;
@@ -239,18 +239,18 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		if (this.memcachedClient != null && !this.memcachedClient.isShutdown()) {
 			try {
 				this.memcachedClient.shutdown();
-			} catch (IOException e) {
-				this.logger.error("Shutdown memcached client error! ");
+			} catch (final IOException e) {
+				this.logger.error("Destroy_Memcached_Cache_Error");
 				if (this.logger.isDebugEnabled()) {
-					this.logger.debug("Stack message: ", e);
+					this.logger.debug("Utils", "Stack_Message_Error", e);
 				}
 			}
 		}
 	}
 
-	private void printStackMessage(Exception e) {
+	private void printStackMessage(final Exception e) {
 		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("Stack message: ", e);
+			this.logger.debug("Utils", "Stack_Message_Error", e);
 		}
 	}
 	
@@ -315,10 +315,7 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		try {
 			this.memcachedClient = clientBuilder.build();
 		} catch (IOException e) {
-			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("Initialize memcached client error! ", e);
-			}
-			throw new CacheException(e);
+			throw new CacheException(0x000C00000006L, "Cache", "Init_Memcached_Cache_Error", e);
 		}
 	}
 }

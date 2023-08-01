@@ -17,37 +17,38 @@
 package org.nervousync.cache.test.builder;
 
 import org.apache.logging.log4j.Level;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.nervousync.cache.builder.CacheConfigBuilder;
 import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.cache.enumeration.ClusterMode;
-import org.nervousync.commons.core.Globals;
+import org.nervousync.commons.Globals;
 import org.nervousync.exceptions.builder.BuilderException;
 import org.nervousync.security.factory.SecureConfig;
 import org.nervousync.security.factory.SecureFactory;
 import org.nervousync.utils.LoggerUtils;
 import org.nervousync.utils.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public final class ConfigureBuilderTest {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final LoggerUtils.Logger logger = LoggerUtils.getLogger(this.getClass());
 
     static {
         LoggerUtils.initLoggerConfigure(Level.DEBUG);
     }
 
     @Test
+    @Order(10)
     public void test000Config() {
         generateConfig(Globals.DEFAULT_VALUE_STRING, null);
     }
 
     @Test
+    @Order(20)
     public void test010SecureConfig() {
         SecureFactory.initConfig(SecureFactory.SecureAlgorithm.AES256).ifPresent(SecureFactory::initialize);
         SecureFactory.initConfig(SecureFactory.SecureAlgorithm.AES256)
@@ -84,13 +85,13 @@ public final class ConfigureBuilderTest {
                     .removeServer("ServerAddress1", 11211)
                     .authorization("userName", "passWord")
                     .confirm();
-            String xmlContent = cacheConfig.toXML();
-            this.logger.info("Secure name: {}, generated config: {}", secureName, xmlContent);
+            String xmlContent = cacheConfig.toXML(Boolean.TRUE);
+            this.logger.info("Generated_Configure", secureName, xmlContent);
             CacheConfig parsedConfig = StringUtils.stringToObject(xmlContent, CacheConfig.class,
                     "https://nervousync.org/schemas/cache");
-            this.logger.info("Parsed config: {}", parsedConfig.toFormattedJson());
+            this.logger.info("Parsed_Configure", parsedConfig.toFormattedJson());
         } catch (BuilderException e) {
-            this.logger.error("Generate config error! ", e);
+            this.logger.error("Generated_Configure_Error", e);
         }
     }
 }

@@ -65,8 +65,11 @@ public interface Provider {
 	void replace(final String key, final String value, final int expire);
 
 	/**
-	 * Operate touch to given keys
-	 * @param keys      Keys
+	 * <h3 class="en">Execute touch operate by given keys</h3>
+	 * <h3 class="zhs">根据给定的缓存键执行touch操作</h3>
+	 *
+	 * @param keys 	<span class="en">Cache key array</span>
+	 *              <span class="zhs">缓存键数组</span>
 	 */
 	void touch(final String... keys);
 

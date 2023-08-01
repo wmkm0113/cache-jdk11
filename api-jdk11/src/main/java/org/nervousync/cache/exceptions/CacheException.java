@@ -16,6 +16,8 @@
  */
 package org.nervousync.cache.exceptions;
 
+import org.nervousync.exceptions.AbstractException;
+
 /**
  * <h2 class="en">Cache Exception</h2>
  * <h2 class="zh-CN">缓存异常</h2>
@@ -23,39 +25,45 @@ package org.nervousync.cache.exceptions;
  * @author Steven Wee	<a href="mailto:wmkm0113@Hotmail.com">wmkm0113@Hotmail.com</a>
  * @version $Revision: 1.0 $ $Date: Apr 25, 2017 6:30:42 PM $
  */
-public final class CacheException extends Exception {
+public final class CacheException extends AbstractException {
 
     /**
      *
      */
     private static final long serialVersionUID = -156775157749202954L;
-
-    /**
-     * <h3 class="en">Constructs an instance of CachedException.</h3>
-     * <h3 class="zh-CN">默认构造器</h3>
-     */
-    public CacheException() {
-    }
-
-    /**
-     * <h3 class="en">Constructs an instance of CachedException with the specified detail message.</h3>
-     * <h3 class="zh-CN">使用给定的异常信息构造CachedException实例</h3>
-     *
-     * @param errorMessage  <span class="en">The detail message.</span>
-     *                      <span class="zh-CN">异常信息详情</span>
-     */
-    public CacheException(String errorMessage) {
-        super(errorMessage);
-    }
-
-    /**
-     * <h3 class="en">Constructs an instance of CachedException with nested exception.</h3>
-     * <h3 class="zh-CN">使用给定的异常实例构造CachedException实例</h3>
-     *
-     * @param e     <span class="en">Nested exception.</span>
-     *              <span class="zh-CN">异常实例</span>
-     */
-    public CacheException(Exception e) {
-        super(e);
-    }
+	/**
+	 * <h3 class="en">Constructor method for CacheException</h3>
+	 * <span class="en">Create a new CacheException with the specified message.</span>
+	 * <h3 class="zh-CN">CacheException构造方法</h3>
+	 * <span class="zh-CN">使用特定的信息创建 CacheException 实例对象。</span>
+	 *
+	 * @param errorCode 	<span class="en">Error identified code</span>
+     *                      <span class="zh-CN">错误识别代码</span>
+     * @param messageKey    <span class="en">Message identify key</span>
+     *                      <span class="zh-CN">信息识别键值</span>
+     * @param collections   <span class="en">given parameters of information formatter</span>
+     *                      <span class="zh-CN">用于资源信息格式化的参数</span>
+	 */
+	public CacheException(final long errorCode, final String messageKey, final Object... collections) {
+		super(errorCode, messageKey, collections);
+	}
+	/**
+	 * <h3 class="en">Constructor method for NetworkInfoException</h3>
+	 * <span class="en">Create a new NetworkInfoException with the specified message and root cause.</span>
+	 * <h3 class="zh-CN">NetworkInfoException构造方法</h3>
+	 * <span class="zh-CN">使用特定的信息以及异常信息对象实例创建NetworkInfoException实例对象。</span>
+	 *
+	 * @param errorCode 	<span class="en">Error identified code</span>
+     *                      <span class="zh-CN">错误识别代码</span>
+     * @param messageKey    <span class="en">Message identify key</span>
+     *                      <span class="zh-CN">信息识别键值</span>
+	 * @param cause 		<span class="en">The root cause</span>
+	 *              		<span class="zh-CN">异常信息对象实例</span>
+     * @param collections   <span class="en">given parameters of information formatter</span>
+     *                      <span class="zh-CN">用于资源信息格式化的参数</span>
+	 */
+	public CacheException(final long errorCode, final String messageKey, final Throwable cause,
+						  final Object... collections) {
+		super(errorCode, messageKey, cause, collections);
+	}
 }
