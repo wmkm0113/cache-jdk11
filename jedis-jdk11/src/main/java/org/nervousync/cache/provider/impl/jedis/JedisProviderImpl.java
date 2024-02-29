@@ -17,10 +17,9 @@
 package org.nervousync.cache.provider.impl.jedis;
 
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import org.nervousync.cache.annotation.CacheProvider;
+import org.nervousync.annotations.provider.Provider;
 import org.nervousync.cache.config.CacheConfig.ServerConfig;
 import org.nervousync.cache.enumeration.ClusterMode;
-import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.cache.provider.impl.AbstractProvider;
 import org.nervousync.commons.Globals;
 import org.nervousync.utils.ConvertUtils;
@@ -38,9 +37,9 @@ import java.util.Set;
  * Redis cache provider using Jedis
  *
  * @author Steven Wee	<a href="mailto:wmkm0113@Hotmail.com">wmkm0113@Hotmail.com</a>
- * @version $Revision : 1.0 $ $Date: Apr 25, 2017 4:36:52 PM $
+ * @version $Revision: 1.0 $ $Date: Apr 25, 2017 4:36:52 PM $
  */
-@CacheProvider(name = "JedisProvider", defaultPort = 6379)
+@Provider(name = "JedisProvider", titleKey = "jedis.cache.provider.name")
 public final class JedisProviderImpl extends AbstractProvider {
 
     /**
@@ -60,15 +59,19 @@ public final class JedisProviderImpl extends AbstractProvider {
      */
     private JedisCluster readCluster = null;
 
-    /**
+    /*
      * (non-Javadoc)
      * @see AbstractProvider#AbstractProvider()
      */
-    public JedisProviderImpl() throws CacheException {
-        super();
+    public JedisProviderImpl() {
     }
 
-    /**
+    @Override
+    public int defaultPort() {
+        return 6379;
+    }
+
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#set(String, String, int)
      */
@@ -77,7 +80,7 @@ public final class JedisProviderImpl extends AbstractProvider {
         this.process(key, value, expiry);
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#add(String, String, int)
      */
@@ -86,7 +89,7 @@ public final class JedisProviderImpl extends AbstractProvider {
         this.process(key, value, expiry);
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#replace(String, String, int)
      */
@@ -95,7 +98,7 @@ public final class JedisProviderImpl extends AbstractProvider {
         this.process(key, value, expiry);
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see AbstractProvider#expire(String, int)
      */
@@ -112,7 +115,7 @@ public final class JedisProviderImpl extends AbstractProvider {
         }
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#touch(String...)
      */
@@ -129,7 +132,7 @@ public final class JedisProviderImpl extends AbstractProvider {
         }
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#delete(String)
      */
@@ -146,7 +149,7 @@ public final class JedisProviderImpl extends AbstractProvider {
         }
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#get(String)
      */
@@ -167,7 +170,7 @@ public final class JedisProviderImpl extends AbstractProvider {
         return objectData == null ? Globals.DEFAULT_VALUE_STRING : ConvertUtils.toString(objectData);
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#incr(String, long)
      */
@@ -188,7 +191,7 @@ public final class JedisProviderImpl extends AbstractProvider {
         return result;
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#decr(String, long)
      */
@@ -209,7 +212,7 @@ public final class JedisProviderImpl extends AbstractProvider {
         return result;
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#destroy()
      */
@@ -228,7 +231,7 @@ public final class JedisProviderImpl extends AbstractProvider {
         }
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see AbstractProvider#singletonMode(ServerConfig, String, String)
      */
@@ -258,7 +261,7 @@ public final class JedisProviderImpl extends AbstractProvider {
         this.singleMode = Boolean.TRUE;
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see AbstractProvider#clusterMode(List, String, String, String)
      */

@@ -24,7 +24,7 @@ import net.rubyeye.xmemcached.command.BinaryCommandFactory;
 import net.rubyeye.xmemcached.exception.MemcachedException;
 import net.rubyeye.xmemcached.impl.KetamaMemcachedSessionLocator;
 import net.rubyeye.xmemcached.utils.AddrUtil;
-import org.nervousync.cache.annotation.CacheProvider;
+import org.nervousync.annotations.provider.Provider;
 import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.config.CacheConfig.ServerConfig;
 import org.nervousync.cache.exceptions.CacheException;
@@ -44,9 +44,9 @@ import java.util.concurrent.TimeoutException;
  * Memcached cache provider using xmemcached
  *
  * @author Steven Wee	<a href="mailto:wmkm0113@Hotmail.com">wmkm0113@Hotmail.com</a>
- * @version $Revision : 1.0 $ $Date: 12/23/2020 13:43 PM $
+ * @version $Revision: 1.0 $ $Date: 12/23/2020 13:43 PM $
  */
-@CacheProvider(name = "XMemcachedProvider", defaultPort = 11211)
+@Provider(name = "XMemcachedProvider", messageKey = "xmemcached.cache.provider.name")
 public class XMemcachedProviderImpl extends AbstractProvider {
 
 	/**
@@ -56,14 +56,16 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 
 	/**
 	 * Instantiates a new X memcached provider.
-	 *
-	 * @throws CacheException the cache exception
 	 */
-	public XMemcachedProviderImpl() throws CacheException {
-		super();
+	public XMemcachedProviderImpl() {
 	}
 
-    /**
+    @Override
+    public int defaultPort() {
+        return 11211;
+    }
+
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#set(String, String, int)
      */
@@ -81,7 +83,7 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#add(String, String, int)
      */
@@ -99,7 +101,7 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#replace(String, String, int)
      */
@@ -117,7 +119,7 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-    /**
+    /*
      * (non-Javadoc)
      * @see AbstractProvider#expire(String, int)
      */
@@ -135,7 +137,7 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#touch(String...)
      */
@@ -155,7 +157,7 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#delete(String)
      */
@@ -173,7 +175,7 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#get(String)
      */
@@ -192,7 +194,7 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		return null;
 	}
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#incr(String, long)
      */
@@ -211,7 +213,7 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		return Globals.DEFAULT_VALUE_LONG;
 	}
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#decr(String, long)
      */
@@ -230,7 +232,7 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		return Globals.DEFAULT_VALUE_LONG;
 	}
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#destroy()
      */
@@ -254,7 +256,7 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 	
-    /**
+    /*
      * (non-Javadoc)
      * @see AbstractProvider#singletonMode(ServerConfig, String, String)
      */
@@ -264,7 +266,7 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 				new int[]{CacheGlobals.DEFAULT_CACHE_SERVER_WEIGHT}, userName, passWord);
 	}
 
-    /**
+    /*
      * (non-Javadoc)
      * @see AbstractProvider#clusterMode(List, String, String, String)
      */
@@ -315,7 +317,7 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		try {
 			this.memcachedClient = clientBuilder.build();
 		} catch (IOException e) {
-			throw new CacheException(0x000C00000006L, "Cache", "Init_Memcached_Cache_Error", e);
+			throw new CacheException(0x000C00000006L, e);
 		}
 	}
 }

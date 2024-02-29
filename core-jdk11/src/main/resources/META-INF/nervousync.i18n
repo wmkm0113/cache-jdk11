@@ -1,3 +1,104 @@
-groupId=org.nervousync
-bundle=cache
-languages=en-US,zh-CN
+{
+  "groupId": "org.nervousync",
+  "bundle": "cache",
+  "errors": [
+    {
+      "code": "0x000C00000003",
+      "key": "Invalid_Provider_Cache_Error"
+    },
+    {
+      "code": "0x000C00000004",
+      "key": "Annotation_Provider_Cache_Error"
+    },
+    {
+      "code": "0x000C00000005",
+      "key": "Server_Not_Configured_Cache_Error"
+    }
+  ],
+  "languages": [
+    {
+      "code": "en-US",
+      "name": "English",
+      "messages": [
+        {
+          "key": "Invalid_Provider_Cache_Error",
+          "content": "Invalid cache provider found"
+        },
+        {
+          "key": "Annotation_Provider_Cache_Error",
+          "content": "Implement class of cache provider must add annotation: {0}"
+        },
+        {
+          "key": "Server_Not_Configured_Cache_Error",
+          "content": "Cache server list is empty"
+        },
+        {
+          "key": "Info_Cache_Debug",
+          "content": "Cache name: {0}, cache value: {1}"
+        },
+        {
+          "key": "Override_Cache_Config",
+          "content": "Override cache configure, cache name: {0}"
+        },
+        {
+          "key": "Override_Cache_Provider",
+          "content": "Override cache provider name: {0}, current class: {1}, new class: {2}"
+        },
+        {
+          "key": "Stack_Message_Error",
+          "content": "Error stack message:"
+        },
+        {
+          "key": "Register_Cache_Error",
+          "content": "An error occurs when register cache configure"
+        },
+        {
+          "key": "Registered_Providers_Count_Cache_Debug",
+          "content": "Registered cache providers count: {0}"
+        }
+      ]
+    },
+    {
+      "code": "zh-CN",
+      "name": "简体中文",
+      "messages": [
+        {
+          "key": "Invalid_Provider_Cache_Error",
+          "content": "非法的缓存适配器"
+        },
+        {
+          "key": "Annotation_Provider_Cache_Error",
+          "content": "缓存适配器需要使用{0}进行标注"
+        },
+        {
+          "key": "Server_Not_Configured_Cache_Error",
+          "content": "未设置缓存服务器"
+        },
+        {
+          "key": "Info_Cache_Debug",
+          "content": "缓存名称：{0}，缓存值：{1}"
+        },
+        {
+          "key": "Override_Cache_Config",
+          "content": "覆写缓存配置，缓存名称：{0}"
+        },
+        {
+          "key": "Override_Cache_Provider",
+          "content": "覆写缓存适配器名称：{0}，当前类名：{1}，新类名：{2}"
+        },
+        {
+          "key": "Stack_Message_Error",
+          "content": "错误堆栈信息："
+        },
+        {
+          "key": "Register_Cache_Error",
+          "content": "注册缓存配置出错"
+        },
+        {
+          "key": "Registered_Providers_Count_Cache_Debug",
+          "content": "已注册的缓存适配器数量：{0}"
+        }
+      ]
+    }
+  ]
+}

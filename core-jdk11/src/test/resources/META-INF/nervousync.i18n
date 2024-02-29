@@ -1,3 +1,40 @@
-groupId=org.nervousync
-bundle=cache
-languages=en-US,zh-CN
+{
+  "groupId": "org.nervousync",
+  "bundle": "cache",
+  "languages": [
+    {
+      "language": "en-US",
+      "messages": [
+        {
+          "key": "Generated_Configure",
+          "content": "Generated configure: {0}"
+        },
+        {
+          "key": "Parsed_Configure",
+          "content": "Parsed configure: {0}"
+        },
+        {
+          "key": "Generated_Configure_Error",
+          "content": "Generate configure error"
+        }
+      ]
+    },
+    {
+      "language": "zh-CN",
+      "messages": [
+        {
+          "key": "Generated_Configure",
+          "content": "生成配置信息：{0}"
+        },
+        {
+          "key": "Parsed_Configure",
+          "content": "解析配置信息：{0}"
+        },
+        {
+          "key": "Generated_Configure_Error",
+          "content": "生成配置信息出错"
+        }
+      ]
+    }
+  ]
+}

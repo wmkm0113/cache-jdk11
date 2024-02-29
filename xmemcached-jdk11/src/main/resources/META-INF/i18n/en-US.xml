@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-    <comment>Cache Utilities Package English (United States) i18n Message Resource</comment>
-    <entry key="Init_Memcached_Cache_Error">An error occurs when initialize memcached client</entry><!-- 0x000C00000006 -->
-    <entry key="Destroy_Memcached_Cache_Error">Destroy memcached client instance error</entry>
-    <entry key="Data_Operate_Cache_Error">An error occurs when execute cache operate: {0}</entry>
-</properties>

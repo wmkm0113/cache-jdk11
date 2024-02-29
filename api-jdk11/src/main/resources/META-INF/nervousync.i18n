@@ -1,3 +1,68 @@
-groupId=org.nervousync
-bundle=cache
-languages=en-US,zh-CN
+{
+  "groupId": "org.nervousync",
+  "bundle": "cache",
+  "errors": [
+    {
+      "code": "0x000C00000001",
+      "key": "Not_Found_Cache_Manager_Impl"
+    },
+    {
+      "code": "0x000C00000002",
+      "key": "Server_Address_Cache_Error"
+    }
+  ],
+  "languages": [
+    {
+      "code": "en-US",
+      "name": "English",
+      "messages": [
+        {
+          "key": "Not_Found_Cache_Manager_Impl",
+          "content": "Not found cache manager implement class"
+        },
+        {
+          "key": "Server_Address_Cache_Error",
+          "content": "Cache server address not configured"
+        },
+        {
+          "key": "Register_Cache_Debug",
+          "content": "Register cache name: {0}, configure info: {1}"
+        },
+        {
+          "key": "Check_Register_Cache_Debug",
+          "content": "Check cache name: {0} was registered"
+        },
+        {
+          "key": "Stack_Message_Error",
+          "content": "Error stack message:"
+        }
+      ]
+    },
+    {
+      "code": "zh-CN",
+      "name": "简体中文",
+      "messages": [
+        {
+          "key": "Not_Found_Cache_Manager_Impl",
+          "content": "未找到缓存管理器的实现类"
+        },
+        {
+          "key": "Server_Address_Cache_Error",
+          "content": "缓存服务器地址未设置"
+        },
+        {
+          "key": "Register_Cache_Debug",
+          "content": "注册缓存名称：{0}，缓存配置信息：{1}"
+        },
+        {
+          "key": "Check_Register_Cache_Debug",
+          "content": "检查缓存名称：{0}是否注册"
+        },
+        {
+          "key": "Stack_Message_Error",
+          "content": "错误堆栈信息："
+        }
+      ]
+    }
+  ]
+}

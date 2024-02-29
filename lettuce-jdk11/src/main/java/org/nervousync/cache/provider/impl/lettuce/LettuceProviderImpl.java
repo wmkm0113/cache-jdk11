@@ -29,9 +29,8 @@ import io.lettuce.core.cluster.api.sync.RedisClusterCommands;
 import io.lettuce.core.codec.StringCodec;
 import io.lettuce.core.masterreplica.MasterReplica;
 import io.lettuce.core.masterreplica.StatefulRedisMasterReplicaConnection;
-import org.nervousync.cache.annotation.CacheProvider;
+import org.nervousync.annotations.provider.Provider;
 import org.nervousync.cache.config.CacheConfig.ServerConfig;
-import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.cache.provider.impl.AbstractProvider;
 import org.nervousync.utils.StringUtils;
 
@@ -45,7 +44,7 @@ import java.util.List;
  * @author Steven Wee	<a href="mailto:wmkm0113@Hotmail.com">wmkm0113@Hotmail.com</a>
  * @version $Revision : 1.0 $ $Date: 8/25/2020 4:07 PM $
  */
-@CacheProvider(name = "LettuceProvider", defaultPort = 6379)
+@Provider(name = "LettuceProvider", titleKey = "lettuce.cache.provider.name")
 public final class LettuceProviderImpl extends AbstractProvider {
 
     private AbstractRedisClient redisClient;
@@ -57,14 +56,16 @@ public final class LettuceProviderImpl extends AbstractProvider {
 
     /**
      * Instantiates a new Lettuce provider.
-     *
-     * @throws CacheException the cache exception
      */
-    public LettuceProviderImpl() throws CacheException {
-        super();
+    public LettuceProviderImpl() {
     }
 
-    /**
+    @Override
+    public int defaultPort() {
+        return 6379;
+    }
+
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#set(String, String, int)
      */
@@ -73,7 +74,7 @@ public final class LettuceProviderImpl extends AbstractProvider {
         this.process(key, value, expire);
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#add(String, String, int)
      */
@@ -82,7 +83,7 @@ public final class LettuceProviderImpl extends AbstractProvider {
         this.process(key, value, expire);
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#replace(String, String, int)
      */
@@ -91,7 +92,7 @@ public final class LettuceProviderImpl extends AbstractProvider {
         this.process(key, value, expire);
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see AbstractProvider#expire(String, int)
      */
@@ -103,7 +104,7 @@ public final class LettuceProviderImpl extends AbstractProvider {
         this.redisCommands.expire(key, expire);
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#touch(String...)
      */
@@ -112,7 +113,7 @@ public final class LettuceProviderImpl extends AbstractProvider {
         this.redisCommands.touch(keys);
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#delete(String)
      */
@@ -121,7 +122,7 @@ public final class LettuceProviderImpl extends AbstractProvider {
         this.redisCommands.del(key);
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#get(String)
      */
@@ -130,7 +131,7 @@ public final class LettuceProviderImpl extends AbstractProvider {
         return this.redisCommands.get(key);
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#incr(String, long)
      */
@@ -139,7 +140,7 @@ public final class LettuceProviderImpl extends AbstractProvider {
         return this.redisCommands.incrby(key, step);
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#decr(String, long)
      */
@@ -148,7 +149,7 @@ public final class LettuceProviderImpl extends AbstractProvider {
         return this.redisCommands.decrby(key, step);
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#destroy()
      */
@@ -166,7 +167,7 @@ public final class LettuceProviderImpl extends AbstractProvider {
         this.redisClient.shutdown();
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see AbstractProvider#singletonMode(ServerConfig, String, String)
      */
@@ -176,7 +177,7 @@ public final class LettuceProviderImpl extends AbstractProvider {
         this.redisCommands = this.redisConnection.sync();
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see AbstractProvider#clusterMode(List, String, String, String)
      */

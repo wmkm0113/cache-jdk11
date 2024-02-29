@@ -16,14 +16,14 @@
  */
 package org.nervousync.cache.provider;
 
-import org.nervousync.cache.annotation.CacheProvider;
+import org.nervousync.annotations.provider.Provider;
 import org.nervousync.utils.LoggerUtils;
 import org.nervousync.utils.StringUtils;
 
 import java.util.*;
 
 /**
- * <h2 class="en">Cache provider manager</h2>
+ * <h2 class="en-US">Cache provider manager</h2>
  * <h2 class="zh-CN">缓存适配器管理器</h2>
  *
  * @author Steven Wee	<a href="mailto:wmkm0113@Hotmail.com">wmkm0113@Hotmail.com</a>
@@ -32,33 +32,31 @@ import java.util.*;
 public final class ProviderManager {
 
 	/**
-	 * <span class="en">Logger instance</span>
+	 * <span class="en-US">Logger instance</span>
 	 * <span class="zhs">日志实例</span>
 	 */
 	private static final LoggerUtils.Logger LOGGER = LoggerUtils.getLogger(ProviderManager.class);
 
 	/**
-	 * <span class="en">Registered cache provider map</span>
+	 * <span class="en-US">Registered cache provider map</span>
 	 * <span class="zhs">注册的缓存实现类与名称对应关系</span>
 	 */
 	private static final Hashtable<String, Class<?>> REGISTERED_PROVIDERS = new Hashtable<>();
 
 	static {
 		//  Register all cache providers by Java SPI
-		ServiceLoader.load(Provider.class)
-				.stream()
-				.filter(provider -> provider.get().getClass().isAnnotationPresent(CacheProvider.class))
-				.forEach(provider -> registerProvider(provider.get().getClass()));
+		ServiceLoader.load(CacheProvider.class)
+				.forEach(provider -> registerProvider(provider.getClass()));
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("Registered_Providers_Count_Cache_Debug", REGISTERED_PROVIDERS.size());
 		}
 	}
 
 	/**
-	 * <h3 class="en">Retrieve registered provider name list</h3>
+	 * <h3 class="en-US">Retrieve registered provider name list</h3>
 	 * <h3 class="zhs">读取已注册的缓存适配器名称列表</h3>
 	 *
-	 * @return  <span class="en">Registered provider name list</span>
+	 * @return  <span class="en-US">Registered provider name list</span>
 	 *          <span class="zhs">已注册的缓存适配器名称列表</span>
 	 */
 	public static List<String> registeredProviderNames() {
@@ -66,12 +64,12 @@ public final class ProviderManager {
 	}
 
 	/**
-	 * <h3 class="en">Check register status of given provider name</h3>
+	 * <h3 class="en-US">Check register status of given provider name</h3>
 	 * <h3 class="zhs">检查给定的缓存适配器名称是否已经注册</h3>
 	 *
-	 * @param providerName  <span class="en">Cache provider name</span>
+	 * @param providerName  <span class="en-US">Cache provider name</span>
 	 *                      <span class="zhs">缓存适配器名称</span>
-	 * @return  <span class="en">Register status</span>
+	 * @return  <span class="en-US">Register status</span>
 	 *          <span class="zhs">注册状态</span>
 	 */
 	public static boolean registeredProvider(final String providerName) {
@@ -82,12 +80,12 @@ public final class ProviderManager {
 	}
 
 	/**
-	 * <h3 class="en">Retrieve provider class by given provider name</h3>
+	 * <h3 class="en-US">Retrieve provider class by given provider name</h3>
 	 * <h3 class="zhs">根据指定的适配器名称获取注册的适配器类</h3>
 	 *
-	 * @param providerName  <span class="en">Cache provider name</span>
+	 * @param providerName  <span class="en-US">Cache provider name</span>
 	 *                      <span class="zhs">缓存适配器名称</span>
-	 * @return  <span class="en">Register provider class</span>
+	 * @return  <span class="en-US">Register provider class</span>
 	 *          <span class="zhs">注册适配器类</span>
 	 */
 	public static Class<?> providerClass(final String providerName) {
@@ -98,21 +96,22 @@ public final class ProviderManager {
 	}
 
 	/**
-	 * <h3 class="en">Register cache provider implement class manual</h3>
+	 * <h3 class="en-US">Register cache provider implement class manual</h3>
 	 * <h3 class="zhs">注册缓存适配器</h3>
 	 *
-	 * @param providerClass     <span class="en">Cache provider implements class</span>
+	 * @param providerClass     <span class="en-US">Cache provider implements class</span>
 	 *                          <span class="zhs">缓存适配器实现类</span>
 	 */
 	private static void registerProvider(final Class<?> providerClass) {
-		Optional.ofNullable(providerClass.getAnnotation(CacheProvider.class))
-				.ifPresent(cacheProvider -> {
-					if (REGISTERED_PROVIDERS.containsKey(cacheProvider.name())) {
+		Optional.ofNullable(providerClass.getAnnotation(Provider.class))
+				.ifPresent(provider -> {
+					String providerName = provider.name();
+					if (REGISTERED_PROVIDERS.containsKey(providerName)) {
 						LOGGER.warn("Override_Cache_Provider",
-								cacheProvider.name(), REGISTERED_PROVIDERS.get(cacheProvider.name()).getName(),
+								providerName, REGISTERED_PROVIDERS.get(providerName).getName(),
 								providerClass.getName());
 					}
-					REGISTERED_PROVIDERS.put(cacheProvider.name(), providerClass);
+					REGISTERED_PROVIDERS.put(providerName, providerClass);
 				});
 	}
 }

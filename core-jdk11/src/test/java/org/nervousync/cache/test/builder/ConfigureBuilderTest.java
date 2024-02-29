@@ -17,20 +17,18 @@
 package org.nervousync.cache.test.builder;
 
 import org.apache.logging.log4j.Level;
-import org.junit.Test;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.nervousync.cache.builder.CacheConfigBuilder;
 import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.cache.enumeration.ClusterMode;
 import org.nervousync.commons.Globals;
+import org.nervousync.configs.ConfigureManager;
 import org.nervousync.exceptions.builder.BuilderException;
-import org.nervousync.security.factory.SecureConfig;
-import org.nervousync.security.factory.SecureFactory;
 import org.nervousync.utils.LoggerUtils;
 import org.nervousync.utils.StringUtils;
+
+import java.util.Optional;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public final class ConfigureBuilderTest {
@@ -41,26 +39,17 @@ public final class ConfigureBuilderTest {
         LoggerUtils.initLoggerConfigure(Level.DEBUG);
     }
 
+    @BeforeAll
+    public static void initialize() {
+        ConfigureManager.initialize();
+    }
+
     @Test
     @Order(10)
     public void test000Config() {
-        generateConfig(Globals.DEFAULT_VALUE_STRING, null);
-    }
-
-    @Test
-    @Order(20)
-    public void test010SecureConfig() {
-        SecureFactory.initConfig(SecureFactory.SecureAlgorithm.AES256).ifPresent(SecureFactory::initialize);
-        SecureFactory.initConfig(SecureFactory.SecureAlgorithm.AES256)
-                .ifPresent(secureConfig -> generateConfig("SecureCache", secureConfig));
-    }
-
-    private void generateConfig(final String secureName, SecureConfig secureConfig) {
         try {
-            CacheConfig cacheConfig = CacheConfigBuilder.newBuilder()
+            boolean generateResult = CacheConfigBuilder.newBuilder()
                     .providerName(Globals.DEFAULT_VALUE_STRING)
-                    .secureName(secureName)
-                    .secureConfig(secureName, secureConfig)
                     .connectTimeout(CacheGlobals.DEFAULT_CONNECTION_TIMEOUT)
                     .expireTime(CacheGlobals.DEFAULT_EXPIRE_TIME)
                     .retryCount(3)
@@ -85,13 +74,19 @@ public final class ConfigureBuilderTest {
                     .removeServer("ServerAddress1", 11211)
                     .authorization("userName", "passWord")
                     .confirm();
-            String xmlContent = cacheConfig.toXML(Boolean.TRUE);
-            this.logger.info("Generated_Configure", secureName, xmlContent);
-            CacheConfig parsedConfig = StringUtils.stringToObject(xmlContent, CacheConfig.class,
-                    "https://nervousync.org/schemas/cache");
-            this.logger.info("Parsed_Configure", parsedConfig.toFormattedJson());
+            if (generateResult) {
+                Optional.ofNullable(ConfigureManager.getInstance().readConfigure(CacheConfig.class))
+                        .ifPresent(cacheConfig -> {
+                            String xmlContent = cacheConfig.toXML(Boolean.TRUE);
+                            this.logger.info("Generated_Configure", xmlContent);
+                            CacheConfig parsedConfig = StringUtils.stringToObject(xmlContent, CacheConfig.class,
+                                    "https://nervousync.org/schemas/cache");
+                            this.logger.info("Parsed_Configure", parsedConfig.toFormattedJson());
+                        });
+            }
         } catch (BuilderException e) {
             this.logger.error("Generated_Configure_Error", e);
         }
+        ConfigureManager.getInstance().removeConfigure(CacheConfig.class);
     }
 }

@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.nervousync</groupId>
     <artifactId>cache-jdk11</artifactId>
-    <version>1.1.6</version>
+    <version>1.1.7</version>
     <modules>
         <module>core-jdk11</module>
         <module>jedis-jdk11</module>
@@ -13,6 +13,7 @@
         <module>api-jdk11</module>
         <module>redisson-jdk11</module>
         <module>nodeps-jdk11</module>
+        <module>test-jdk11</module>
     </modules>
     <packaging>pom</packaging>
     <name>Cache Package</name>
@@ -30,7 +31,7 @@
         </license>
     </licenses>
     <scm>
-        <tag>v1.1.6</tag>
+        <tag>v1.1.7</tag>
         <url>https://github.com/wmkm0113/cache-jdk11</url>
         <connection>scm:git:https://github.com/wmkm0113/cache-jdk11.git</connection>
         <developerConnection>scm:git:https://github.com/wmkm0113/cache-jdk11.git</developerConnection>
@@ -53,24 +54,8 @@
         <argLine>-Dfile.encoding=UTF-8</argLine>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <junit.jupiter.version>5.10.0</junit.jupiter.version>
-        <junit.platform.version>1.10.0</junit.platform.version>
-        <current.version>1.1.6</current.version>
+        <current.version>1.1.7</current.version>
     </properties>
-    <dependencies>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.jupiter.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-runner</artifactId>
-            <version>${junit.platform.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
     <build>
         <defaultGoal>compile</defaultGoal>
         <sourceDirectory>src/main/java</sourceDirectory>
@@ -106,10 +91,12 @@
                             <manifest>
                                 <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                                 <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                                <addClasspath>true</addClasspath>
                             </manifest>
                             <manifestEntries>
-                                <Built-By>Nervousync Studio</Built-By>
-                                <Class-Path>.</Class-Path>
+                                <Built-By>${project.organization.name}</Built-By>
+                                <Build-Jdk>${java.vm.name} ${java.vendor.version} (${java.runtime.version})</Build-Jdk>
+                                <Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
                             </manifestEntries>
                         </archive>
                     </configuration>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-    <comment>缓存工具简体中文国际化信息资源</comment>
-    <entry key="Not_Found_Cache_Manager_Impl">未找到缓存管理器的实现类</entry><!-- 0x000C00000001 -->
-    <entry key="Server_Address_Cache_Error">缓存服务器地址未设置</entry><!-- 0x000C00000002 -->
-    <entry key="Register_Cache_Debug">注册缓存名称：{0}，缓存配置信息：{1}</entry>
-    <entry key="Check_Register_Cache_Debug">检查缓存名称：{0}是否注册</entry>
-</properties>

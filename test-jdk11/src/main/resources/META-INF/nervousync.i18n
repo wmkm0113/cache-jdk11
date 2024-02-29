@@ -1,0 +1,98 @@
+{
+  "groupId": "org.nervousync",
+  "bundle": "cache",
+  "languages": [
+    {
+      "code": "en-US",
+      "name": "English",
+      "messages": [
+        {
+          "key": "Execute_Begin_Test",
+          "content": "Starting execute class {0} method: {1}"
+        },
+        {
+          "key": "Execute_End_Test",
+          "content": "execute class {0} method: {1} finished"
+        },
+        {
+          "key": "No_Auth_File",
+          "content": "Can't found authorization file, ignore..."
+        },
+        {
+          "key": "Generated_Configure",
+          "content": "Generated configure: {0}"
+        },
+        {
+          "key": "Register_Result",
+          "content": "Register cache result: {0}"
+        },
+        {
+          "key": "Register_Check",
+          "content": "Cache {0} registered: {1}"
+        },
+        {
+          "key": "Read_Debug",
+          "content": "Read cache information, Key: {0}, value: {1}"
+        },
+        {
+          "key": "Read_After_Debug",
+          "content": "After {1} operate read cache information, Key: {0}, value: {2}"
+        },
+        {
+          "key": "Read_After_Return_Debug",
+          "content": "After {1} operate read cache information, Key: {0}, value: {2}, return value: {3}"
+        },
+        {
+          "key": "Updatable_Configure",
+          "content": "Updatable configure: {0}"
+        }
+      ]
+    },
+    {
+      "code": "zh-CN",
+      "name": "简体中文",
+      "messages": [
+        {
+          "key": "Execute_Begin_Test",
+          "content": "开始执行测试类 {0} 的 {1} 方法"
+        },
+        {
+          "key": "Execute_End_Test",
+          "content": "执行测试类 {0} 的 {1} 方法结束"
+        },
+        {
+          "key": "No_Auth_File",
+          "content": "未找到配置信息，忽略当前测试"
+        },
+        {
+          "key": "Generated_Configure",
+          "content": "生成的配置信息：{0}"
+        },
+        {
+          "key": "Register_Result",
+          "content": "注册缓存结果：{0}"
+        },
+        {
+          "key": "Register_Check",
+          "content": "缓存 {0} 注册状态：{1}"
+        },
+        {
+          "key": "Read_Debug",
+          "content": "读取缓存信息，键：{0}，值：{1}"
+        },
+        {
+          "key": "Read_After_Debug",
+          "content": "在{1}操作后读取缓存信息，键：{0}，值：{2}"
+        },
+        {
+          "key": "Read_After_Return_Debug",
+          "content": "在{1}操作后读取缓存信息，键：{0}，值：{2}，操作返回值：{3}"
+        },
+        {
+          "key": "Updatable_Configure",
+          "content": "更新的配置信息：{0}"
+        }
+      ]
+    }
+  ]
+}

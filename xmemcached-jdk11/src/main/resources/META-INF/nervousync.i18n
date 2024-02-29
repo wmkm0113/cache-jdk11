@@ -1,3 +1,56 @@
-groupId=org.nervousync
-bundle=cache
-languages=en-US,zh-CN
+{
+  "groupId": "org.nervousync",
+  "bundle": "cache",
+  "errors": [
+    {
+      "code": "0x000C00000006",
+      "key": "Init_Memcached_Cache_Error"
+    }
+  ],
+  "languages": [
+    {
+      "code": "en-US",
+      "name": "English",
+      "messages": [
+        {
+          "key": "xmemcached.cache.provider.name",
+          "content": "Xmemcached Client"
+        },
+        {
+          "key": "Init_Memcached_Cache_Error",
+          "content": "An error occurs when initialize memcached client"
+        },
+        {
+          "key": "Destroy_Memcached_Cache_Error",
+          "content": "Destroy memcached client instance error"
+        },
+        {
+          "key": "Data_Operate_Cache_Error",
+          "content": "An error occurs when execute cache operate: {0}"
+        }
+      ]
+    },
+    {
+      "code": "zh-CN",
+      "name": "简体中文",
+      "messages": [
+        {
+          "key": "xmemcached.cache.provider.name",
+          "content": "Xmemcached客户端"
+        },
+        {
+          "key": "Init_Memcached_Cache_Error",
+          "content": "初始化Memcached连接出错"
+        },
+        {
+          "key": "Destroy_Memcached_Cache_Error",
+          "content": "销毁Memcached客户端出错"
+        },
+        {
+          "key": "Data_Operate_Cache_Error",
+          "content": "执行{0}操作时出错"
+        }
+      ]
+    }
+  ]
+}

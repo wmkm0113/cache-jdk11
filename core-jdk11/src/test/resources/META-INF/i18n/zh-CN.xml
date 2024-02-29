@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-    <comment>缓存工具简体中文国际化信息资源</comment>
-    <entry key="Generated_Configure">安全配置名称：{0}，生成的配置信息：{1}</entry>
-    <entry key="Parsed_Configure">解析的配置信息：{0}</entry>
-    <entry key="Generated_Configure_Error">生成配置信息出错</entry>
-</properties>

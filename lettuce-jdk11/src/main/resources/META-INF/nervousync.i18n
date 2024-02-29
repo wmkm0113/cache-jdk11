@@ -1,3 +1,34 @@
-groupId=org.nervousync
-bundle=cache
-languages=en-US,zh-CN
+{
+  "groupId": "org.nervousync",
+  "bundle": "cache",
+  "languages": [
+    {
+      "code": "en-US",
+      "name": "English",
+      "messages": [
+        {
+          "key": "TTL_Lettuce_Cache_Debug",
+          "content": "TTL: {0}"
+        },
+        {
+          "key": "lettuce.cache.provider.name",
+          "content": "Redis Client implements by Lettuce"
+        }
+      ]
+    },
+    {
+      "code": "zh-CN",
+      "name": "简体中文",
+      "messages": [
+        {
+          "key": "TTL_Lettuce_Cache_Debug",
+          "content": "TTL值：{0}"
+        },
+        {
+          "key": "lettuce.cache.provider.name",
+          "content": "Redis客户端使用Lettuce实现"
+        }
+      ]
+    }
+  ]
+}

@@ -17,7 +17,7 @@
 package org.nervousync.cache.enumeration;
 
 /**
- * <h2 class="en">Cluster Mode Define</h2>
+ * <h2 class="en-US">Cluster Mode Define</h2>
  * <h2 class="zh-CN">集群类型定义</h2>
  */
 public enum ClusterMode {

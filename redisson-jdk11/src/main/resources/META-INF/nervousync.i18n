@@ -1,0 +1,26 @@
+{
+  "groupId": "org.nervousync",
+  "bundle": "cache",
+  "languages": [
+    {
+      "code": "en-US",
+      "name": "English",
+      "messages": [
+        {
+          "key": "redisson.cache.provider.name",
+          "content": "Redis Client implements by Redisson"
+        }
+      ]
+    },
+    {
+      "code": "zh-CN",
+      "name": "简体中文",
+      "messages": [
+        {
+          "key": "redisson.cache.provider.name",
+          "content": "Redis客户端使用Redisson实现"
+        }
+      ]
+    }
+  ]
+}

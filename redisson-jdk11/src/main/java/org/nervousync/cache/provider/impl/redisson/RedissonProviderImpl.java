@@ -16,11 +16,10 @@
  */
 package org.nervousync.cache.provider.impl.redisson;
 
-import org.nervousync.cache.annotation.CacheProvider;
+import org.nervousync.annotations.provider.Provider;
 import org.nervousync.cache.config.CacheConfig;
-import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.cache.provider.impl.AbstractProvider;
-import org.nervousync.commons.core.Globals;
+import org.nervousync.commons.Globals;
 import org.nervousync.utils.StringUtils;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -30,7 +29,6 @@ import org.redisson.config.*;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Redis cache provider using Redisson
@@ -38,26 +36,30 @@ import java.util.concurrent.TimeUnit;
  * @author Steven Wee	<a href="mailto:wmkm0113@Hotmail.com">wmkm0113@Hotmail.com</a>
  * @version $Revision : 1.0 $ $Date: 12/23/2020 13:43 PM $
  */
-@CacheProvider(name = "RedissonProvider", defaultPort = 6379)
+@Provider(name = "RedissonProvider", titleKey = "redisson.cache.provider.name")
 public final class RedissonProviderImpl extends AbstractProvider {
 
     private RedissonClient redissonClient = null;
 
-    public RedissonProviderImpl() throws CacheException {
-        super();
+    public RedissonProviderImpl() {
     }
 
-    /**
+    @Override
+    public int defaultPort() {
+        return 6379;
+    }
+
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#set(String, String, int)
      */
     @Override
     public void set(final String key, final String value, final int expire) {
         this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING))
-                .set(value, this.expiryTime(expire), TimeUnit.SECONDS);
+                .set(value, Duration.ofSeconds(this.expiryTime(expire)));
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#add(String, String, int)
      */
@@ -66,7 +68,7 @@ public final class RedissonProviderImpl extends AbstractProvider {
         this.set(key, value, expire);
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#replace(String, String, int)
      */
@@ -75,7 +77,7 @@ public final class RedissonProviderImpl extends AbstractProvider {
         this.set(key, value, expire);
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#touch(String...)
      */
@@ -85,7 +87,7 @@ public final class RedissonProviderImpl extends AbstractProvider {
                 .forEach(key -> this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING)).touch());
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#delete(String)
      */
@@ -94,7 +96,7 @@ public final class RedissonProviderImpl extends AbstractProvider {
         this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING)).delete();
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#get(String)
      */
@@ -103,7 +105,7 @@ public final class RedissonProviderImpl extends AbstractProvider {
         return (String) this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING)).get();
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#incr(String, long)
      */
@@ -112,7 +114,7 @@ public final class RedissonProviderImpl extends AbstractProvider {
         return this.redissonClient.getAtomicLong(key).addAndGet(step);
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#decr(String, long)
      */
@@ -121,7 +123,7 @@ public final class RedissonProviderImpl extends AbstractProvider {
         return this.redissonClient.getAtomicLong(key).addAndGet(step * -1L);
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see org.nervousync.cache.provider.Provider#destroy()
      */
@@ -132,7 +134,7 @@ public final class RedissonProviderImpl extends AbstractProvider {
         }
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see AbstractProvider#expire(String, int)
      */
@@ -142,7 +144,7 @@ public final class RedissonProviderImpl extends AbstractProvider {
                 .expire(Duration.ofMillis(this.expiryTime(expire) * 1000L));
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see AbstractProvider#singletonMode(CacheConfig.ServerConfig, String, String)
      */
@@ -165,7 +167,7 @@ public final class RedissonProviderImpl extends AbstractProvider {
         this.redissonClient = Redisson.create(config);
     }
 
-    /**
+    /*
      * (non-Javadoc)
      * @see AbstractProvider#clusterMode(List, String, String, String)
      */
