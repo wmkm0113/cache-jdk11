@@ -6,14 +6,14 @@
     <artifactId>cache-jdk11</artifactId>
     <version>1.1.7</version>
     <modules>
-        <module>core-jdk11</module>
-        <module>jedis-jdk11</module>
-        <module>lettuce-jdk11</module>
-        <module>xmemcached-jdk11</module>
-        <module>api-jdk11</module>
-        <module>redisson-jdk11</module>
-        <module>nodeps-jdk11</module>
-        <module>test-jdk11</module>
+        <module>core</module>
+        <module>jedis</module>
+        <module>lettuce</module>
+        <module>xmemcached</module>
+        <module>api</module>
+        <module>redisson</module>
+        <module>nodeps</module>
+        <module>test</module>
     </modules>
     <packaging>pom</packaging>
     <name>Cache Package</name>
