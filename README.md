@@ -1,12 +1,13 @@
 # Cache Toolkit
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.nervousync/cache-jdk11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.nervousync/cache-jdk11/)
-[![License](https://img.shields.io/github/license/wmkm0113/Cache.svg)](https://github.com/wmkm0113/Cache/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/wmkm0113/cache-jdk11.svg)](https://github.com/wmkm0113/cache-jdk11/blob/master/LICENSE)
 ![Language](https://img.shields.io/badge/language-Java-green)
 [![Twitter:wmkm0113](https://img.shields.io/twitter/follow/wmkm0113?label=Follow)](https://twitter.com/wmkm0113)
 
 English
 [简体中文](README_zh_CN.md)
+[繁體中文](README_zh_TW.md)
 
 A unified toolkit created for caching operations, using a unified program interface to complete the invocation of different caching services.
 

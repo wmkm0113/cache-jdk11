@@ -1,12 +1,13 @@
 # 緩存工具包
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.nervousync/cache-jdk11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.nervousync/cache-jdk11/)
-[![License](https://img.shields.io/github/license/wmkm0113/Cache.svg)](https://github.com/wmkm0113/Cache/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/wmkm0113/cache-jdk11.svg)](https://github.com/wmkm0113/cache-jdk11/blob/master/LICENSE)
 ![Language](https://img.shields.io/badge/language-Java-green)
 [![Twitter:wmkm0113](https://img.shields.io/twitter/follow/wmkm0113?label=Follow)](https://twitter.com/wmkm0113)
 
 [English](README.md)
-簡體中文
+[简体中文](README_zh_CN.md)
+繁體中文
 
 為緩存操作打造的統一工具包，使用統一的程式介面，完成不同緩存服務的調用。
 
