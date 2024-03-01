@@ -46,7 +46,7 @@ import java.util.concurrent.TimeoutException;
  * @author Steven Wee	<a href="mailto:wmkm0113@Hotmail.com">wmkm0113@Hotmail.com</a>
  * @version $Revision: 1.0 $ $Date: 12/23/2020 13:43 PM $
  */
-@Provider(name = "XMemcachedProvider", messageKey = "xmemcached.cache.provider.name")
+@Provider(name = "XMemcachedProvider", titleKey = "xmemcached.cache.provider.name")
 public class XMemcachedProviderImpl extends AbstractProvider {
 
 	/**
