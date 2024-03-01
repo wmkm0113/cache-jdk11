@@ -67,23 +67,24 @@ Runtime: OpenJDK 11+ or compatible version
 ```
 
 ### 2. Initialize and obtain the cache utility instance
-程序开发人员通过调用 org.nervousync.cache.CacheUtils 的 getInstance 静态方法，获取缓存管理器实例对象。
-在获取缓存管理器实例对象时，如果缓存管理器未初始化，工具包会自动执行初始化工作，通过Java的SPI机制，寻找存在的缓存管理器实现类，
-如果未找到缓存管理器实现类，则抛出异常信息。在初始化过程中，还会通过配置文件管理器读取并注册系统默认的缓存配置信息。
+Program developers obtain the cache manager instance object by calling the getInstance static method of org.nervousync.cache.CacheUtils.
+When obtaining the cache manager instance object, if the cache manager has not been initialized, the toolkit will automatically perform the initialization work and search for the existing cache manager implementation class through Java's SPI mechanism. 
+If the cache manager implementation class is not found, it will throw Exception information appears. During the initialization process, the system's default cache configuration information is also read and registered through the configuration file manager.
 
 ### 3. Register cache server configure information
-程序开发人员通过调用 org.nervousync.cache.CacheUtils 实例对象的 register 方法，传入参数为缓存名称，
-系统使用配置文件管理器读取给定缓存名称的缓存配置信息，并使用读取的配置信息注册、初始化缓存，register 方法返回boolean类型的注册结果。
+Program developers call the register method of the org.nervousync.cache.CacheUtils instance object and pass in the cache name as the parameter. 
+The system uses the configuration file manager to read the cache configuration information of the given cache name and registers it using the read configuration information. 
+Initialize the cache, and the register method returns the registration result of the boolean type.
 
 ### 4. Obtain cache server client instance and operate data
-程序开发人员通过调用 org.nervousync.cache.CacheUtils 实例对象的 client 方法获取缓存服务器操作客户端，传入参数为缓存名称。
-如果缓存名称未注册，则返回 null。
+Program developers obtain the cache server operation client by calling the client method of the org.nervousync.cache.CacheUtils instance object, passing in the cache name as the parameter.
+Returns null if the cache name is not registered.
 
 ### 5. Customize cache client manager implements class
-程序开发人员可以自定义缓存管理器，来实现自己需要的定制化缓存客户端管理器，具体方法为：   
-1、创建缓存客户端管理器实现类，并实现 org.nervousync.cache.api.CacheManager 接口。
-2、创建/META-INF/services/org.nervousync.cache.api.CacheManager文件，并在文件中写明实现类的完整名称（包名+类名）。   
-**注意：** 整个工程中如果有多个缓存客户端管理器实现类，系统会根据加载顺序选择第一个实现类。
+Program developers can customize the cache manager to implement the customized cache client manager they need. The specific method is:   
+1. Create a cache client manager implementation class and implement the org.nervousync.cache.api.CacheManager interface.   
+2. Create the /META-INF/services/org.nervousync.cache.api.CacheManager file and write the complete name of the implementation class (package name + class name) in the file.   
+**Notice:** If there are multiple cache client manager implementation classes in the entire project, the system will select the first implementation class based on the loading order.
 
 ## Contributions and feedback
 Friends are welcome to translate the prompt information, error messages, 
