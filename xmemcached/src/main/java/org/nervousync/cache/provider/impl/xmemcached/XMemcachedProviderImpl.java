@@ -245,7 +245,7 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 			} catch (final IOException e) {
 				this.logger.error("Destroy_Memcached_Cache_Error");
 				if (this.logger.isDebugEnabled()) {
-					this.logger.debug("Utils", "Stack_Message_Error", e);
+					this.logger.debug("Stack_Message_Error", e);
 				}
 			}
 		}
@@ -253,7 +253,7 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 
 	private void printStackMessage(final Exception e) {
 		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("Utils", "Stack_Message_Error", e);
+			this.logger.debug("Stack_Message_Error", e);
 		}
 	}
 	

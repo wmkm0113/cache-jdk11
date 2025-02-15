@@ -15,7 +15,7 @@
     <url>https://nervousync.org/projects/cache-jdk11/providers/redisson/index.shtml</url>
     <description>Cache Provider Implements By Redisson, development by Nervousync Studio (NSYC)</description>
     <properties>
-        <netty.version>4.1.117.Final</netty.version>
+        <netty.version>4.1.118.Final</netty.version>
         <redisson.version>3.44.0</redisson.version>
     </properties>
     <dependencies>
