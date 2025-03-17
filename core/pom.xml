@@ -13,8 +13,6 @@
     <name>CacheCore Package</name>
     <url>https://nervousync.org/projects/cache-jdk11/core/index.shtml</url>
     <description>Cache Core Package, development by Nervousync Studio (NSYC)</description>
-    <properties>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
