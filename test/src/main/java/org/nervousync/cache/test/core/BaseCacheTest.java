@@ -12,6 +12,7 @@ import org.nervousync.configs.ConfigureManager;
 import org.nervousync.exceptions.builder.BuilderException;
 import org.nervousync.utils.LoggerUtils;
 import org.nervousync.utils.PropertiesUtils;
+import org.nervousync.utils.StringUtils;
 
 import java.util.Optional;
 import java.util.Properties;
@@ -80,7 +81,7 @@ public abstract class BaseCacheTest {
             return;
         }
         Assertions.assertNotNull(cacheConfig);
-        this.logger.info("Generated_Configure", cacheConfig.toXML(Boolean.TRUE));
+        this.logger.info("Generated_Configure", cacheConfig.toString(StringUtils.StringType.XML));
 
         this.logger.info("Register_Result", CacheUtils.register("TestCache", cacheConfig));
         this.logger.info("Register_Check", "TestCache", CacheUtils.registered("TestCache"));

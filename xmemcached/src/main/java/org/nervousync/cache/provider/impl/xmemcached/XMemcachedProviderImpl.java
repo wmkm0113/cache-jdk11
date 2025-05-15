@@ -17,7 +17,6 @@
 package org.nervousync.cache.provider.impl.xmemcached;
 
 import net.rubyeye.xmemcached.MemcachedClient;
-import net.rubyeye.xmemcached.MemcachedClientBuilder;
 import net.rubyeye.xmemcached.XMemcachedClientBuilder;
 import net.rubyeye.xmemcached.auth.AuthInfo;
 import net.rubyeye.xmemcached.command.BinaryCommandFactory;
@@ -34,10 +33,7 @@ import org.nervousync.utils.StringUtils;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -61,15 +57,15 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 	public XMemcachedProviderImpl() {
 	}
 
-    @Override
-    public int defaultPort() {
-        return 11211;
-    }
+	@Override
+	public int defaultPort() {
+		return 11211;
+	}
 
-    /*
-     * (non-Javadoc)
-     * @see org.nervousync.cache.provider.Provider#set(String, String, int)
-     */
+	/*
+	 * (non-Javadoc)
+	 * @see org.nervousync.cache.provider.Provider#set(String, String, int)
+	 */
 	@Override
 	public void set(final String key, final String value, final int expire) {
 		try {
@@ -84,10 +80,10 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-    /*
-     * (non-Javadoc)
-     * @see org.nervousync.cache.provider.Provider#add(String, String, int)
-     */
+	/*
+	 * (non-Javadoc)
+	 * @see org.nervousync.cache.provider.Provider#add(String, String, int)
+	 */
 	@Override
 	public void add(final String key, final String value, final int expire) {
 		try {
@@ -102,10 +98,10 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-    /*
-     * (non-Javadoc)
-     * @see org.nervousync.cache.provider.Provider#replace(String, String, int)
-     */
+	/*
+	 * (non-Javadoc)
+	 * @see org.nervousync.cache.provider.Provider#replace(String, String, int)
+	 */
 	@Override
 	public void replace(final String key, final String value, final int expire) {
 		try {
@@ -120,10 +116,10 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-    /*
-     * (non-Javadoc)
-     * @see AbstractProvider#expire(String, int)
-     */
+	/*
+	 * (non-Javadoc)
+	 * @see AbstractProvider#expire(String, int)
+	 */
 	@Override
 	public void expire(final String key, final int expire) {
 		try {
@@ -138,10 +134,10 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-    /*
-     * (non-Javadoc)
-     * @see org.nervousync.cache.provider.Provider#touch(String...)
-     */
+	/*
+	 * (non-Javadoc)
+	 * @see org.nervousync.cache.provider.Provider#touch(String...)
+	 */
 	@Override
 	public void touch(final String... keys) {
 		try {
@@ -158,10 +154,10 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-    /*
-     * (non-Javadoc)
-     * @see org.nervousync.cache.provider.Provider#delete(String)
-     */
+	/*
+	 * (non-Javadoc)
+	 * @see org.nervousync.cache.provider.Provider#delete(String)
+	 */
 	@Override
 	public void delete(final String key) {
 		try {
@@ -176,10 +172,10 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-    /*
-     * (non-Javadoc)
-     * @see org.nervousync.cache.provider.Provider#get(String)
-     */
+	/*
+	 * (non-Javadoc)
+	 * @see org.nervousync.cache.provider.Provider#get(String)
+	 */
 	@Override
 	public String get(final String key) {
 		try {
@@ -195,10 +191,10 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		return null;
 	}
 
-    /*
-     * (non-Javadoc)
-     * @see org.nervousync.cache.provider.Provider#incr(String, long)
-     */
+	/*
+	 * (non-Javadoc)
+	 * @see org.nervousync.cache.provider.Provider#incr(String, long)
+	 */
 	@Override
 	public long incr(final String key, final long step) {
 		try {
@@ -214,10 +210,10 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		return Globals.DEFAULT_VALUE_LONG;
 	}
 
-    /*
-     * (non-Javadoc)
-     * @see org.nervousync.cache.provider.Provider#decr(String, long)
-     */
+	/*
+	 * (non-Javadoc)
+	 * @see org.nervousync.cache.provider.Provider#decr(String, long)
+	 */
 	@Override
 	public long decr(final String key, final long step) {
 		try {
@@ -233,10 +229,10 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		return Globals.DEFAULT_VALUE_LONG;
 	}
 
-    /*
-     * (non-Javadoc)
-     * @see org.nervousync.cache.provider.Provider#destroy()
-     */
+	/*
+	 * (non-Javadoc)
+	 * @see org.nervousync.cache.provider.Provider#destroy()
+	 */
 	@Override
 	public void destroy() {
 		if (this.memcachedClient != null && !this.memcachedClient.isShutdown()) {
@@ -256,54 +252,63 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 			this.logger.debug("Stack_Message_Error", e);
 		}
 	}
-	
-    /*
-     * (non-Javadoc)
-     * @see AbstractProvider#singletonMode(ServerConfig, String, String)
-     */
-    protected void singletonMode(final ServerConfig serverConfig,
-								 final String userName, final String passWord) throws CacheException {
-		this.initConnection(Collections.singletonList(AddrUtil.getOneAddress(this.serverAddress(serverConfig))), 
+
+	/*
+	 * (non-Javadoc)
+	 * @see AbstractProvider#singletonMode(ServerConfig, String, String)
+	 */
+	protected void singletonMode(final ServerConfig serverConfig,
+	                             final String userName, final String passWord) throws CacheException {
+		this.initConnection(AddrUtil.getAddresses(this.serverAddress(serverConfig)),
 				new int[]{CacheGlobals.DEFAULT_CACHE_SERVER_WEIGHT}, userName, passWord);
 	}
 
-    /*
-     * (non-Javadoc)
-     * @see AbstractProvider#clusterMode(List, String, String, String)
-     */
-    protected void clusterMode(final List<ServerConfig> serverConfigList, final String masterName, 
-							   final String userName, final String passWord) throws CacheException {
+	/*
+	 * (non-Javadoc)
+	 * @see AbstractProvider#clusterMode(List, String, String, String)
+	 */
+	protected void clusterMode(final List<ServerConfig> serverConfigList, final String masterName,
+	                           final String userName, final String passWord) throws CacheException {
 		final List<InetSocketAddress> serverList = new ArrayList<>();
 		final List<Integer> weightList = new ArrayList<>();
-		serverConfigList.forEach(serverConfig -> 
+		serverConfigList.forEach(serverConfig ->
 				Optional.ofNullable(this.serverAddress(serverConfig))
 						.ifPresent(serverAddress -> {
 							serverList.add(AddrUtil.getOneAddress(serverAddress));
 							weightList.add(serverConfig.getServerWeight());
 						}));
 		int[] serverWeights = new int[weightList.size()];
-		for (int i = 0 ; i < weightList.size() ; i++) {
+		for (int i = 0; i < weightList.size(); i++) {
 			serverWeights[i] = weightList.get(i);
 		}
 		this.initConnection(serverList, serverWeights, userName, passWord);
 	}
-	
+
 	private String serverAddress(final ServerConfig serverConfig) {
 		if (serverConfig == null) {
 			return null;
 		}
 		return serverConfig.getServerAddress() + ":" + super.serverPort(serverConfig.getServerPort());
 	}
-	
-	private void initConnection(final List<InetSocketAddress> serverList, final int[] serverWeights, 
-								final String userName, final String passWord) throws CacheException {
+
+	private void initConnection(final List<InetSocketAddress> serverList, final int[] serverWeights,
+	                            final String userName, final String passWord) throws CacheException {
 		if (serverList == null || serverWeights == null || serverList.size() != serverWeights.length) {
 			return;
 		}
-		MemcachedClientBuilder clientBuilder =
-				new XMemcachedClientBuilder(serverList, serverWeights);
+		XMemcachedClientBuilder clientBuilder = new XMemcachedClientBuilder(serverList, serverWeights);
 		//  Using binary protocol instead of text protocol, if we use memcached 1.4.0 or later
 		clientBuilder.setCommandFactory(new BinaryCommandFactory());
+
+		//  Force do not resolve InetAddress to resolve can't found authorization information
+		clientBuilder.doNotResolveInetAddresses();
+
+		if (StringUtils.notBlank(userName) && StringUtils.notBlank(passWord)) {
+			AuthInfo authInfo = AuthInfo.plain(userName, passWord);
+			Map<InetSocketAddress, AuthInfo> authInfoMap = new HashMap<>();
+			serverList.forEach(socketAddress -> authInfoMap.put(socketAddress, authInfo));
+			clientBuilder.setAuthInfoMap(authInfoMap);
+		}
 
 		if (serverList.size() > 1) {
 			//  Consistent Hash
@@ -311,10 +316,6 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 			clientBuilder.setConnectionPoolSize(this.getClientPoolSize());
 		}
 
-		if (StringUtils.notBlank(userName) && StringUtils.notBlank(passWord)) {
-			serverList.forEach(socketAddress -> 
-					clientBuilder.addAuthInfo(socketAddress, AuthInfo.plain(userName, passWord)));
-		}
 		try {
 			this.memcachedClient = clientBuilder.build();
 		} catch (IOException e) {

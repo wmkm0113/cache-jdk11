@@ -103,6 +103,13 @@ If you need to add customized special requirements, I will charge a certain cust
 The specific fee amount will be assessed based on the workload of the customized special requirements.   
 For customized special features, please send an email directly to [wmkm0113\@gmail.com](mailto:wmkm0113@gmail.com?subject=payment_features). At the same time, please try to indicate the budget amount of development cost you can afford in the email.
 
+## Donations
+To support this project, you can make a donation to:
+
+* Bitcoin address: bc1q0n05a5r7vyph40lv0kshxscxwptr3z4pwpq5nd
+* Ethereum address: 0xeA448C14f65657Fce8020955807345ae5Fb0722B
+* Solana address: CiBFDVETZLFGUYTN6izbofCZ7oVAdghoMDpFgaUyetPf
+
 ## Sponsorship and Thanks To
 <span id="JetBrains">
     <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" width="100px" height="100px" alt="JetBrains Logo (Main) logo.">

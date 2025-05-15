@@ -72,11 +72,11 @@ public final class ConfigureBuilderTest {
 					.removeServer("ServerAddress1", 11211)
 					.authorization("userName", "passWord")
 					.confirm();
-			String xmlContent = cacheConfig.toXML(Boolean.TRUE);
+			String xmlContent = cacheConfig.toString(StringUtils.StringType.XML);
 			this.logger.info("Generated_Configure", xmlContent);
 			CacheConfig parsedConfig = StringUtils.stringToObject(xmlContent, CacheConfig.class,
 					"https://nervousync.org/schemas/cache");
-			this.logger.info("Parsed_Configure", parsedConfig.toFormattedJson());
+			this.logger.info("Parsed_Configure", parsedConfig.toString(StringUtils.StringType.JSON));
 		} catch (BuilderException e) {
 			this.logger.error("Generated_Configure_Error", e);
 		}

@@ -61,7 +61,7 @@ public interface CacheProvider {
     void add(final String key, final String value, final int expire);
 
     /**
-     * <h3 class="en-US">Replace exists value of given key by given value and set expire time</h3>
+     * <h3 class="en-US">Replace exists value of the given key by given value and set expire time</h3>
      * <h3 class="zhs">使用指定的过期时间替换已存在的缓存信息</h3>
      *
      * @param key    <span class="en-US">Cache key</span>
@@ -92,12 +92,12 @@ public interface CacheProvider {
     void delete(final String key);
 
     /**
-     * <h3 class="en-US">Read cache value from cache key which cache key was given</h3>
+     * <h3 class="en-US">Read cache value from the cache key which cache key was given</h3>
      * <h3 class="zhs">读取指定缓存键值对应的缓存数据</h3>
      *
      * @param key <span class="en-US">Cache key</span>
      *            <span class="zhs">缓存键值</span>
-     * @return <span class="en-US">Cache value or null if cache key was not exists or it was expired</span>
+     * @return <span class="en-US">Cache value or null if cache key did not exist, or it was expired</span>
      * <span class="zhs">读取的缓存数据，如果缓存键值不存在或已过期，则返回null</span>
      */
     String get(final String key);

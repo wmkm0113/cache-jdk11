@@ -120,18 +120,6 @@
     <profiles>
         <profile>
             <id>release</id>
-            <distributionManagement>
-                <!-- Repository for SNAPSHOT -->
-                <snapshotRepository>
-                    <id>OSS</id>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-                </snapshotRepository>
-                <!-- Repository for RELEASE -->
-                <repository>
-                    <id>OSS</id>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-            </distributionManagement>
             <build>
                 <pluginManagement>
                     <plugins>
@@ -167,6 +155,15 @@
                     </plugins>
                 </pluginManagement>
                 <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.7.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>OSS</publishingServerId>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>

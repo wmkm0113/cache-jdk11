@@ -97,6 +97,13 @@
 如果您需要添加的是定制化的特殊需求，我将收取一定的定制开发费用，具体费用金额根据定制化的特殊需求的工作量进行评估。   
 定制化特殊需求请直接发送电子邮件到[wmkm0113\@gmail.com](mailto:wmkm0113@gmail.com?subject=payment_features)，同时请尽量在邮件中写明您可以负担的开发费用预算金额。
 
+## 捐款
+为了支持此项目，您可以向以下地址捐款：
+
+* 比特币地址：bc1q0n05a5r7vyph40lv0kshxscxwptr3z4pwpq5nd
+* 以太坊地址：0xeA448C14f65657Fce8020955807345ae5Fb0722B
+* Solana 地址：CiBFDVETZLFGUYTN6izbofCZ7oVAdghoMDpFgaUyetPf
+
 ## 赞助与鸣谢
 <span id="JetBrains">
     <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" width="100px" height="100px" alt="JetBrains Logo (Main) logo.">
