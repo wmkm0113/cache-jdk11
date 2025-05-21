@@ -1,7 +1,7 @@
 # 緩存工具包
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.nervousync/cache-jdk11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.nervousync/cache-jdk11/)
-[![License](https://img.shields.io/github/license/wmkm0113/cache-jdk11.svg)](https://github.com/wmkm0113/cache-jdk11/blob/master/LICENSE)
+[![Maven Central](https://img.shields.io/maven-central/v/org.nervousync/cache-jdk11?color=green)](https://mvnrepository.com/artifact/org.nervousync/cache-jdk11)
+[![License](https://img.shields.io/github/license/wmkm0113/cache-jdk11)](https://github.com/wmkm0113/cache-jdk11/blob/mainline/LICENSE)
 ![Language](https://img.shields.io/badge/language-Java-green)
 [![Twitter:wmkm0113](https://img.shields.io/twitter/follow/wmkm0113?label=Follow)](https://twitter.com/wmkm0113)
 
