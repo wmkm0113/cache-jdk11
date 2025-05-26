@@ -16,6 +16,7 @@
  */
 package org.nervousync.cache.provider.impl.xmemcached;
 
+import jakarta.annotation.Nonnull;
 import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.XMemcachedClientBuilder;
 import net.rubyeye.xmemcached.auth.AuthInfo;
@@ -291,9 +292,9 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		return serverConfig.getServerAddress() + ":" + super.serverPort(serverConfig.getServerPort());
 	}
 
-	private void initConnection(final List<InetSocketAddress> serverList, final int[] serverWeights,
+	private void initConnection(@Nonnull final List<InetSocketAddress> serverList, @Nonnull final int[] serverWeights,
 	                            final String userName, final String passWord) throws CacheException {
-		if (serverList == null || serverWeights == null || serverList.size() != serverWeights.length) {
+		if (serverList.size() != serverWeights.length) {
 			return;
 		}
 		XMemcachedClientBuilder clientBuilder = new XMemcachedClientBuilder(serverList, serverWeights);
@@ -305,9 +306,7 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 
 		if (StringUtils.notBlank(userName) && StringUtils.notBlank(passWord)) {
 			AuthInfo authInfo = AuthInfo.plain(userName, passWord);
-			Map<InetSocketAddress, AuthInfo> authInfoMap = new HashMap<>();
-			serverList.forEach(socketAddress -> authInfoMap.put(socketAddress, authInfo));
-			clientBuilder.setAuthInfoMap(authInfoMap);
+			serverList.forEach(socketAddress -> clientBuilder.addAuthInfo(socketAddress, authInfo));
 		}
 
 		if (serverList.size() > 1) {
