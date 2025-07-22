@@ -69,14 +69,13 @@ public abstract class BaseCacheTest {
                 .expireTime(5)
                 .clientPoolSize(CacheGlobals.DEFAULT_CLIENT_POOL_SIZE)
                 .maximumClient(CacheGlobals.DEFAULT_MAXIMUM_CLIENT)
-                .serverBuilder()
-                .serverConfig(PROPERTIES.getProperty("ServerAddress"), Integer.parseInt(PROPERTIES.getProperty("ServerPort")))
+                .serverBuilder(PROPERTIES.getProperty("ServerAddress"), Integer.parseInt(PROPERTIES.getProperty("ServerPort")))
                 .serverWeight(PROPERTIES.containsKey("ServerWeight")
                         ? Integer.parseInt(PROPERTIES.getProperty("ServerWeight"))
                         : Globals.DEFAULT_VALUE_INT)
-                .confirmParent(CacheConfigBuilder.class)
+                .confirm()
                 .authorization(PROPERTIES.getProperty("UserName"), PROPERTIES.getProperty("PassWord"))
-                .confirm();
+                .build();
         if (cacheConfig == null) {
             return;
         }

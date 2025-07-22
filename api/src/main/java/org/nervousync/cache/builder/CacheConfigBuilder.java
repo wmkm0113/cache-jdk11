@@ -26,12 +26,10 @@ import org.nervousync.commons.Globals;
 import org.nervousync.configs.ConfigureManager;
 import org.nervousync.exceptions.builder.BuilderException;
 import org.nervousync.utils.DateTimeUtils;
-import org.nervousync.utils.FileUtils;
 import org.nervousync.utils.ObjectUtils;
 import org.nervousync.utils.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,7 +40,7 @@ import java.util.Optional;
  * @author Steven Wee	<a href="mailto:wmkm0113@gmail.com">wmkm0113@gmail.com</a>
  * @version $Revision: 1.0.0 $ $Date: Mar 14, 2023 09:18:12 $
  */
-public final class CacheConfigBuilder extends AbstractBuilder<CacheConfig> implements ParentBuilder {
+public final class CacheConfigBuilder<T extends ParentBuilder> extends AbstractBuilder<T, CacheConfig> {
 
 	/**
 	 * <span class="en-US">Cache config instance</span>
@@ -69,7 +67,7 @@ public final class CacheConfigBuilder extends AbstractBuilder<CacheConfig> imple
 	 * @param cacheConfig   <span class="en-US">Current configure instance or null for generate new configure</span>
 	 *                      <span class="zh-CN">当前的缓存配置，如果传入null则生成一个新的配置</span>
 	 */
-	private CacheConfigBuilder(final ParentBuilder parentBuilder, @Nonnull final CacheConfig cacheConfig) {
+	private CacheConfigBuilder(final T parentBuilder, @Nonnull final CacheConfig cacheConfig) {
 		super(parentBuilder);
 		this.cacheConfig = cacheConfig;
 	}
@@ -78,7 +76,7 @@ public final class CacheConfigBuilder extends AbstractBuilder<CacheConfig> imple
 	 * <h3 class="en-US">Static method for create new cache configure builder</h3>
 	 * <h3 class="zh-CN">静态方法用于创建新的缓存配置构造器</h3>
 	 */
-	public static CacheConfigBuilder newBuilder() {
+	public static <T extends ParentBuilder> CacheConfigBuilder<T> newBuilder() {
 		return newBuilder(CacheGlobals.DEFAULT_CACHE_NAME);
 	}
 
@@ -89,7 +87,7 @@ public final class CacheConfigBuilder extends AbstractBuilder<CacheConfig> imple
 	 * @param cacheName <span class="en-US">Cache identifies name</span>
 	 *                  <span class="zh-CN">缓存识别名称</span>
 	 */
-	public static CacheConfigBuilder newBuilder(final String cacheName) {
+	public static <T extends ParentBuilder> CacheConfigBuilder<T> newBuilder(final String cacheName) {
 		CacheConfig cacheConfig =
 				Optional.ofNullable(ConfigureManager.getInstance())
 						.map(configureManager -> {
@@ -111,7 +109,7 @@ public final class CacheConfigBuilder extends AbstractBuilder<CacheConfig> imple
 	 * @param cacheConfig <span class="en-US">Current configure instance or null for generate new configure</span>
 	 *                    <span class="zh-CN">当前的缓存配置，如果传入null则生成一个新的配置</span>
 	 */
-	public static CacheConfigBuilder newBuilder(final CacheConfig cacheConfig) {
+	public static <T extends ParentBuilder> CacheConfigBuilder<T> newBuilder(final CacheConfig cacheConfig) {
 		return newBuilder(null, cacheConfig);
 	}
 
@@ -122,8 +120,8 @@ public final class CacheConfigBuilder extends AbstractBuilder<CacheConfig> imple
 	 * @param cacheConfig <span class="en-US">Current configure instance or null for generate new configure</span>
 	 *                    <span class="zh-CN">当前的缓存配置，如果传入null则生成一个新的配置</span>
 	 */
-	public static CacheConfigBuilder newBuilder(final ParentBuilder parentBuilder, final CacheConfig cacheConfig) {
-		return new CacheConfigBuilder(parentBuilder, (cacheConfig == null) ? new CacheConfig() : cacheConfig);
+	public static <T extends ParentBuilder> CacheConfigBuilder<T> newBuilder(final T parentBuilder, final CacheConfig cacheConfig) {
+		return new CacheConfigBuilder<>(parentBuilder, (cacheConfig == null) ? new CacheConfig() : cacheConfig);
 	}
 
 	/**
@@ -135,7 +133,7 @@ public final class CacheConfigBuilder extends AbstractBuilder<CacheConfig> imple
 	 * @return <span class="en-US">Current cache configure builder</span>
 	 * <span class="zh-CN">当前缓存配置构建器</span>
 	 */
-	public CacheConfigBuilder providerName(final String providerName) {
+	public CacheConfigBuilder<T> providerName(final String providerName) {
 		if (StringUtils.isEmpty(providerName)
 				|| ObjectUtils.nullSafeEquals(this.cacheConfig.getProviderName(), providerName)) {
 			return this;
@@ -154,7 +152,7 @@ public final class CacheConfigBuilder extends AbstractBuilder<CacheConfig> imple
 	 * @return <span class="en-US">Current cache configure builder</span>
 	 * <span class="zh-CN">当前缓存配置构建器</span>
 	 */
-	public CacheConfigBuilder connectTimeout(final int connectTimeout) {
+	public CacheConfigBuilder<T> connectTimeout(final int connectTimeout) {
 		if (connectTimeout <= 0 || this.cacheConfig.getConnectTimeout() == connectTimeout) {
 			return this;
 		}
@@ -172,7 +170,7 @@ public final class CacheConfigBuilder extends AbstractBuilder<CacheConfig> imple
 	 * @return <span class="en-US">Current cache configure builder</span>
 	 * <span class="zh-CN">当前缓存配置构建器</span>
 	 */
-	public CacheConfigBuilder expireTime(final int expireTime) {
+	public CacheConfigBuilder<T> expireTime(final int expireTime) {
 		if (expireTime <= 0 || this.cacheConfig.getExpireTime() == expireTime) {
 			return this;
 		}
@@ -190,7 +188,7 @@ public final class CacheConfigBuilder extends AbstractBuilder<CacheConfig> imple
 	 * @return <span class="en-US">Current cache configure builder</span>
 	 * <span class="zh-CN">当前缓存配置构建器</span>
 	 */
-	public CacheConfigBuilder clientPoolSize(final int clientPoolSize) {
+	public CacheConfigBuilder<T> clientPoolSize(final int clientPoolSize) {
 		if (clientPoolSize <= 0 || this.cacheConfig.getClientPoolSize() == clientPoolSize) {
 			return this;
 		}
@@ -208,7 +206,7 @@ public final class CacheConfigBuilder extends AbstractBuilder<CacheConfig> imple
 	 * @return <span class="en-US">Current cache configure builder</span>
 	 * <span class="zh-CN">当前缓存配置构建器</span>
 	 */
-	public CacheConfigBuilder maximumClient(final int maximumClient) {
+	public CacheConfigBuilder<T> maximumClient(final int maximumClient) {
 		if (maximumClient <= 0 || this.cacheConfig.getMaximumClient() == maximumClient) {
 			return this;
 		}
@@ -226,7 +224,7 @@ public final class CacheConfigBuilder extends AbstractBuilder<CacheConfig> imple
 	 * @return <span class="en-US">Current cache configure builder</span>
 	 * <span class="zh-CN">当前缓存配置构建器</span>
 	 */
-	public CacheConfigBuilder retryCount(final int retryCount) {
+	public CacheConfigBuilder<T> retryCount(final int retryCount) {
 		if (retryCount <= 0 || this.cacheConfig.getRetryCount() == retryCount) {
 			return this;
 		}
@@ -246,7 +244,7 @@ public final class CacheConfigBuilder extends AbstractBuilder<CacheConfig> imple
 	 * @return <span class="en-US">Current cache configure builder</span>
 	 * <span class="zh-CN">当前缓存配置构建器</span>
 	 */
-	public CacheConfigBuilder authorization(final String userName, final String passWord) {
+	public CacheConfigBuilder<T> authorization(final String userName, final String passWord) {
 		if (StringUtils.notBlank(userName) && !ObjectUtils.nullSafeEquals(this.cacheConfig.getUserName(), userName)) {
 			this.cacheConfig.setUserName(userName);
 			this.modified = Boolean.TRUE;
@@ -268,7 +266,7 @@ public final class CacheConfigBuilder extends AbstractBuilder<CacheConfig> imple
 	 * <span class="zh-CN">当前缓存配置构建器</span>
 	 * @see ClusterMode
 	 */
-	public CacheConfigBuilder clusterMode(final ClusterMode clusterMode) {
+	public CacheConfigBuilder<T> clusterMode(final ClusterMode clusterMode) {
 		if (ObjectUtils.nullSafeEquals(this.cacheConfig.getClusterMode(), clusterMode)) {
 			return this;
 		}
@@ -286,7 +284,7 @@ public final class CacheConfigBuilder extends AbstractBuilder<CacheConfig> imple
 	 * @return <span class="en-US">Current cache configure builder</span>
 	 * <span class="zh-CN">当前缓存配置构建器</span>
 	 */
-	public CacheConfigBuilder masterName(final String masterName) {
+	public CacheConfigBuilder<T> masterName(final String masterName) {
 		if (ObjectUtils.nullSafeEquals(this.cacheConfig.getMasterName(), masterName)) {
 			return this;
 		}
@@ -299,41 +297,13 @@ public final class CacheConfigBuilder extends AbstractBuilder<CacheConfig> imple
 	 * <h3 class="en-US">Configure cache server information</h3>
 	 * <h3 class="zh-CN">设置缓存服务器相关信息</h3>
 	 *
-	 * @param serverInfo <span class="en-US">Cache server information</span>
-	 *                   <span class="zh-CN">服务器信息</span>
+	 * @param serverAddress <span class="en-US">Cache server address</span>
+	 *                      <span class="zh-CN">缓存服务器地址</span>
 	 * @return <span class="en-US">Current cache configure builder</span>
 	 * <span class="zh-CN">当前缓存配置构建器</span>
 	 */
-	public CacheConfigBuilder servers(final String serverInfo) {
-		Optional.ofNullable(StringUtils.tokenizeToStringArray(serverInfo, Character.toString(FileUtils.LF)))
-				.map(Arrays::asList)
-				.ifPresent(serverInfoList -> serverInfoList.forEach(serverString -> {
-					String[] serverInfos = StringUtils.tokenizeToStringArray(serverString, "|");
-					if (serverInfos.length >= 1) {
-						CacheConfig.ServerConfig serverConfig = new CacheConfig.ServerConfig();
-						String[] serverData = StringUtils.tokenizeToStringArray(serverInfos[0], ":");
-						serverConfig.setServerAddress(serverData[0]);
-						if (serverData.length == 2) {
-							serverConfig.setServerPort(Integer.parseInt(serverData[1]));
-						}
-						if (serverInfos.length == 2) {
-							serverConfig.setServerWeight(Integer.parseInt(serverInfos[1]));
-						}
-						this.serverConfigList.add(serverConfig);
-					}
-				}));
-		return this;
-	}
-
-	/**
-	 * <h3 class="en-US">Configure cache server information</h3>
-	 * <h3 class="zh-CN">设置缓存服务器相关信息</h3>
-	 *
-	 * @return <span class="en-US">Current cache configure builder</span>
-	 * <span class="zh-CN">当前缓存配置构建器</span>
-	 */
-	public ServerConfigBuilder serverBuilder() {
-		return ServerConfigBuilder.newBuilder(this, new CacheConfig.ServerConfig());
+	public ServerConfigBuilder serverBuilder(@Nonnull final String serverAddress) {
+		return this.serverBuilder(serverAddress, Globals.DEFAULT_VALUE_INT);
 	}
 
 	/**
@@ -347,13 +317,13 @@ public final class CacheConfigBuilder extends AbstractBuilder<CacheConfig> imple
 	 * @return <span class="en-US">Current cache configure builder</span>
 	 * <span class="zh-CN">当前缓存配置构建器</span>
 	 */
-	public ServerConfigBuilder serverBuilder(final String serverAddress, final int serverPort) {
+	public ServerConfigBuilder serverBuilder(@Nonnull final String serverAddress, final int serverPort) {
 		return ServerConfigBuilder.newBuilder(this,
 				this.cacheConfig.getServerConfigList()
 						.stream()
 						.filter(existsConfig -> existsConfig.match(serverAddress, serverPort))
 						.findFirst()
-						.orElse(new CacheConfig.ServerConfig()));
+						.orElse(CacheConfig.newInstance(serverAddress, serverPort)));
 	}
 
 	/**
@@ -367,7 +337,7 @@ public final class CacheConfigBuilder extends AbstractBuilder<CacheConfig> imple
 	 * @return <span class="en-US">Current cache configure builder</span>
 	 * <span class="zh-CN">当前缓存配置构建器</span>
 	 */
-	public CacheConfigBuilder removeServer(final String serverAddress, final int serverPort) {
+	public CacheConfigBuilder<T> removeServer(final String serverAddress, final int serverPort) {
 		List<CacheConfig.ServerConfig> serverConfigList = this.cacheConfig.getServerConfigList();
 		if (serverConfigList.removeIf(serverConfig -> serverConfig.match(serverAddress, serverPort))) {
 			this.cacheConfig.setServerConfigList(serverConfigList);
@@ -376,7 +346,7 @@ public final class CacheConfigBuilder extends AbstractBuilder<CacheConfig> imple
 	}
 
 	@Override
-	public CacheConfig confirm() {
+	public CacheConfig build() {
 		List<CacheConfig.ServerConfig> existConfigs = this.cacheConfig.getServerConfigList();
 		boolean modified = Boolean.FALSE;
 		if (existConfigs.size() != this.serverConfigList.size()) {
@@ -437,7 +407,7 @@ public final class CacheConfigBuilder extends AbstractBuilder<CacheConfig> imple
 	 * @author Steven Wee	<a href="mailto:wmkm0113@gmail.com">wmkm0113@gmail.com</a>
 	 * @version $Revision: 1.0.0 $ $Date: 2023-03-14 09:33 $
 	 */
-	public static final class ServerConfigBuilder extends AbstractBuilder<CacheConfig.ServerConfig> {
+	public static final class ServerConfigBuilder extends AbstractBuilder<CacheConfigBuilder<?>, CacheConfig.ServerConfig> {
 
 		/**
 		 * <span class="en-US">Cache server config instance</span>
@@ -473,7 +443,7 @@ public final class CacheConfigBuilder extends AbstractBuilder<CacheConfig> imple
 		 * @param serverConfig  <span class="en-US">Current server configure instance or null for generate new configure</span>
 		 *                      <span class="zh-CN">当前的服务器缓存配置，如果传入null则生成一个新的配置</span>
 		 */
-		public static ServerConfigBuilder newBuilder(final CacheConfigBuilder parentBuilder,
+		public static ServerConfigBuilder newBuilder(final CacheConfigBuilder<?> parentBuilder,
 		                                             final CacheConfig.ServerConfig serverConfig) {
 			return new ServerConfigBuilder(parentBuilder, serverConfig);
 		}
@@ -532,7 +502,7 @@ public final class CacheConfigBuilder extends AbstractBuilder<CacheConfig> imple
 		}
 
 		@Override
-		public CacheConfig.ServerConfig confirm() {
+		public CacheConfig.ServerConfig build() {
 			if (this.modified) {
 				this.serverConfig.setLastModified(DateTimeUtils.currentUTCTimeMillis());
 			}

@@ -17,12 +17,15 @@
 package org.nervousync.cache.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.annotation.Nonnull;
 import jakarta.xml.bind.annotation.*;
+import org.nervousync.annotations.beans.OutputConfig;
 import org.nervousync.annotations.configs.Password;
 import org.nervousync.beans.core.BeanObject;
 import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.enumeration.ClusterMode;
 import org.nervousync.commons.Globals;
+import org.nervousync.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,10 +40,12 @@ import java.util.List;
 @XmlType(name = "cache_config", namespace = "https://nervousync.org/schemas/cache")
 @XmlRootElement(name = "cache_config", namespace = "https://nervousync.org/schemas/cache")
 @XmlAccessorType(XmlAccessType.NONE)
+@OutputConfig(formatted = true, defaultType = StringUtils.StringType.XML, types = {StringUtils.StringType.JSON, StringUtils.StringType.YAML})
 public final class CacheConfig extends BeanObject {
 
 	/**
-	 *
+	 * <span class="en-US">Serial version UID</span>
+	 * <span class="zh-CN">序列化UID</span>
 	 */
 	private static final long serialVersionUID = -6700233652090948759L;
 
@@ -194,7 +199,7 @@ public final class CacheConfig extends BeanObject {
 	}
 
 	/**
-	 * <h3 class="en-US">Retrieve cache server config list</h3>
+	 * <h3 class="en-US">Retrieve the cache server config list</h3>
 	 * <h3 class="zh-CN">读取缓存服务器列表</h3>
 	 *
 	 * @return <span class="en-US">Cache server list</span>          <span class="en-US">缓存服务器列表</span>
@@ -348,7 +353,7 @@ public final class CacheConfig extends BeanObject {
 	}
 
 	/**
-	 * <h3 class="en-US">Retrieve cluster master name</h3>
+	 * <h3 class="en-US">Retrieve cluster primary name</h3>
 	 * <h3 class="zh-CN">读取集群主服务器名称</h3>
 	 *
 	 * @return <span class="en-US">Master name</span>
@@ -392,7 +397,25 @@ public final class CacheConfig extends BeanObject {
 	}
 
 	/**
-	 * <h2 class="en-US">Cache server configure JavaBean</h2>
+	 * <h3 class="en-US">Static method for initialize the cache server configure information instance object</h3>
+	 * <h3 class="zh-CN">静态方法用于初始化缓存服务器配置信息实例对象</h3>
+	 *
+	 * @param serverAddress <span class="en-US">Cache server address</span>
+	 *                      <span class="zh-CN">缓存服务器地址</span>
+	 * @param serverPort    <span class="en-US">Cache server port</span>
+	 *                      <span class="zh-CN">缓存服务器端口号</span>
+	 * @return <span class="en-US">Cache server configure information instance object</span>
+	 * <span class="en-US">缓存服务器配置信息实例对象</span>
+	 */
+	public static ServerConfig newInstance(@Nonnull final String serverAddress, final int serverPort) {
+		ServerConfig serverConfig = new ServerConfig();
+		serverConfig.setServerAddress(serverAddress);
+		serverConfig.setServerPort(serverPort);
+		return serverConfig;
+	}
+
+	/**
+	 * <h2 class="en-US">Cache servers configure JavaBean</h2>
 	 * <h2 class="zh-CN">缓存服务器配置JavaBean</h2>
 	 *
 	 * @author Steven Wee	<a href="mailto:wmkm0113@gmail.com">wmkm0113@gmail.com</a>
@@ -404,7 +427,8 @@ public final class CacheConfig extends BeanObject {
 	public static final class ServerConfig extends BeanObject {
 
 		/**
-		 *
+		 * <span class="en-US">Serial version UID</span>
+		 * <span class="zh-CN">序列化UID</span>
 		 */
 		private static final long serialVersionUID = -9179968915973853412L;
 
@@ -444,7 +468,7 @@ public final class CacheConfig extends BeanObject {
 		}
 
 		/**
-		 * <h3 class="en-US">Match given server address/port is same as current config information</h3>
+		 * <h3 class="en-US">Match given server address/port is the same as current config information</h3>
 		 * <h3 class="zh-CN">比对指定的服务器地址/端口是否与当前配置信息一致</h3>
 		 *
 		 * @param serverAddress <span class="en-US">Cache server address</span>
@@ -459,7 +483,7 @@ public final class CacheConfig extends BeanObject {
 		}
 
 		/**
-		 * <h3 class="en-US">Match given server configure is same as current config information</h3>
+		 * <h3 class="en-US">Match given server configure is the same as current config information</h3>
 		 * <h3 class="zh-CN">比对指定的服务器配置信息是否与当前配置信息一致</h3>
 		 * Match boolean.
 		 *

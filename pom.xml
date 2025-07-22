@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.nervousync</groupId>
     <artifactId>cache-jdk11</artifactId>
-    <version>1.1.7</version>
+    <version>1.1.8</version>
     <modules>
         <module>core</module>
         <module>jedis</module>
@@ -13,7 +13,6 @@
         <module>api</module>
         <module>redisson</module>
         <module>nodeps</module>
-        <module>test</module>
     </modules>
     <packaging>pom</packaging>
     <name>Cache Package</name>
@@ -31,7 +30,7 @@
         </license>
     </licenses>
     <scm>
-        <tag>v1.1.7</tag>
+        <tag>v1.1.8</tag>
         <url>https://github.com/wmkm0113/cache-jdk11</url>
         <connection>scm:git:https://github.com/wmkm0113/cache-jdk11.git</connection>
         <developerConnection>scm:git:https://github.com/wmkm0113/cache-jdk11.git</developerConnection>
@@ -54,9 +53,9 @@
         <argLine>-Dfile.encoding=UTF-8</argLine>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <current.version>1.1.7</current.version>
-        <junit.jupiter.version>5.12.1</junit.jupiter.version>
-        <junit.platform.version>1.12.1</junit.platform.version>
+        <current.version>1.1.8</current.version>
+        <junit.jupiter.version>5.13.3</junit.jupiter.version>
+        <junit.platform.version>1.13.3</junit.platform.version>
     </properties>
     <build>
         <defaultGoal>compile</defaultGoal>

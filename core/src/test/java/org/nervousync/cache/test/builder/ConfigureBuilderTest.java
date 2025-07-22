@@ -54,24 +54,14 @@ public final class ConfigureBuilderTest {
 					.clientPoolSize(CacheGlobals.DEFAULT_CLIENT_POOL_SIZE)
 					.maximumClient(CacheGlobals.DEFAULT_MAXIMUM_CLIENT)
 					.masterName("ServerAddress")
-					.serverBuilder()
-					.serverConfig("onlyAddress")
-					.confirmParent(CacheConfigBuilder.class)
-					.serverBuilder()
-					.serverConfig("ServerAddress", 11211)
-					.serverWeight(1)
-					.confirmParent(CacheConfigBuilder.class)
-					.serverBuilder()
-					.serverConfig("ServerAddress1", 11211)
-					.serverWeight(1)
-					.confirmParent(CacheConfigBuilder.class)
-					.serverBuilder("ServerAddress1", 11211)
-					.serverWeight(2)
-					.confirmParent(CacheConfigBuilder.class)
+					.serverBuilder("onlyAddress").confirm()
+					.serverBuilder("ServerAddress", 11211).serverWeight(1).confirm()
+					.serverBuilder("ServerAddress1", 11211).serverWeight(1).confirm()
+					.serverBuilder("ServerAddress1", 11211).serverWeight(2).confirm()
 					.clusterMode(ClusterMode.Cluster)
 					.removeServer("ServerAddress1", 11211)
 					.authorization("userName", "passWord")
-					.confirm();
+					.build();
 			String xmlContent = cacheConfig.toString(StringUtils.StringType.XML);
 			this.logger.info("Generated_Configure", xmlContent);
 			CacheConfig parsedConfig = StringUtils.stringToObject(xmlContent, CacheConfig.class,
