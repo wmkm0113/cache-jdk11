@@ -82,5 +82,5 @@
             </xsd:element>
         </xsd:sequence>
     </xsd:complexType>
-    <xsd:element name="cache_config" type="cache_config" />
+    <xsd:element name="cache_config" type="cache_config"/>
 </xsd:schema>

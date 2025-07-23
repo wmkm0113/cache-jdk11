@@ -19,7 +19,7 @@ package org.nervousync.cache.test.redisson;
 import org.nervousync.cache.test.core.BaseCacheTest;
 
 public final class RedissonTest extends BaseCacheTest {
-    public RedissonTest() {
-        super("RedissonProvider");
-    }
+	public RedissonTest() {
+		super("RedissonProvider");
+	}
 }

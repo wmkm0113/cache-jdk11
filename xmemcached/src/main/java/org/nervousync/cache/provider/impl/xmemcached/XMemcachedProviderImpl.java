@@ -48,25 +48,16 @@ import java.util.concurrent.TimeoutException;
 public class XMemcachedProviderImpl extends AbstractProvider {
 
 	/**
-	 * Memcached client object
+	 * <span class="en-US">Memcached client instance object</span>
+	 * <span class="zh-CN">Memcached客户端实例对象</span>
 	 */
 	private MemcachedClient memcachedClient = null;
-
-	/**
-	 * Instantiates a new X memcached provider.
-	 */
-	public XMemcachedProviderImpl() {
-	}
 
 	@Override
 	public int defaultPort() {
 		return 11211;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.nervousync.cache.provider.Provider#set(String, String, int)
-	 */
 	@Override
 	public void set(final String key, final String value, final int expire) {
 		try {
@@ -81,10 +72,6 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.nervousync.cache.provider.Provider#add(String, String, int)
-	 */
 	@Override
 	public void add(final String key, final String value, final int expire) {
 		try {
@@ -99,10 +86,6 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.nervousync.cache.provider.Provider#replace(String, String, int)
-	 */
 	@Override
 	public void replace(final String key, final String value, final int expire) {
 		try {
@@ -117,10 +100,6 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see AbstractProvider#expire(String, int)
-	 */
 	@Override
 	public void expire(final String key, final int expire) {
 		try {
@@ -135,10 +114,6 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.nervousync.cache.provider.Provider#touch(String...)
-	 */
 	@Override
 	public void touch(final String... keys) {
 		try {
@@ -155,10 +130,6 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.nervousync.cache.provider.Provider#delete(String)
-	 */
 	@Override
 	public void delete(final String key) {
 		try {
@@ -173,10 +144,6 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.nervousync.cache.provider.Provider#get(String)
-	 */
 	@Override
 	public String get(final String key) {
 		try {
@@ -192,10 +159,6 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.nervousync.cache.provider.Provider#incr(String, long)
-	 */
 	@Override
 	public long incr(final String key, final long step) {
 		try {
@@ -211,10 +174,6 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		return Globals.DEFAULT_VALUE_LONG;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.nervousync.cache.provider.Provider#decr(String, long)
-	 */
 	@Override
 	public long decr(final String key, final long step) {
 		try {
@@ -230,10 +189,6 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		return Globals.DEFAULT_VALUE_LONG;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.nervousync.cache.provider.Provider#destroy()
-	 */
 	@Override
 	public void destroy() {
 		if (this.memcachedClient != null && !this.memcachedClient.isShutdown()) {
@@ -248,26 +203,14 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		}
 	}
 
-	private void printStackMessage(final Exception e) {
-		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("Stack_Message_Error", e);
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see AbstractProvider#singletonMode(ServerConfig, String, String)
-	 */
+	@Override
 	protected void singletonMode(final ServerConfig serverConfig,
 	                             final String userName, final String passWord) throws CacheException {
 		this.initConnection(AddrUtil.getAddresses(this.serverAddress(serverConfig)),
 				new int[]{CacheGlobals.DEFAULT_CACHE_SERVER_WEIGHT}, userName, passWord);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see AbstractProvider#clusterMode(List, String, String, String)
-	 */
+	@Override
 	protected void clusterMode(final List<ServerConfig> serverConfigList, final String masterName,
 	                           final String userName, final String passWord) throws CacheException {
 		final List<InetSocketAddress> serverList = new ArrayList<>();
@@ -285,6 +228,28 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		this.initConnection(serverList, serverWeights, userName, passWord);
 	}
 
+	/**
+	 * <h3 class="en-US">Print error stack message</h3>
+	 * <h3 class="zhs">打印异常信息</h3>
+	 *
+	 * @param e <span class="en-US">Exception instance object</span>
+	 *          <span class="zh-CN">异常实例对象</span>
+	 */
+	private void printStackMessage(final Exception e) {
+		if (this.logger.isDebugEnabled()) {
+			this.logger.debug("Stack_Message_Error", e);
+		}
+	}
+
+	/**
+	 * <h3 class="en-US">Generate connect string by given server address and port number</h3>
+	 * <h3 class="zhs">根据给定的服务器地址和端口号生成连接字符串</h3>
+	 *
+	 * @param serverConfig <h3 class="en-US">Cache server config information</h3>
+	 *                     <h3 class="zh-CN">缓存服务器配置信息</h3>
+	 * @return <span class="en-US">Connect string</span>
+	 * <span class="zh-CN">连接字符串</span>
+	 */
 	private String serverAddress(final ServerConfig serverConfig) {
 		if (serverConfig == null) {
 			return null;
@@ -292,6 +257,21 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 		return serverConfig.getServerAddress() + ":" + super.serverPort(serverConfig.getServerPort());
 	}
 
+	/**
+	 * <h3 class="en-US">Initialize connection</h3>
+	 * <h3 class="zhs">初始化连接</h3>
+	 *
+	 * @param serverList    <span class="en-US">Server address list</span>
+	 *                      <span class="zh-CN">服务器地址列表</span>
+	 * @param serverWeights <span class="en-US">Server weights array</span>
+	 *                      <span class="zh-CN">服务器权重数组</span>
+	 * @param userName      <span class="en-US">Authenticate username</span>
+	 *                      <span class="zh-CN">用于身份验证的用户名</span>
+	 * @param passWord      <span class="en-US">Authenticate password</span>
+	 *                      <span class="zh-CN">用于身份验证的密码</span>
+	 * @throws CacheException <span class="en-US">An error occurred while connecting to the server</span>
+	 *                        <span class="zh-CN">连接到服务器的过程中出错</span>
+	 */
 	private void initConnection(@Nonnull final List<InetSocketAddress> serverList, @Nonnull final int[] serverWeights,
 	                            final String userName, final String passWord) throws CacheException {
 		if (serverList.size() != serverWeights.length) {

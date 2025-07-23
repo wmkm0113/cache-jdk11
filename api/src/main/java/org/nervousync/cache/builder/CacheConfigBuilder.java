@@ -270,7 +270,7 @@ public final class CacheConfigBuilder<T extends ParentBuilder> extends AbstractB
 		if (ObjectUtils.nullSafeEquals(this.cacheConfig.getClusterMode(), clusterMode)) {
 			return this;
 		}
-		this.cacheConfig.setClusterMode(clusterMode.toString());
+		this.cacheConfig.setClusterMode(clusterMode);
 		this.modified = Boolean.TRUE;
 		return this;
 	}
@@ -382,7 +382,7 @@ public final class CacheConfigBuilder<T extends ParentBuilder> extends AbstractB
 		}
 		CacheConfig.ServerConfig serverConfig = (CacheConfig.ServerConfig) object;
 		if (StringUtils.isEmpty(serverConfig.getServerAddress())) {
-			throw new BuilderException(0x000C00000002L, "Server_Address_Cache_Error");
+			throw new BuilderException(0x000C00000002L);
 		}
 		if (this.serverConfigList.stream().anyMatch(existsConfig -> existsConfig.match(serverConfig))) {
 			this.serverConfigList.replaceAll(existsConfig -> {
@@ -449,37 +449,19 @@ public final class CacheConfigBuilder<T extends ParentBuilder> extends AbstractB
 		}
 
 		/**
-		 * <h3 class="en-US">Configure cache server address by default port number</h3>
-		 * <h3 class="zh-CN">配置缓存服务器地址，使用默认端口号</h3>
+		 * <h3 class="en-US">Configure cache server port number</h3>
+		 * <h3 class="zh-CN">配置缓存服务器端口号</h3>
 		 *
-		 * @param serverAddress <span class="en-US">Server address</span>
-		 *                      <span class="zh-CN">服务器地址</span>
+		 * @param serverPort <span class="en-US">Server port</span>
+		 *                   <span class="zh-CN">服务器端口号</span>
 		 * @return <span class="en-US">Current cache server configure builder</span>
 		 * <span class="zh-CN">当前缓存服务器配置构建器</span>
 		 */
-		public ServerConfigBuilder serverConfig(final String serverAddress) {
-			return this.serverConfig(serverAddress, Globals.DEFAULT_VALUE_INT);
-		}
-
-		/**
-		 * <h3 class="en-US">Configure cache server address and port number</h3>
-		 * <h3 class="zh-CN">配置缓存服务器地址和端口号</h3>
-		 *
-		 * @param serverAddress <span class="en-US">Server address</span>
-		 *                      <span class="zh-CN">服务器地址</span>
-		 * @param serverPort    <span class="en-US">Server port</span>
-		 *                      <span class="zh-CN">服务器端口号</span>
-		 * @return <span class="en-US">Current cache server configure builder</span>
-		 * <span class="zh-CN">当前缓存服务器配置构建器</span>
-		 */
-		public ServerConfigBuilder serverConfig(final String serverAddress, final int serverPort) {
-			if (ObjectUtils.nullSafeEquals(this.serverConfig.getServerAddress(), serverAddress)
-					&& this.serverConfig.getServerPort() == serverPort) {
-				return this;
+		public ServerConfigBuilder port(final int serverPort) {
+			if (this.serverConfig.getServerPort() != serverPort) {
+				this.serverConfig.setServerPort(serverPort);
+				this.modified = Boolean.TRUE;
 			}
-			this.serverConfig.setServerAddress(serverAddress);
-			this.serverConfig.setServerPort(serverPort);
-			this.modified = Boolean.TRUE;
 			return this;
 		}
 
@@ -492,7 +474,7 @@ public final class CacheConfigBuilder<T extends ParentBuilder> extends AbstractB
 		 * @return <span class="en-US">Current cache server configure builder</span>
 		 * <span class="zh-CN">当前缓存服务器配置构建器</span>
 		 */
-		public ServerConfigBuilder serverWeight(final int serverWeight) {
+		public ServerConfigBuilder weight(final int serverWeight) {
 			if (this.serverConfig.getServerWeight() == serverWeight) {
 				return this;
 			}

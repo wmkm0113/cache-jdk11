@@ -40,7 +40,8 @@ import java.util.List;
 @XmlType(name = "cache_config", namespace = "https://nervousync.org/schemas/cache")
 @XmlRootElement(name = "cache_config", namespace = "https://nervousync.org/schemas/cache")
 @XmlAccessorType(XmlAccessType.NONE)
-@OutputConfig(formatted = true, defaultType = StringUtils.StringType.XML, types = {StringUtils.StringType.JSON, StringUtils.StringType.YAML})
+@OutputConfig(formatted = true, defaultType = StringUtils.StringType.XML,
+		types = {StringUtils.StringType.XML, StringUtils.StringType.JSON, StringUtils.StringType.YAML})
 public final class CacheConfig extends BeanObject {
 
 	/**
@@ -90,7 +91,7 @@ public final class CacheConfig extends BeanObject {
 	 * <span class="zh-CN">集群模式</span>
 	 */
 	@XmlElement(name = "cluster_mode")
-	private String clusterMode = ClusterMode.Singleton.toString();
+	private ClusterMode clusterMode = ClusterMode.Singleton;
 	/**
 	 * <span class="en-US">Master name</span>
 	 * <span class="zh-CN">主服务器名称</span>
@@ -140,7 +141,7 @@ public final class CacheConfig extends BeanObject {
 	 * <span class="zh-CN">缓存适配器名称</span>
 	 */
 	public String getProviderName() {
-		return providerName;
+		return this.providerName;
 	}
 
 	/**
@@ -162,7 +163,7 @@ public final class CacheConfig extends BeanObject {
 	 * <span class="zh-CN">缓存服务器用户名</span>
 	 */
 	public String getUserName() {
-		return userName;
+		return this.userName;
 	}
 
 	/**
@@ -184,7 +185,7 @@ public final class CacheConfig extends BeanObject {
 	 * <span class="zh-CN">缓存服务器密码</span>
 	 */
 	public String getPassWord() {
-		return passWord;
+		return this.passWord;
 	}
 
 	/**
@@ -202,10 +203,11 @@ public final class CacheConfig extends BeanObject {
 	 * <h3 class="en-US">Retrieve the cache server config list</h3>
 	 * <h3 class="zh-CN">读取缓存服务器列表</h3>
 	 *
-	 * @return <span class="en-US">Cache server list</span>          <span class="en-US">缓存服务器列表</span>
+	 * @return <span class="en-US">Cache server list</span>
+	 * <span class="en-US">缓存服务器列表</span>
 	 */
 	public List<ServerConfig> getServerConfigList() {
-		return serverConfigList;
+		return this.serverConfigList;
 	}
 
 	/**
@@ -227,7 +229,7 @@ public final class CacheConfig extends BeanObject {
 	 * <span class="zh-CN">连接超时时间</span>
 	 */
 	public int getConnectTimeout() {
-		return connectTimeout;
+		return this.connectTimeout;
 	}
 
 	/**
@@ -249,7 +251,7 @@ public final class CacheConfig extends BeanObject {
 	 * <span class="zh-CN">连接超时重试次数</span>
 	 */
 	public int getRetryCount() {
-		return retryCount;
+		return this.retryCount;
 	}
 
 	/**
@@ -271,7 +273,7 @@ public final class CacheConfig extends BeanObject {
 	 * <span class="zh-CN">默认过期时间</span>
 	 */
 	public int getExpireTime() {
-		return expireTime;
+		return this.expireTime;
 	}
 
 	/**
@@ -293,7 +295,7 @@ public final class CacheConfig extends BeanObject {
 	 * <span class="zh-CN">连接池大小</span>
 	 */
 	public int getClientPoolSize() {
-		return clientPoolSize;
+		return this.clientPoolSize;
 	}
 
 	/**
@@ -315,7 +317,7 @@ public final class CacheConfig extends BeanObject {
 	 * <span class="zh-CN">客户端实例阈值</span>
 	 */
 	public int getMaximumClient() {
-		return maximumClient;
+		return this.maximumClient;
 	}
 
 	/**
@@ -336,8 +338,8 @@ public final class CacheConfig extends BeanObject {
 	 * @return <span class="en-US">Cluster mode</span>
 	 * <span class="zh-CN">集群类型</span>
 	 */
-	public String getClusterMode() {
-		return clusterMode;
+	public ClusterMode getClusterMode() {
+		return this.clusterMode;
 	}
 
 	/**
@@ -348,7 +350,7 @@ public final class CacheConfig extends BeanObject {
 	 *                    <span class="zh-CN">集群类型</span>
 	 * @see org.nervousync.cache.enumeration.ClusterMode
 	 */
-	public void setClusterMode(final String clusterMode) {
+	public void setClusterMode(final ClusterMode clusterMode) {
 		this.clusterMode = clusterMode;
 	}
 
@@ -360,7 +362,7 @@ public final class CacheConfig extends BeanObject {
 	 * <span class="zh-CN">主服务器名称</span>
 	 */
 	public String getMasterName() {
-		return masterName;
+		return this.masterName;
 	}
 
 	/**
@@ -424,6 +426,8 @@ public final class CacheConfig extends BeanObject {
 	@XmlType(name = "server_config", namespace = "https://nervousync.org/schemas/cache")
 	@XmlRootElement(name = "server_config", namespace = "https://nervousync.org/schemas/cache")
 	@XmlAccessorType(XmlAccessType.NONE)
+	@OutputConfig(formatted = true, defaultType = StringUtils.StringType.XML,
+			types = {StringUtils.StringType.XML, StringUtils.StringType.JSON, StringUtils.StringType.YAML})
 	public static final class ServerConfig extends BeanObject {
 
 		/**
@@ -508,7 +512,7 @@ public final class CacheConfig extends BeanObject {
 		 * <span class="zh-CN">缓存服务器地址</span>
 		 */
 		public String getServerAddress() {
-			return serverAddress;
+			return this.serverAddress;
 		}
 
 		/**
@@ -530,7 +534,7 @@ public final class CacheConfig extends BeanObject {
 		 * <span class="zh-CN">缓存服务器端口号</span>
 		 */
 		public int getServerPort() {
-			return serverPort;
+			return this.serverPort;
 		}
 
 		/**
@@ -552,7 +556,7 @@ public final class CacheConfig extends BeanObject {
 		 * <span class="zh-CN">缓存服务器权重值</span>
 		 */
 		public int getServerWeight() {
-			return serverWeight;
+			return this.serverWeight;
 		}
 
 		/**

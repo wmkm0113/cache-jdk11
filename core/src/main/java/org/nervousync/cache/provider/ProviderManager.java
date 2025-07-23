@@ -29,11 +29,12 @@ import java.util.*;
  * @author Steven Wee	<a href="mailto:wmkm0113@gmail.com">wmkm0113@gmail.com</a>
  * @version $Revision: 1.0.0 $ $Date: Dec 16, 2020 10:31:28 $
  */
+@SuppressWarnings("unused")
 public final class ProviderManager {
 
 	/**
-	 * <span class="en-US">Logger instance</span>
-	 * <span class="zhs">日志实例</span>
+	 * <span class="en-US">Multilingual supported logger instance</span>
+	 * <span class="zh-CN">多语言支持的日志对象</span>
 	 */
 	private static final LoggerUtils.Logger LOGGER = LoggerUtils.getLogger(ProviderManager.class);
 
@@ -56,21 +57,21 @@ public final class ProviderManager {
 	 * <h3 class="en-US">Retrieve registered provider name list</h3>
 	 * <h3 class="zhs">读取已注册的缓存适配器名称列表</h3>
 	 *
-	 * @return  <span class="en-US">Registered provider name list</span>
-	 *          <span class="zhs">已注册的缓存适配器名称列表</span>
+	 * @return <span class="en-US">Registered provider name list</span>
+	 * <span class="zhs">已注册的缓存适配器名称列表</span>
 	 */
 	public static List<String> registeredProviderNames() {
 		return new ArrayList<>(REGISTERED_PROVIDERS.keySet());
 	}
 
 	/**
-	 * <h3 class="en-US">Check register status of given provider name</h3>
+	 * <h3 class="en-US">Check the register status of given provider name</h3>
 	 * <h3 class="zhs">检查给定的缓存适配器名称是否已经注册</h3>
 	 *
-	 * @param providerName  <span class="en-US">Cache provider name</span>
-	 *                      <span class="zhs">缓存适配器名称</span>
-	 * @return  <span class="en-US">Register status</span>
-	 *          <span class="zhs">注册状态</span>
+	 * @param providerName <span class="en-US">Cache provider name</span>
+	 *                     <span class="zhs">缓存适配器名称</span>
+	 * @return <span class="en-US">Register status</span>
+	 * <span class="zhs">注册状态</span>
 	 */
 	public static boolean registeredProvider(final String providerName) {
 		if (StringUtils.isEmpty(providerName)) {
@@ -83,10 +84,10 @@ public final class ProviderManager {
 	 * <h3 class="en-US">Retrieve provider class by given provider name</h3>
 	 * <h3 class="zhs">根据指定的适配器名称获取注册的适配器类</h3>
 	 *
-	 * @param providerName  <span class="en-US">Cache provider name</span>
-	 *                      <span class="zhs">缓存适配器名称</span>
-	 * @return  <span class="en-US">Register provider class</span>
-	 *          <span class="zhs">注册适配器类</span>
+	 * @param providerName <span class="en-US">Cache provider name</span>
+	 *                     <span class="zhs">缓存适配器名称</span>
+	 * @return <span class="en-US">Register provider class</span>
+	 * <span class="zhs">注册适配器类</span>
 	 */
 	public static Class<?> providerClass(final String providerName) {
 		if (StringUtils.isEmpty(providerName)) {
@@ -96,11 +97,11 @@ public final class ProviderManager {
 	}
 
 	/**
-	 * <h3 class="en-US">Register cache provider implement class manual</h3>
+	 * <h3 class="en-US">Register cache provider implements class manual</h3>
 	 * <h3 class="zhs">注册缓存适配器</h3>
 	 *
-	 * @param providerClass     <span class="en-US">Cache provider implements class</span>
-	 *                          <span class="zhs">缓存适配器实现类</span>
+	 * @param providerClass <span class="en-US">Cache provider implements class</span>
+	 *                      <span class="zhs">缓存适配器实现类</span>
 	 */
 	private static void registerProvider(final Class<?> providerClass) {
 		Optional.ofNullable(providerClass.getAnnotation(Provider.class))

@@ -48,18 +48,6 @@ public final class CacheManagerImpl implements CacheManager {
 	 */
 	private static final Hashtable<String, CacheClient> REGISTERED_CACHE = new Hashtable<>();
 
-	public CacheManagerImpl() {
-	}
-
-	/**
-	 * <h3 class="en-US">Register cache instance by given cache name and config instance</h3>
-	 * <h3 class="zh-CN">使用指定的缓存名称、配置信息注册缓存</h3>
-	 *
-	 * @param cacheName   <span class="en-US">Cache identifies name</span>
-	 *                    <span class="zh-CN">缓存识别名称</span>
-	 * @param cacheConfig <span class="en-US">Cache config instance</span>
-	 *                    <span class="zh-CN">缓存配置信息</span>
-	 */
 	@Override
 	public boolean register(final String cacheName, final CacheConfig cacheConfig) {
 		if (StringUtils.isEmpty(cacheName) || !ProviderManager.registeredProvider(cacheConfig.getProviderName())) {
@@ -87,48 +75,21 @@ public final class CacheManagerImpl implements CacheManager {
 		}
 	}
 
-	/**
-	 * <h3 class="en-US">Check given cache name was registered</h3>
-	 * <h3 class="zh-CN">使用指定的缓存名称、配置信息注册缓存</h3>
-	 *
-	 * @param cacheName <span class="en-US">Cache identifies name</span>
-	 *                  <span class="zh-CN">缓存识别名称</span>
-	 */
 	@Override
 	public boolean registered(String cacheName) {
 		return REGISTERED_CACHE.containsKey(cacheName);
 	}
 
-	/**
-	 * <h3 class="en-US">Retrieve cache client instance by given cache name</h3>
-	 * <h3 class="zh-CN">使用指定的缓存名称获取缓存操作客户端</h3>
-	 *
-	 * @param cacheName <span class="en-US">Cache identifies name</span>
-	 *                  <span class="zh-CN">缓存识别名称</span>
-	 * @return <span class="en-US">Cache client instance or null if cache name not registered</span>
-	 * <span class="zh-CN">缓存客户端实例，若缓存名称未注册则返回null</span>
-	 */
 	@Override
 	public CacheClient client(final String cacheName) {
 		return REGISTERED_CACHE.get(cacheName);
 	}
 
-	/**
-	 * <h3 class="en-US">Remove cache instance from the registered list</h3>
-	 * <h3 class="zh-CN">移除指定的缓存</h3>
-	 *
-	 * @param cacheName <span class="en-US">Cache identifies name</span>
-	 *                  <span class="zh-CN">缓存识别名称</span>
-	 */
 	@Override
 	public void deregister(final String cacheName) {
 		Optional.ofNullable(REGISTERED_CACHE.remove(cacheName)).ifPresent(CacheClient::destroy);
 	}
 
-	/**
-	 * <h3 class="en-US">Destroy manager instance</h3>
-	 * <h3 class="zh-CN">销毁当前的管理实例</h3>
-	 */
 	@Override
 	public void destroy() {
 		REGISTERED_CACHE.values().forEach(CacheClient::destroy);

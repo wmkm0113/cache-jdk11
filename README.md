@@ -11,8 +11,15 @@ English
 
 A unified toolkit created for caching operations, using a unified program interface to complete the invocation of different caching services.
 
-**Redis Client:** Jedis 5.1.1, Lettuce 6.3.1.RELEASE, Redisson 3.26.0   
+**Redis Client:** Jedis 6.0.0, Lettuce 6.7.1.RELEASE, Redisson 3.50.0   
 **Memcached Client:** Xmemcached 2.4.8
+
+## Table of contents
+* [JDK Version](#jdk-version)
+* [End of Life](#end-of-life)
+* [Usage](#usage)
+* [Contributions and feedback](#contributions-and-feedback)
+* [Donations](#donations)
 
 ## JDK Version
 Compile：OpenJDK 11   
@@ -69,12 +76,12 @@ Runtime: OpenJDK 11+ or compatible version
 
 ### 2. Initialize and obtain the cache utility instance
 Program developers obtain the cache manager instance object by calling the getInstance static method of org.nervousync.cache.CacheUtils.
-When obtaining the cache manager instance object, if the cache manager has not been initialized, the toolkit will automatically perform the initialization work and search for the existing cache manager implementation class through Java's SPI mechanism. 
+When obtaining the cache manager instance object, if the cache manager has not been initialized, the toolkit will automatically perform the initialization work and search for the existing cache manager implementation class through Java's SPI mechanism.
 If the cache manager implementation class is not found, it will throw Exception information appears. During the initialization process, the system's default cache configuration information is also read and registered through the configuration file manager.
 
 ### 3. Register cache server configure information
-Program developers call the register method of the org.nervousync.cache.CacheUtils instance object and pass in the cache name as the parameter. 
-The system uses the configuration file manager to read the cache configuration information of the given cache name and registers it using the read configuration information. 
+Program developers call the register method of the org.nervousync.cache.CacheUtils instance object and pass in the cache name as the parameter.
+The system uses the configuration file manager to read the cache configuration information of the given cache name and registers it using the read configuration information.
 Initialize the cache, and the register method returns the registration result of the boolean type.
 
 ### 4. Obtain cache server client instance and operate data
@@ -82,19 +89,19 @@ Program developers obtain the cache server operation client by calling the clien
 Returns null if the cache name is not registered.
 
 ### 5. Customize cache client manager implements class
-Program developers can customize the cache manager to implement the customized cache client manager they need. The specific method is:   
-1. Create a cache client manager implementation class and implement the org.nervousync.cache.api.CacheManager interface.   
+Program developers can customize the cache manager to implement the customized cache client manager they need. The specific method is:
+1. Create a cache client manager implementation class and implement the org.nervousync.cache.api.CacheManager interface.
 2. Create the /META-INF/services/org.nervousync.cache.api.CacheManager file and write the complete name of the implementation class (package name + class name) in the file.   
-**Notice:** If there are multiple cache client manager implementation classes in the entire project, the system will select the first implementation class based on the loading order.
+   **Notice:** If there are multiple cache client manager implementation classes in the entire project, the system will select the first implementation class based on the loading order.
 
 ## Contributions and feedback
-Friends are welcome to translate the prompt information, error messages, 
+Friends are welcome to translate the prompt information, error messages,
 etc. in this document and project into more languages to help more users better understand and use this toolkit.   
 If you find problems during use or need to improve or add related functions, please submit an issue to this project
 or send email to [wmkm0113\@gmail.com](mailto:wmkm0113@gmail.com?subject=bugs_and_features)   
 For better communication, please include the following information when submitting an issue or sending an email:
-1. The purpose is: discover bugs/function improvements/add new features   
-2. Please paste the following information (if it exists): incoming data, expected results, error stack information   
+1. The purpose is: discover bugs/function improvements/add new features
+2. Please paste the following information (if it exists): incoming data, expected results, error stack information
 3. Where do you think there may be a problem with the code (if provided, it can help us find and solve the problem as soon as possible)
 
 If you are submitting information about adding new features, please ensure that the features to be added are general needs, that is, the new features can help most users.
@@ -110,9 +117,3 @@ To support this project, you can make a donation to:
 * Ethereum address: 0xd88a49056E6ECE59e89c7e5724729A0FB0872986
 * Solana address: GSwycoeVZHRW72TcvW38qLfqsWhFbwDbxamaEuwEwQjW
 * BNB address: 0xd88a49056E6ECE59e89c7e5724729A0FB0872986
-
-## Sponsorship and Thanks To
-<span id="JetBrains">
-    <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" width="100px" height="100px" alt="JetBrains Logo (Main) logo.">
-    <span>Many thanks to <a href="https://www.jetbrains.com/">JetBrains</a> for sponsoring our Open Source projects with a license.</span>
-</span>

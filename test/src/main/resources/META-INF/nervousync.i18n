@@ -1,6 +1,12 @@
 {
   "groupId": "org.nervousync",
   "bundle": "cache",
+  "errors": [
+    {
+      "code": "0x000C00001001",
+      "key": "Configure_Invalid"
+    }
+  ],
   "languages": [
     {
       "code": "en-US",
@@ -45,6 +51,10 @@
         {
           "key": "Updatable_Configure",
           "content": "Updatable configure: {0}"
+        },
+        {
+          "key": "Configure_Invalid",
+          "content": "Server configure information invalid! "
         }
       ]
     },
@@ -91,6 +101,10 @@
         {
           "key": "Updatable_Configure",
           "content": "更新的配置信息：{0}"
+        },
+        {
+          "key": "Configure_Invalid",
+          "content": "服务器配置信息错误！"
         }
       ]
     }

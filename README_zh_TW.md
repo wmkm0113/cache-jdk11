@@ -11,8 +11,15 @@
 
 為緩存操作打造的統一工具包，使用統一的程式介面，完成不同緩存服務的調用。
 
-**Redis Client:** Jedis 5.1.1, Lettuce 6.3.1.RELEASE, Redisson 3.26.0   
+**Redis Client:** Jedis 6.0.0, Lettuce 6.7.1.RELEASE, Redisson 3.50.0   
 **Memcached Client:** Xmemcached 2.4.8
+
+## 目錄
+* [JDK版本](#JDK版本)
+* [生命週期](#生命週期)
+* [使用方法](#使用方法)
+* [貢獻與回饋](#貢獻與回饋)
+* [捐款](#捐款)
 
 ## JDK版本：
 編譯：OpenJDK 11   
@@ -104,9 +111,3 @@
 * 以太坊地址: 0xd88a49056E6ECE59e89c7e5724729A0FB0872986
 * Solana 地址: GSwycoeVZHRW72TcvW38qLfqsWhFbwDbxamaEuwEwQjW
 * BNB 地址: 0xd88a49056E6ECE59e89c7e5724729A0FB0872986
-
-## 贊助與鳴謝
-<span id="JetBrains">
-    <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" width="100px" height="100px" alt="JetBrains Logo (Main) logo.">
-    <span>非常感謝 <a href="https://www.jetbrains.com/">JetBrains</a> 通過許可證贊助我們的開源項目。</span>
-</span>

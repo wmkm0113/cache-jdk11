@@ -36,9 +36,18 @@ import java.util.ServiceLoader;
  * @author Steven Wee	<a href="mailto:wmkm0113@gmail.com">wmkm0113@gmail.com</a>
  * @version $Revision: 1.0.0 $ $Date: Nov 18, 2022 17:21:36 $
  */
+@SuppressWarnings("unused")
 public final class CacheUtils {
 
+	/**
+	 * <span class="en-US">Multilingual supported logger instance</span>
+	 * <span class="zh-CN">多语言支持的日志对象</span>
+	 */
 	private static final LoggerUtils.Logger LOGGER = LoggerUtils.getLogger(CacheUtils.class);
+	/**
+	 * <span class="en-US">Cache utilities singleton instance object</span>
+	 * <span class="zh-CN">缓存工具类单例实例对象</span>
+	 */
 	private static CacheUtils INSTANCE = null;
 	/**
 	 * <span class="en-US">Cache manager instance</span>

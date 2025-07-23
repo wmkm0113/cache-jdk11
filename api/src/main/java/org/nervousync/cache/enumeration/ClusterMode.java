@@ -16,6 +16,8 @@
  */
 package org.nervousync.cache.enumeration;
 
+import jakarta.xml.bind.annotation.XmlEnum;
+
 /**
  * <h2 class="en-US">Cluster Mode Define</h2>
  * <h2 class="zh-CN">集群类型定义</h2>
@@ -23,6 +25,7 @@ package org.nervousync.cache.enumeration;
  * @author Steven Wee	<a href="mailto:wmkm0113@gmail.com">wmkm0113@gmail.com</a>
  * @version $Revision: 1.0.0 $ $Date: Nov 18, 2022 18:05:28 $
  */
+@XmlEnum
 public enum ClusterMode {
-    Cluster, Sentinel, Master_Slave, Singleton
+	Cluster, Sentinel, Master_Slave, Singleton
 }

@@ -40,192 +40,158 @@ import java.util.List;
 @Provider(name = "RedissonProvider", titleKey = "redisson.cache.provider.name")
 public final class RedissonProviderImpl extends AbstractProvider {
 
-    private RedissonClient redissonClient = null;
+	/**
+	 * <span class="en-US">Redisson client instance object</span>
+	 * <span class="zh-CN">Redisson客户端实例对象</span>
+	 */
+	private RedissonClient redissonClient = null;
 
-    public RedissonProviderImpl() {
-    }
+	@Override
+	public int defaultPort() {
+		return 6379;
+	}
 
-    @Override
-    public int defaultPort() {
-        return 6379;
-    }
+	@Override
+	public void set(final String key, final String value, final int expire) {
+		this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING))
+				.set(value, Duration.ofSeconds(this.expiryTime(expire)));
+	}
 
-    /*
-     * (non-Javadoc)
-     * @see org.nervousync.cache.provider.Provider#set(String, String, int)
-     */
-    @Override
-    public void set(final String key, final String value, final int expire) {
-        this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING))
-                .set(value, Duration.ofSeconds(this.expiryTime(expire)));
-    }
+	@Override
+	public void add(final String key, final String value, final int expire) {
+		this.set(key, value, expire);
+	}
 
-    /*
-     * (non-Javadoc)
-     * @see org.nervousync.cache.provider.Provider#add(String, String, int)
-     */
-    @Override
-    public void add(final String key, final String value, final int expire) {
-        this.set(key, value, expire);
-    }
+	@Override
+	public void replace(final String key, final String value, final int expire) {
+		this.set(key, value, expire);
+	}
 
-    /*
-     * (non-Javadoc)
-     * @see org.nervousync.cache.provider.Provider#replace(String, String, int)
-     */
-    @Override
-    public void replace(final String key, final String value, final int expire) {
-        this.set(key, value, expire);
-    }
+	@Override
+	public void touch(final String... keys) {
+		Arrays.asList(keys)
+				.forEach(key -> this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING)).touch());
+	}
 
-    /*
-     * (non-Javadoc)
-     * @see org.nervousync.cache.provider.Provider#touch(String...)
-     */
-    @Override
-    public void touch(final String... keys) {
-        Arrays.asList(keys)
-                .forEach(key -> this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING)).touch());
-    }
+	@Override
+	public void delete(final String key) {
+		this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING)).delete();
+	}
 
-    /*
-     * (non-Javadoc)
-     * @see org.nervousync.cache.provider.Provider#delete(String)
-     */
-    @Override
-    public void delete(final String key) {
-        this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING)).delete();
-    }
+	@Override
+	public String get(final String key) {
+		return (String) this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING)).get();
+	}
 
-    /*
-     * (non-Javadoc)
-     * @see org.nervousync.cache.provider.Provider#get(String)
-     */
-    @Override
-    public String get(final String key) {
-        return (String) this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING)).get();
-    }
+	@Override
+	public long incr(final String key, final long step) {
+		return this.redissonClient.getAtomicLong(key).addAndGet(step);
+	}
 
-    /*
-     * (non-Javadoc)
-     * @see org.nervousync.cache.provider.Provider#incr(String, long)
-     */
-    @Override
-    public long incr(final String key, final long step) {
-        return this.redissonClient.getAtomicLong(key).addAndGet(step);
-    }
+	@Override
+	public long decr(final String key, final long step) {
+		return this.redissonClient.getAtomicLong(key).addAndGet(step * -1L);
+	}
 
-    /*
-     * (non-Javadoc)
-     * @see org.nervousync.cache.provider.Provider#decr(String, long)
-     */
-    @Override
-    public long decr(final String key, final long step) {
-        return this.redissonClient.getAtomicLong(key).addAndGet(step * -1L);
-    }
+	@Override
+	public void destroy() {
+		if (!this.redissonClient.isShutdown() && !this.redissonClient.isShuttingDown()) {
+			this.redissonClient.shutdown();
+		}
+	}
 
-    /*
-     * (non-Javadoc)
-     * @see org.nervousync.cache.provider.Provider#destroy()
-     */
-    @Override
-    public void destroy() {
-        if (!this.redissonClient.isShutdown() && !this.redissonClient.isShuttingDown()) {
-            this.redissonClient.shutdown();
-        }
-    }
+	@Override
+	public void expire(final String key, final int expire) {
+		this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING))
+				.expire(Duration.ofSeconds(this.expiryTime(expire)));
+	}
 
-    /*
-     * (non-Javadoc)
-     * @see AbstractProvider#expire(String, int)
-     */
-    @Override
-    public void expire(final String key, final int expire) {
-        this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING))
-                .expire(Duration.ofMillis(this.expiryTime(expire) * 1000L));
-    }
+	@Override
+	protected void singletonMode(final CacheConfig.ServerConfig serverConfig,
+	                             final String userName, final String passWord) {
+		Config config = new Config();
+		SingleServerConfig singleConfig = config.useSingleServer()
+				.setAddress(this.serverAddress(serverConfig.getServerAddress(), serverConfig.getServerPort()))
+				.setConnectionMinimumIdleSize(this.getClientPoolSize())
+				.setConnectTimeout(this.getConnectTimeout() * 1000)
+				.setConnectionPoolSize(this.getClientPoolSize())
+				.setDatabase(0);
+		if (StringUtils.notBlank(passWord)) {
+			singleConfig.setPassword(passWord);
+			if (StringUtils.notBlank(userName)) {
+				singleConfig.setUsername(userName);
+			}
+		}
+		config.setTransportMode(TransportMode.NIO);
+		this.redissonClient = Redisson.create(config);
+	}
 
-    /*
-     * (non-Javadoc)
-     * @see AbstractProvider#singletonMode(CacheConfig.ServerConfig, String, String)
-     */
-    protected void singletonMode(final CacheConfig.ServerConfig serverConfig,
-                               final String userName, final String passWord) {
-        Config config = new Config();
-        SingleServerConfig singleConfig = config.useSingleServer()
-                .setAddress(this.serverAddress(serverConfig.getServerAddress(), serverConfig.getServerPort()))
-                .setConnectionMinimumIdleSize(this.getClientPoolSize())
-                .setConnectTimeout(this.getConnectTimeout() * 1000)
-                .setConnectionPoolSize(this.getClientPoolSize())
-                .setDatabase(0);
-        if (StringUtils.notBlank(passWord)) {
-            singleConfig.setPassword(passWord);
-            if (StringUtils.notBlank(userName)) {
-                singleConfig.setUsername(userName);
-            }
-        }
-        config.setTransportMode(TransportMode.NIO);
-        this.redissonClient = Redisson.create(config);
-    }
+	@Override
+	protected void clusterMode(final List<CacheConfig.ServerConfig> serverConfigList,
+	                           final String masterName, final String userName, final String passWord) {
+		Config config = new Config();
+		switch (this.getClusterMode()) {
+			case Sentinel:
+				SentinelServersConfig sentinelConfig = config.useSentinelServers()
+						.setMasterName(masterName)
+						.setSentinelUsername(StringUtils.notBlank(userName) ? userName : null)
+						.setSentinelPassword(StringUtils.notBlank(passWord) ? userName : null)
+						.setConnectTimeout(this.getConnectTimeout() * 1000)
+						.setRetryAttempts(this.getRetryCount())
+						.setSlaveConnectionPoolSize(this.getClientPoolSize())
+						.setMasterConnectionPoolSize(this.getClientPoolSize());
+				serverConfigList.forEach(serverConfig ->
+						sentinelConfig.addSentinelAddress(this.serverAddress(serverConfig.getServerAddress(),
+								serverConfig.getServerPort())));
+				break;
+			case Master_Slave:
+				MasterSlaveServersConfig masterSlaveConfig = config.useMasterSlaveServers()
+						.setUsername(StringUtils.notBlank(userName) ? userName : null)
+						.setPassword(StringUtils.notBlank(passWord) ? userName : null)
+						.setConnectTimeout(this.getConnectTimeout() * 1000)
+						.setRetryAttempts(this.getRetryCount())
+						.setSlaveConnectionPoolSize(this.getClientPoolSize())
+						.setMasterConnectionPoolSize(this.getClientPoolSize())
+						.setReadMode(ReadMode.SLAVE);
+				serverConfigList.forEach(serverConfig -> {
+					if (serverConfig.getServerAddress().equalsIgnoreCase(masterName)) {
+						masterSlaveConfig.setMasterAddress(this.serverAddress(serverConfig.getServerAddress(),
+								serverConfig.getServerPort()));
+					} else {
+						masterSlaveConfig.addSlaveAddress(this.serverAddress(serverConfig.getServerAddress(),
+								serverConfig.getServerPort()));
+					}
+				});
+				break;
+			default:
+				ClusterServersConfig clusterConfig = config.useClusterServers()
+						.setUsername(StringUtils.notBlank(userName) ? userName : null)
+						.setPassword(StringUtils.notBlank(passWord) ? userName : null)
+						.setConnectTimeout(this.getConnectTimeout() * 1000)
+						.setRetryAttempts(this.getRetryCount())
+						.setSlaveConnectionPoolSize(this.getClientPoolSize())
+						.setMasterConnectionPoolSize(this.getClientPoolSize());
+				serverConfigList.forEach(serverConfig ->
+						clusterConfig.addNodeAddress(this.serverAddress(serverConfig.getServerAddress(),
+								serverConfig.getServerPort())));
+				break;
+		}
+		config.setTransportMode(TransportMode.NIO);
+		this.redissonClient = Redisson.create(config);
+	}
 
-    /*
-     * (non-Javadoc)
-     * @see AbstractProvider#clusterMode(List, String, String, String)
-     */
-    protected void clusterMode(final List<CacheConfig.ServerConfig> serverConfigList,
-                             final String masterName, final String userName, final String passWord) {
-        Config config = new Config();
-        switch (this.getClusterMode()) {
-            case Sentinel:
-                SentinelServersConfig sentinelConfig = config.useSentinelServers()
-                        .setMasterName(masterName)
-                        .setSentinelUsername(StringUtils.notBlank(userName) ? userName : null)
-                        .setSentinelPassword(StringUtils.notBlank(passWord) ? userName : null)
-                        .setConnectTimeout(this.getConnectTimeout() * 1000)
-                        .setRetryAttempts(this.getRetryCount())
-                        .setSlaveConnectionPoolSize(this.getClientPoolSize())
-                        .setMasterConnectionPoolSize(this.getClientPoolSize());
-                serverConfigList.forEach(serverConfig ->
-                        sentinelConfig.addSentinelAddress(this.serverAddress(serverConfig.getServerAddress(),
-                                serverConfig.getServerPort())));
-                break;
-            case Master_Slave:
-                MasterSlaveServersConfig masterSlaveConfig = config.useMasterSlaveServers()
-                        .setUsername(StringUtils.notBlank(userName) ? userName : null)
-                        .setPassword(StringUtils.notBlank(passWord) ? userName : null)
-                        .setConnectTimeout(this.getConnectTimeout() * 1000)
-                        .setRetryAttempts(this.getRetryCount())
-                        .setSlaveConnectionPoolSize(this.getClientPoolSize())
-                        .setMasterConnectionPoolSize(this.getClientPoolSize())
-                        .setReadMode(ReadMode.SLAVE);
-                serverConfigList.forEach(serverConfig -> {
-                    if (serverConfig.getServerAddress().equalsIgnoreCase(masterName)) {
-                        masterSlaveConfig.setMasterAddress(this.serverAddress(serverConfig.getServerAddress(),
-                                serverConfig.getServerPort()));
-                    } else {
-                        masterSlaveConfig.addSlaveAddress(this.serverAddress(serverConfig.getServerAddress(),
-                                serverConfig.getServerPort()));
-                    }
-                });
-                break;
-            default:
-                ClusterServersConfig clusterConfig = config.useClusterServers()
-                        .setUsername(StringUtils.notBlank(userName) ? userName : null)
-                        .setPassword(StringUtils.notBlank(passWord) ? userName : null)
-                        .setConnectTimeout(this.getConnectTimeout() * 1000)
-                        .setRetryAttempts(this.getRetryCount())
-                        .setSlaveConnectionPoolSize(this.getClientPoolSize())
-                        .setMasterConnectionPoolSize(this.getClientPoolSize());
-                serverConfigList.forEach(serverConfig ->
-                        clusterConfig.addNodeAddress(this.serverAddress(serverConfig.getServerAddress(),
-                                serverConfig.getServerPort())));
-                break;
-        }
-        config.setTransportMode(TransportMode.NIO);
-        this.redissonClient = Redisson.create(config);
-    }
-
-    private String serverAddress(final String serverAddress, final int serverPort) {
-        return "redis://" + serverAddress + ":" + this.serverPort(serverPort);
-    }
+	/**
+	 * <h3 class="en-US">Generate connect string by given server address and port number</h3>
+	 * <h3 class="zhs">根据给定的服务器地址和端口号生成连接字符串</h3>
+	 *
+	 * @param serverAddress <span class="en-US">Server address</span>
+	 *                      <span class="zh-CN">服务器地址</span>
+	 * @param serverPort    <span class="en-US">Server port number</span>
+	 *                      <span class="zh-CN">服务器端口号</span>
+	 * @return <span class="en-US">Connect string</span>
+	 * <span class="zh-CN">连接字符串</span>
+	 */
+	private String serverAddress(final String serverAddress, final int serverPort) {
+		return "redis://" + serverAddress + ":" + this.serverPort(serverPort);
+	}
 }

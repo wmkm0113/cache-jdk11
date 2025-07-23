@@ -11,7 +11,7 @@
     <version>1.1.8</version>
     <packaging>jar</packaging>
     <name>CacheCore Package</name>
-    <url>https://nervousync.org/projects/cache-jdk11/core/index.shtml</url>
+    <url>https://nervousync.org/projects/cache/jdk11/core/index.shtml</url>
     <description>Cache Core Package, development by Nervousync Studio (NSYC)</description>
     <dependencies>
         <dependency>

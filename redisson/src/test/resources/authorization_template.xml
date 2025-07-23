@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key="ServerAddress">localhost
+    </entry><!-- Cache server addresses, use "," split if cache server is multiple -->
+    <entry key="ServerPort">11211</entry><!-- Cache server port, use "," split if cache server is multiple -->
+    <entry key="ServerWeight">1</entry><!-- Cache server weight, use "," split if cache server is multiple -->
+    <entry key="UserName">username</entry>
+    <entry key="PassWord">password</entry>
+</properties>

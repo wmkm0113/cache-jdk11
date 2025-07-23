@@ -7,10 +7,6 @@
       "key": "Invalid_Provider_Cache_Error"
     },
     {
-      "code": "0x000C00000004",
-      "key": "Annotation_Provider_Cache_Error"
-    },
-    {
       "code": "0x000C00000005",
       "key": "Server_Not_Configured_Cache_Error"
     }
@@ -23,10 +19,6 @@
         {
           "key": "Invalid_Provider_Cache_Error",
           "content": "Invalid cache provider found"
-        },
-        {
-          "key": "Annotation_Provider_Cache_Error",
-          "content": "Implement class of cache provider must add annotation: {0}"
         },
         {
           "key": "Server_Not_Configured_Cache_Error",
@@ -65,10 +57,6 @@
         {
           "key": "Invalid_Provider_Cache_Error",
           "content": "非法的缓存适配器"
-        },
-        {
-          "key": "Annotation_Provider_Cache_Error",
-          "content": "缓存适配器需要使用{0}进行标注"
         },
         {
           "key": "Server_Not_Configured_Cache_Error",

@@ -11,7 +11,7 @@
     <version>1.1.8</version>
     <packaging>jar</packaging>
     <name>Jedis Provider</name>
-    <url>https://nervousync.org/projects/cache-jdk11/providers/jedis/index.shtml</url>
+    <url>https://nervousync.org/projects/cache/jdk11/providers/jedis/index.shtml</url>
     <description>Cache Provider Implements By Jedis, development by Nervousync Studio (NSYC)</description>
     <properties>
         <jedis.version>6.0.0</jedis.version>
@@ -27,12 +27,11 @@
             <groupId>org.nervousync</groupId>
             <artifactId>cache-core-jdk11</artifactId>
             <version>${current.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.nervousync</groupId>
             <artifactId>cache-test-jdk11</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
             <scope>test</scope>
         </dependency>
         <!-- Jedis Support -->
