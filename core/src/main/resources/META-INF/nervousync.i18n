@@ -47,6 +47,10 @@
         {
           "key": "Registered_Providers_Count_Cache_Debug",
           "content": "Registered cache providers count: {0}"
+        },
+        {
+          "key": "Server_Info",
+          "content": "Server information: {0}"
         }
       ]
     },
@@ -85,6 +89,10 @@
         {
           "key": "Registered_Providers_Count_Cache_Debug",
           "content": "已注册的缓存适配器数量：{0}"
+        },
+        {
+          "key": "Server_Info",
+          "content": "服务器信息：{0}"
         }
       ]
     }

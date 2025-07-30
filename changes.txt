@@ -3,7 +3,7 @@ Nervousync Cache Utils
 [Update] Update the netty version to 4.2.3.Final
 [Update] Update JUnit version to 5.13.3
 [Update] Update utils-jdk11 version to 1.2.4
-[Update] Update json version to 20250517
+[Update] Update JSON version to 20250517
 [Update] Update the commons-pool2 version to 2.12.1
 
 [02/11/2025]

@@ -22,11 +22,11 @@ A unified toolkit created for caching operations, using a unified program interf
 * [Donations](#donations)
 
 ## JDK Version
-Compile：OpenJDK 11   
-Runtime: OpenJDK 11+ or compatible version
+**Compile:** OpenJDK 11   
+**Runtime:** OpenJDK 11+ or compatible version
+**Jakarta EE Platform:** 10
 
 ## End of Life
-
 **Features Freeze:** 31, Dec, 2026   
 **Secure Patch:** 31, Dec, 2029
 

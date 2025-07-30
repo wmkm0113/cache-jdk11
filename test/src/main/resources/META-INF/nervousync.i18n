@@ -55,6 +55,22 @@
         {
           "key": "Configure_Invalid",
           "content": "Server configure information invalid! "
+        },
+        {
+          "key": "Operate_Result_Debug",
+          "content": "Operate {0} result: {1}"
+        },
+        {
+          "key": "Exists_Debug",
+          "content": "Exists keys: {0}"
+        },
+        {
+          "key": "TTL_Debug",
+          "content": "TTL: {0}"
+        },
+        {
+          "key": "Length_Debug",
+          "content": "Data length: {0}"
         }
       ]
     },
@@ -105,6 +121,22 @@
         {
           "key": "Configure_Invalid",
           "content": "服务器配置信息错误！"
+        },
+        {
+          "key": "Operate_Result_Debug",
+          "content": "操作 {0} 执行结果：{1}"
+        },
+        {
+          "key": "Exists_Debug",
+          "content": "已存在的键值：{0}"
+        },
+        {
+          "key": "TTL_Debug",
+          "content": "有效期：{0}"
+        },
+        {
+          "key": "Length_Debug",
+          "content": "数据长度：{0}"
         }
       ]
     }

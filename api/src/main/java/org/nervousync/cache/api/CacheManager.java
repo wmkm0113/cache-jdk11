@@ -25,7 +25,6 @@ import org.nervousync.cache.config.CacheConfig;
  * @author Steven Wee	<a href="mailto:wmkm0113@gmail.com">wmkm0113@gmail.com</a>
  * @version $Revision: 1.0.0 $ $Date: Nov 18, 2022 17:08:12 $
  */
-@SuppressWarnings("unused")
 public interface CacheManager {
 
 	/**

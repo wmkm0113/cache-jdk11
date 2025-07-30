@@ -14,6 +14,7 @@ import org.nervousync.utils.LoggerUtils;
 import org.nervousync.utils.PropertiesUtils;
 import org.nervousync.utils.StringUtils;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -125,21 +126,72 @@ public abstract class BaseCacheTest {
 		this.logger.info("Register_Check", "TestCache", CacheUtils.registered("TestCache"));
 		Optional.ofNullable(CacheUtils.client("TestCache"))
 				.ifPresent(client -> {
-					client.add("test", "Test add");
+					this.logger.info("Operate_Result_Debug", "add", client.add("test", "Test add"));
 					this.logger.info("Read_Debug", "test", client.get("test"));
-					client.set("test", "Test set");
+					this.logger.info("Operate_Result_Debug", "append", client.append("test", " append"));
+					this.logger.info("Read_Debug", "test", client.get("test"));
+					this.logger.info("Read_Debug", "test", client.getRange("test", 2, 5));
+					this.logger.info("Length_Debug", client.strLen("test"));
+					this.logger.info("Operate_Result_Debug", "setRange", client.setRange("test", 5, " replace"));
+					this.logger.info("Read_Debug", "test", client.get("test"));
+					this.logger.info("Operate_Result_Debug", "copy", client.copy("test", "newTest"));
+					this.logger.info("Operate_Result_Debug", "copy", client.copy("test", "testCopy"));
+					this.logger.info("Read_Debug", "test", client.get("test"));
+					this.logger.info("Read_Debug", "newTest", client.get("newTest"));
+					this.logger.info("Read_Debug", "testCopy", client.get("testCopy"));
+					this.logger.info("Exists_Debug", client.exists("test", "oldTest", "newTest"));
+					this.logger.info("Exists_Debug", client.keys("tes*"));
+					this.logger.info("Operate_Result_Debug", "persist", client.persist("test"));
+					this.logger.info("TTL_Debug", client.ttl("test"));
+					this.logger.info("Operate_Result_Debug", "rename", client.rename("test", "rename"));
+					this.logger.info("Read_Debug", "test", client.get("test"));
+					this.logger.info("Read_Debug", "rename", client.get("rename"));
+					this.logger.info("Operate_Result_Debug", "append", client.getSet("test", "New test string"));
+					this.logger.info("Read_Debug", "test", client.get("test"));
+					try {
+						Thread.sleep(1000L);
+					} catch (InterruptedException e) {
+						throw new RuntimeException(e);
+					}
+					this.logger.info("TTL_Debug", client.ttl("test"));
+					this.logger.info("TTL_Debug", client.ttl("rename"));
+					this.logger.info("Operate_Result_Debug", "touch", client.touch("test", "rename"));
+					this.logger.info("TTL_Debug", client.ttl("test"));
+					this.logger.info("TTL_Debug", client.ttl("rename"));
+					try {
+						Thread.sleep(1000L);
+					} catch (InterruptedException e) {
+						throw new RuntimeException(e);
+					}
+					this.logger.info("Operate_Result_Debug", "getEx", client.getEx("test"));
+					this.logger.info("TTL_Debug", client.ttl("test"));
+					this.logger.info("Operate_Result_Debug", "getDel", client.getDel("rename"));
+					this.logger.info("TTL_Debug", client.ttl("rename"));
+
+					this.logger.info("Operate_Result_Debug", "set", client.set("test", "Test set"));
 					this.logger.info("Read_After_Debug", "test", "set", client.get("test"));
-					client.replace("test", "Test replace");
+					this.logger.info("Operate_Result_Debug", "replace", client.replace("test", "Test replace"));
 					this.logger.info("Read_After_Debug", "test", "replace", client.get("test"));
 					client.expire("test", 1);
 					this.logger.info("Read_After_Debug", "test", "expire", client.get("test"));
-					client.delete("test");
+					this.logger.info("Operate_Result_Debug", "delete", client.del("test"));
 					this.logger.info("Read_After_Debug", "test", "delete", client.get("test"));
 					client.add("testNum", "10000000");
+					long incrDefault = client.incr("testNum");
+					this.logger.info("Read_After_Return_Debug", "testNum", "incr", client.get("testNum"), incrDefault);
 					long incrReturn = client.incr("testNum", 2);
 					this.logger.info("Read_After_Return_Debug", "testNum", "incr", client.get("testNum"), incrReturn);
+					long decrDefault = client.decr("testNum");
+					this.logger.info("Read_After_Return_Debug", "testNum", "decr", client.get("testNum"), decrDefault);
 					long decrReturn = client.decr("testNum", 2);
 					this.logger.info("Read_After_Return_Debug", "testNum", "decr", client.get("testNum"), decrReturn);
+					double incrFloat = client.incrFloat("testNum", 2.5);
+					this.logger.info("Read_After_Return_Debug", "testNum", "incrFloat", client.get("testNum"), incrFloat);
+					this.logger.info("Operate_Result_Debug", "mset", client.mset("key1", "value1", "key2", "value2"));
+					this.logger.info("Operate_Result_Debug", "msetnx", client.msetnx("key2", "value1", "key3", "value2"));
+					this.logger.info("Read_Debug", List.of("key1", "key2"), client.mget("key1", "key2"));
+					this.logger.info("Read_Debug", "test", client.lcs("key1", "key2"));
+					this.logger.info("Read_Debug", "test", client.lcsLen("key1", "key2"));
 				});
 		CacheUtils.deregister("TestCache");
 		CacheUtils.destroy();

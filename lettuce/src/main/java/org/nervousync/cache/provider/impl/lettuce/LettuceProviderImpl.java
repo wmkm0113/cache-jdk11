@@ -17,10 +17,7 @@
 
 package org.nervousync.cache.provider.impl.lettuce;
 
-import io.lettuce.core.AbstractRedisClient;
-import io.lettuce.core.ReadFrom;
-import io.lettuce.core.RedisClient;
-import io.lettuce.core.RedisURI;
+import io.lettuce.core.*;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.cluster.ClusterClientOptions;
 import io.lettuce.core.cluster.RedisClusterClient;
@@ -29,6 +26,7 @@ import io.lettuce.core.cluster.api.sync.RedisClusterCommands;
 import io.lettuce.core.codec.StringCodec;
 import io.lettuce.core.masterreplica.MasterReplica;
 import io.lettuce.core.masterreplica.StatefulRedisMasterReplicaConnection;
+import jakarta.annotation.Nonnull;
 import org.nervousync.annotations.provider.Provider;
 import org.nervousync.cache.config.CacheConfig.ServerConfig;
 import org.nervousync.cache.provider.impl.AbstractProvider;
@@ -37,6 +35,7 @@ import org.nervousync.utils.StringUtils;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <h2 class="en-US">Redis cache provider using Lettuce</h2>
@@ -76,51 +75,18 @@ public final class LettuceProviderImpl extends AbstractProvider {
 	}
 
 	@Override
-	public void set(final String key, final String value, final int expire) {
-		this.redisCommands.setex(key, super.expiryTime(expire), value);
+	public boolean copy(@Nonnull final String source, @Nonnull final String destination) {
+		return false;
 	}
 
 	@Override
-	public void add(final String key, final String value, final int expire) {
-		this.redisCommands.setex(key, super.expiryTime(expire), value);
+	public long del(@Nonnull final String... keys) {
+		return 0;
 	}
 
 	@Override
-	public void replace(final String key, final String value, final int expire) {
-		this.redisCommands.setex(key, super.expiryTime(expire), value);
-	}
-
-	@Override
-	public void expire(final String key, final int expire) {
-		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("TTL_Lettuce_Cache_Debug", this.redisCommands.ttl(key));
-		}
-		this.redisCommands.expire(key, expire);
-	}
-
-	@Override
-	public void touch(final String... keys) {
-		this.redisCommands.touch(keys);
-	}
-
-	@Override
-	public void delete(final String key) {
-		this.redisCommands.del(key);
-	}
-
-	@Override
-	public String get(final String key) {
-		return this.redisCommands.get(key);
-	}
-
-	@Override
-	public long incr(final String key, final long step) {
-		return this.redisCommands.incrby(key, step);
-	}
-
-	@Override
-	public long decr(final String key, final long step) {
-		return this.redisCommands.decrby(key, step);
+	public long exists(@Nonnull final String... keys) {
+		return 0;
 	}
 
 	@Override
@@ -135,6 +101,11 @@ public final class LettuceProviderImpl extends AbstractProvider {
 		}
 		this.redisClient.close();
 		this.redisClient.shutdown();
+	}
+
+	@Override
+	protected void info() {
+		this.logger.debug("Server_Info", this.redisCommands.info());
 	}
 
 	@Override
@@ -194,6 +165,144 @@ public final class LettuceProviderImpl extends AbstractProvider {
 				this.redisCommands = this.clusterConnection.sync();
 				break;
 		}
+	}
+
+	@Override
+	public void expire(@Nonnull final String key, final int expiry) {
+		this.redisCommands.expire(key, super.expiryTime(expiry));
+	}
+
+	@Override
+	public List<String> keys(@Nonnull final String pattern) {
+		return this.redisCommands.keys(pattern);
+	}
+
+	@Override
+	public boolean persist(@Nonnull final String key) {
+		return this.redisCommands.persist(key);
+	}
+
+	@Override
+	public boolean rename(@Nonnull final String key, @Nonnull final String newKey) {
+		return "OK".equalsIgnoreCase(this.redisCommands.rename(key, newKey));
+	}
+
+	@Override
+	public long touch(@Nonnull final String... keys) {
+		return this.redisCommands.touch(keys);
+	}
+
+	@Override
+	public long ttl(@Nonnull final String key) {
+		return this.redisCommands.ttl(key);
+	}
+
+	@Override
+	public boolean add(@Nonnull final String key, @Nonnull final String value, final int expiry) {
+		return "OK".equalsIgnoreCase(this.redisCommands.set(key, value, SetArgs.Builder.nx().ex(super.expiryTime(expiry))));
+	}
+
+	@Override
+	public long append(@Nonnull final String key, @Nonnull final String append) {
+		return this.redisCommands.append(key, append);
+	}
+
+	@Override
+	public long decr(@Nonnull final String key, final long step) {
+		return this.redisCommands.decrby(key, step);
+	}
+
+	@Override
+	public String get(@Nonnull final String key) {
+		return this.redisCommands.get(key);
+	}
+
+	@Override
+	public String getDel(@Nonnull final String key) {
+		return this.redisCommands.getdel(key);
+	}
+
+	@Override
+	public String getEx(@Nonnull final String key, final int expiry) {
+		return this.redisCommands.getex(key, GetExArgs.Builder.ex(super.expiryTime(expiry)));
+	}
+
+	@Override
+	public String getRange(@Nonnull final String key, final int begin, final int end) {
+		return this.redisCommands.getrange(key, begin, end);
+	}
+
+	@Override
+	public String getSet(@Nonnull final String key, @Nonnull final String value) {
+		return this.redisCommands.getset(key, value);
+	}
+
+	@Override
+	public long incr(@Nonnull final String key, final long step) {
+		return this.redisCommands.incrby(key, step);
+	}
+
+	@Override
+	public double incrFloat(@Nonnull final String key, final double step) {
+		return this.redisCommands.incrbyfloat(key, step);
+	}
+
+	@Override
+	public String lcs(@Nonnull final String key1, @Nonnull final String key2) {
+		return this.redisCommands.lcs(LcsArgs.Builder.keys(key1, key2)).getMatchString();
+	}
+
+	@Override
+	public long lcsLen(@Nonnull final String key1, @Nonnull final String key2) {
+		return this.redisCommands.lcs(LcsArgs.Builder.keys(key1, key2)).getLen();
+	}
+
+	@Override
+	public List<String> mget(@Nonnull final String... keys) {
+		List<String> valueList = new ArrayList<>();
+		this.redisCommands.mget(keys).forEach(keyValue -> valueList.add(keyValue.getValue()));
+		return valueList;
+	}
+
+	@Override
+	public boolean mset(@Nonnull final String... keyvalues) {
+		Map<String, String> dataMap = this.dataMap(keyvalues);
+		if (dataMap.isEmpty()) {
+			return Boolean.FALSE;
+		}
+		return "OK".equalsIgnoreCase(this.redisCommands.mset(dataMap));
+	}
+
+	@Override
+	public boolean msetnx(@Nonnull final String... keyvalues) {
+		Map<String, String> dataMap = this.dataMap(keyvalues);
+		if (dataMap.isEmpty()) {
+			return Boolean.FALSE;
+		}
+		return this.redisCommands.msetnx(dataMap);
+	}
+
+	@Override
+	public boolean replace(@Nonnull final String key, @Nonnull final String value, final int expiry) {
+		return "OK".equalsIgnoreCase(
+				this.redisCommands.set(key, value,
+						SetArgs.Builder.xx().ex(Duration.ofSeconds(super.expiryTime(expiry)))));
+	}
+
+	@Override
+	public boolean set(@Nonnull final String key, @Nonnull final String value, final int expiry) {
+		return "OK".equalsIgnoreCase(
+				this.redisCommands.set(key, value, SetArgs.Builder.ex(Duration.ofSeconds(super.expiryTime(expiry)))));
+	}
+
+	@Override
+	public long setRange(@Nonnull final String key, final long offset, @Nonnull final String value) {
+		return this.redisCommands.setrange(key, offset, value);
+	}
+
+	@Override
+	public long strLen(@Nonnull final String key) {
+		return this.redisCommands.strlen(key);
 	}
 
 	/**

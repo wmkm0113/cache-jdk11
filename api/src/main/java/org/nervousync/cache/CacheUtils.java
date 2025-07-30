@@ -36,7 +36,6 @@ import java.util.ServiceLoader;
  * @author Steven Wee	<a href="mailto:wmkm0113@gmail.com">wmkm0113@gmail.com</a>
  * @version $Revision: 1.0.0 $ $Date: Nov 18, 2022 17:21:36 $
  */
-@SuppressWarnings("unused")
 public final class CacheUtils {
 
 	/**

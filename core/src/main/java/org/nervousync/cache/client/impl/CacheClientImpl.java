@@ -16,6 +16,7 @@
  */
 package org.nervousync.cache.client.impl;
 
+import jakarta.annotation.Nonnull;
 import org.nervousync.cache.api.CacheClient;
 import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.cache.exceptions.CacheException;
@@ -26,6 +27,7 @@ import org.nervousync.utils.LoggerUtils;
 import org.nervousync.utils.ObjectUtils;
 import org.nervousync.utils.StringUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -77,58 +79,85 @@ public final class CacheClientImpl implements CacheClient {
 	}
 
 	@Override
-	public void set(final String key, final String value) {
-		this.logInfo(key, value);
-		this.cacheProvider.set(key, value);
+	public boolean copy(@Nonnull final String source, @Nonnull final String destination) {
+		return this.cacheProvider.copy(source, destination);
 	}
 
 	@Override
-	public void set(final String key, final String value, final int expire) {
-		this.logInfo(key, value);
-		this.cacheProvider.set(key, value, expire);
+	public long del(@Nonnull final String... keys) {
+		return this.cacheProvider.del(keys);
 	}
 
 	@Override
-	public void add(final String key, final String value) {
-		this.logInfo(key, value);
-		this.cacheProvider.add(key, value);
+	public long exists(@Nonnull final String... keys) {
+		return this.cacheProvider.exists(keys);
 	}
 
 	@Override
-	public void add(final String key, final String value, final int expire) {
+	public boolean set(@Nonnull final String key, @Nonnull final String value, final int expire) {
 		this.logInfo(key, value);
-		this.cacheProvider.add(key, value, expire);
+		return this.cacheProvider.set(key, value, expire);
 	}
 
 	@Override
-	public void replace(final String key, final String value) {
-		this.logInfo(key, value);
-		this.cacheProvider.replace(key, value);
+	public long setRange(@Nonnull final String key, final long offset, @Nonnull final String value) {
+		return this.cacheProvider.setRange(key, offset, value);
 	}
 
 	@Override
-	public void replace(final String key, final String value, final int expire) {
-		this.logInfo(key, value);
-		this.cacheProvider.replace(key, value, expire);
+	public long strLen(@Nonnull final String key) {
+		return this.cacheProvider.strLen(key);
 	}
 
 	@Override
-	public void expire(final String key, final int expire) {
+	public boolean add(@Nonnull final String key, @Nonnull final String value, final int expire) {
+		this.logInfo(key, value);
+		return this.cacheProvider.add(key, value, expire);
+	}
+
+	@Override
+	public long append(@Nonnull final String key, @Nonnull final String append) {
+		return this.cacheProvider.append(key, append);
+	}
+
+	@Override
+	public boolean replace(@Nonnull final String key, @Nonnull final String value, final int expire) {
+		this.logInfo(key, value);
+		return this.cacheProvider.replace(key, value, expire);
+	}
+
+	@Override
+	public void expire(@Nonnull final String key, final int expire) {
 		this.cacheProvider.expire(key, expire);
 	}
 
 	@Override
-	public void touch(final String... keys) {
-		this.cacheProvider.touch(keys);
+	public List<String> keys(@Nonnull final String pattern) {
+		return this.cacheProvider.keys(pattern);
 	}
 
 	@Override
-	public void delete(final String key) {
-		this.cacheProvider.delete(key);
+	public boolean persist(@Nonnull final String key) {
+		return this.cacheProvider.persist(key);
 	}
 
 	@Override
-	public String get(final String key) {
+	public boolean rename(@Nonnull final String key, @Nonnull final String newKey) {
+		return this.cacheProvider.rename(key, newKey);
+	}
+
+	@Override
+	public long touch(@Nonnull String... keys) {
+		return this.cacheProvider.touch(keys);
+	}
+
+	@Override
+	public long ttl(@Nonnull final String key) {
+		return this.cacheProvider.ttl(key);
+	}
+
+	@Override
+	public String get(@Nonnull final String key) {
 		if (StringUtils.isEmpty(key)) {
 			return null;
 		}
@@ -136,7 +165,27 @@ public final class CacheClientImpl implements CacheClient {
 	}
 
 	@Override
-	public long incr(final String key, final long step) {
+	public String getDel(@Nonnull final String key) {
+		return this.cacheProvider.getDel(key);
+	}
+
+	@Override
+	public String getEx(@Nonnull final String key, final int expire) {
+		return this.cacheProvider.getEx(key, expire);
+	}
+
+	@Override
+	public String getRange(@Nonnull final String key, final int begin, final int end) {
+		return this.cacheProvider.getRange(key, begin, end);
+	}
+
+	@Override
+	public String getSet(@Nonnull final String key, @Nonnull final String value) {
+		return this.cacheProvider.getSet(key, value);
+	}
+
+	@Override
+	public long incr(@Nonnull final String key, final long step) {
 		if (StringUtils.isEmpty(key)) {
 			return Globals.DEFAULT_VALUE_LONG;
 		}
@@ -144,7 +193,37 @@ public final class CacheClientImpl implements CacheClient {
 	}
 
 	@Override
-	public long decr(final String key, final long step) {
+	public double incrFloat(@Nonnull final String key, final double step) {
+		return this.cacheProvider.incrFloat(key, step);
+	}
+
+	@Override
+	public String lcs(@Nonnull final String key1, @Nonnull final String key2) {
+		return this.cacheProvider.lcs(key1, key2);
+	}
+
+	@Override
+	public long lcsLen(@Nonnull final String key1, @Nonnull final String key2) {
+		return this.cacheProvider.lcsLen(key1, key2);
+	}
+
+	@Override
+	public List<String> mget(@Nonnull final String... keys) {
+		return this.cacheProvider.mget(keys);
+	}
+
+	@Override
+	public boolean mset(@Nonnull final String... keyvalues) {
+		return this.cacheProvider.mset(keyvalues);
+	}
+
+	@Override
+	public boolean msetnx(@Nonnull final String... keyvalues) {
+		return this.cacheProvider.msetnx(keyvalues);
+	}
+
+	@Override
+	public long decr(@Nonnull final String key, final long step) {
 		if (StringUtils.isEmpty(key)) {
 			return Globals.DEFAULT_VALUE_LONG;
 		}

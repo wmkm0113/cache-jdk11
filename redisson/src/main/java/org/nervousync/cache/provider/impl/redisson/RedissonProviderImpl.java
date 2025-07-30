@@ -16,19 +16,31 @@
  */
 package org.nervousync.cache.provider.impl.redisson;
 
+import jakarta.annotation.Nonnull;
 import org.nervousync.annotations.provider.Provider;
 import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.cache.provider.impl.AbstractProvider;
 import org.nervousync.commons.Globals;
 import org.nervousync.utils.StringUtils;
 import org.redisson.Redisson;
+import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
+import org.redisson.api.options.KeysScanOptions;
+import org.redisson.api.redisnode.RedisNode;
+import org.redisson.api.redisnode.RedisNodes;
 import org.redisson.client.codec.StringCodec;
 import org.redisson.config.*;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.SeekableByteChannel;
 import java.time.Duration;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * <h2 class="en-US">Redis cache provider using Redisson</h2>
@@ -52,45 +64,18 @@ public final class RedissonProviderImpl extends AbstractProvider {
 	}
 
 	@Override
-	public void set(final String key, final String value, final int expire) {
-		this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING))
-				.set(value, Duration.ofSeconds(this.expiryTime(expire)));
+	public boolean copy(@Nonnull final String source, @Nonnull final String destination) {
+		return this.redissonClient.getBucket(source).copy(destination);
 	}
 
 	@Override
-	public void add(final String key, final String value, final int expire) {
-		this.set(key, value, expire);
+	public long del(@Nonnull final String... keys) {
+		return this.redissonClient.getKeys().delete(keys);
 	}
 
 	@Override
-	public void replace(final String key, final String value, final int expire) {
-		this.set(key, value, expire);
-	}
-
-	@Override
-	public void touch(final String... keys) {
-		Arrays.asList(keys)
-				.forEach(key -> this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING)).touch());
-	}
-
-	@Override
-	public void delete(final String key) {
-		this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING)).delete();
-	}
-
-	@Override
-	public String get(final String key) {
-		return (String) this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING)).get();
-	}
-
-	@Override
-	public long incr(final String key, final long step) {
-		return this.redissonClient.getAtomicLong(key).addAndGet(step);
-	}
-
-	@Override
-	public long decr(final String key, final long step) {
-		return this.redissonClient.getAtomicLong(key).addAndGet(step * -1L);
+	public long exists(@Nonnull final String... keys) {
+		return this.redissonClient.getKeys().countExists(keys);
 	}
 
 	@Override
@@ -101,9 +86,191 @@ public final class RedissonProviderImpl extends AbstractProvider {
 	}
 
 	@Override
-	public void expire(final String key, final int expire) {
+	public void expire(@Nonnull final String key, final int expiry) {
+		this.redissonClient.getBucket(key).expire(Duration.ofSeconds(super.expiryTime(expiry)));
+	}
+
+	@Override
+	public List<String> keys(@Nonnull final String pattern) {
+		return StreamSupport.stream(
+				this.redissonClient.getKeys().getKeys(KeysScanOptions.defaults().pattern(pattern)).spliterator(),
+						Boolean.FALSE)
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public boolean persist(@Nonnull final String key) {
+		return this.redissonClient.getBucket(key).clearExpire();
+	}
+
+	@Override
+	public boolean rename(@Nonnull final String key, @Nonnull final String newKey) {
+		this.redissonClient.getKeys().rename(key, newKey);
+		return Boolean.TRUE;
+	}
+
+	@Override
+	public long touch(@Nonnull final String... keys) {
+		return this.redissonClient.getKeys().touch(keys);
+	}
+
+	@Override
+	public long ttl(@Nonnull final String key) {
+		return this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING)).remainTimeToLive();
+	}
+
+	@Override
+	public boolean add(@Nonnull final String key, @Nonnull final String value, final int expiry) {
+		return this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING))
+				.setIfAbsent(value, Duration.ofSeconds(super.expiryTime(expiry)));
+	}
+
+	@Override
+	public long append(@Nonnull final String key, @Nonnull final String append) {
+		try (OutputStream outputStream = this.redissonClient.getBinaryStream(key).getOutputStream()) {
+			outputStream.write(append.getBytes(Globals.DEFAULT_ENCODING));
+		} catch (IOException ignore) {
+		}
+		return this.strLen(key);
+	}
+
+	@Override
+	public long decr(@Nonnull final String key, final long step) {
+		return this.redissonClient.getAtomicLong(key).addAndGet(step * -1);
+	}
+
+	@Override
+	public String get(@Nonnull final String key) {
+		RBucket<String> bucket = this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING));
+		return bucket.get();
+	}
+
+	@Override
+	public String getDel(@Nonnull final String key) {
+		RBucket<String> bucket = this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING));
+		return bucket.getAndDelete();
+	}
+
+	@Override
+	public String getEx(@Nonnull final String key, final int expiry) {
+		RBucket<String> bucket = this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING));
+		return bucket.getAndExpire(Duration.ofSeconds(super.expiryTime(expiry)));
+	}
+
+	@Override
+	public String getRange(@Nonnull final String key, final int begin, final int end) {
+		RBucket<String> bucket = this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING));
+		return bucket.get().substring(begin, end);
+	}
+
+	@Override
+	public String getSet(@Nonnull final String key, @Nonnull final String value) {
+		RBucket<String> bucket = this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING));
+		return bucket.getAndSet(value);
+	}
+
+	@Override
+	public long incr(@Nonnull final String key, final long step) {
+		return this.redissonClient.getAtomicLong(key).addAndGet(step);
+	}
+
+	@Override
+	public double incrFloat(@Nonnull final String key, final double step) {
+		return this.redissonClient.getAtomicDouble(key).addAndGet(step);
+	}
+
+	@Override
+	public String lcs(@Nonnull final String key1, @Nonnull final String key2) {
+		RBucket<String> bucket = this.redissonClient.getBucket(key1, new StringCodec(Globals.DEFAULT_ENCODING));
+		return bucket.findCommon(key2);
+	}
+
+	@Override
+	public long lcsLen(@Nonnull final String key1, @Nonnull final String key2) {
+		RBucket<String> bucket = this.redissonClient.getBucket(key1, new StringCodec(Globals.DEFAULT_ENCODING));
+		return bucket.findCommonLength(key2);
+	}
+
+	@Override
+	public List<String> mget(@Nonnull final String... keys) {
+		List<String> valueList = new ArrayList<>();
+		this.redissonClient.getBuckets()
+				.get(keys)
+				.values()
+				.stream()
+				.filter(value -> value instanceof String)
+				.forEach(value -> valueList.add((String) value));
+		return valueList;
+	}
+
+	@Override
+	public boolean mset(@Nonnull final String... keyvalues) {
+		Map<String, String> dataMap = this.dataMap(keyvalues);
+		if (dataMap.isEmpty()) {
+			return Boolean.FALSE;
+		}
+		this.redissonClient.getBuckets().set(dataMap);
+		return Boolean.TRUE;
+	}
+
+	@Override
+	public boolean msetnx(@Nonnull final String... keyvalues) {
+		Map<String, String> dataMap = this.dataMap(keyvalues);
+		if (dataMap.isEmpty()) {
+			return Boolean.FALSE;
+		}
+		return this.redissonClient.getBuckets().trySet(dataMap);
+	}
+
+	@Override
+	public boolean replace(@Nonnull final String key, @Nonnull final String value, final int expiry) {
+		return this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING))
+				.setIfExists(value, Duration.ofSeconds(super.expiryTime(expiry)));
+	}
+
+	@Override
+	public boolean set(@Nonnull final String key, @Nonnull final String value, final int expiry) {
 		this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING))
-				.expire(Duration.ofSeconds(this.expiryTime(expire)));
+				.set(value, Duration.ofSeconds(super.expiryTime(expiry)));
+		return Boolean.TRUE;
+	}
+
+	@Override
+	public long setRange(@Nonnull final String key, final long offset, @Nonnull final String value) {
+		try (SeekableByteChannel channel = this.redissonClient.getBinaryStream(key).getChannel()) {
+			channel.position(offset).write(ByteBuffer.wrap(value.getBytes(Globals.DEFAULT_ENCODING)));
+		} catch (IOException e) {
+			return Globals.DEFAULT_VALUE_LONG;
+		}
+		return this.strLen(key);
+	}
+
+	@Override
+	public long strLen(@Nonnull final String key) {
+		return this.redissonClient.getBucket(key, new StringCodec(Globals.DEFAULT_ENCODING)).size();
+	}
+
+	@Override
+	protected void info() {
+		List<RedisNode> redisNodes = new ArrayList<>();
+		switch (this.getClusterMode()) {
+			case Sentinel:
+				redisNodes.add(this.redissonClient.getRedisNodes(RedisNodes.SENTINEL_MASTER_SLAVE).getMaster());
+				redisNodes.addAll(this.redissonClient.getRedisNodes(RedisNodes.SENTINEL_MASTER_SLAVE).getSlaves());
+				break;
+			case Master_Slave:
+				redisNodes.add(this.redissonClient.getRedisNodes(RedisNodes.MASTER_SLAVE).getMaster());
+				redisNodes.addAll(this.redissonClient.getRedisNodes(RedisNodes.MASTER_SLAVE).getSlaves());
+				break;
+			case Cluster:
+				redisNodes.addAll(this.redissonClient.getRedisNodes(RedisNodes.CLUSTER).getMasters());
+				redisNodes.addAll(this.redissonClient.getRedisNodes(RedisNodes.CLUSTER).getSlaves());
+				break;
+			default:
+				redisNodes.add(this.redissonClient.getRedisNodes(RedisNodes.SINGLE).getInstance());
+				break;
+		}
+		redisNodes.forEach(clusterNode -> this.logger.debug("Server_Info", clusterNode.info(RedisNode.InfoSection.ALL)));
 	}
 
 	@Override

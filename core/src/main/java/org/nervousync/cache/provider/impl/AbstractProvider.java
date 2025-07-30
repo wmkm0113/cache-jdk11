@@ -16,8 +16,11 @@
  */
 package org.nervousync.cache.provider.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import jakarta.annotation.Nonnull;
 import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.enumeration.ClusterMode;
 import org.nervousync.cache.exceptions.CacheException;
@@ -102,6 +105,7 @@ public abstract class AbstractProvider implements CacheProvider {
 						cacheConfig.getUserName(), cacheConfig.getPassWord());
 				break;
 		}
+		this.info();
 	}
 
 	/**
@@ -160,6 +164,12 @@ public abstract class AbstractProvider implements CacheProvider {
 	}
 
 	/**
+	 * <h3 class="en-US">Print server information</h3>
+	 * <h3 class="zh-CN">打印服务器信息</h3>
+	 */
+	protected abstract void info();
+
+	/**
 	 * <h3 class="en-US">Initialize cache server connections</h3>
 	 * <h3 class="zh-CN">初始化缓存服务器连接池</h3>
 	 *
@@ -194,45 +204,6 @@ public abstract class AbstractProvider implements CacheProvider {
 	                                    final String userName, final String passWord) throws CacheException;
 
 	/**
-	 * <h3 class="en-US">Set key-value to cache server by default expire time</h3>
-	 * <h3 class="zh-CN">使用默认的过期时间设置缓存信息</h3>
-	 *
-	 * @param key   <span class="en-US">Cache key</span>
-	 *              <span class="zh-CN">缓存键值</span>
-	 * @param value <span class="en-US">Cache value</span>
-	 *              <span class="zh-CN">缓存数据</span>
-	 */
-	public final void set(String key, String value) {
-		this.set(key, value, this.expireTime);
-	}
-
-	/**
-	 * <h3 class="en-US">Add a new key-value to cache server by default expire time</h3>
-	 * <h3 class="zh-CN">使用默认的过期时间添加缓存信息</h3>
-	 *
-	 * @param key   <span class="en-US">Cache key</span>
-	 *              <span class="zh-CN">缓存键值</span>
-	 * @param value <span class="en-US">Cache value</span>
-	 *              <span class="zh-CN">缓存数据</span>
-	 */
-	public final void add(String key, String value) {
-		this.add(key, value, this.expireTime);
-	}
-
-	/**
-	 * <h3 class="en-US">Replace exists value of the given key by given value by default expire time</h3>
-	 * <h3 class="zh-CN">使用默认的过期时间替换已存在的缓存信息</h3>
-	 *
-	 * @param key   <span class="en-US">Cache key</span>
-	 *              <span class="zh-CN">缓存键值</span>
-	 * @param value <span class="en-US">Cache value</span>
-	 *              <span class="zh-CN">缓存数据</span>
-	 */
-	public final void replace(String key, String value) {
-		this.replace(key, value, this.expireTime);
-	}
-
-	/**
 	 * <h3 class="en-US">Set expire time to new given expire value which cache key was given</h3>
 	 * <h3 class="zh-CN">将指定的缓存键值过期时间设置为指定的新值</h3>
 	 *
@@ -241,7 +212,7 @@ public abstract class AbstractProvider implements CacheProvider {
 	 * @param expire <span class="en-US">New expire time</span>
 	 *               <span class="zh-CN">新的过期时间</span>
 	 */
-	public abstract void expire(String key, int expire);
+	public abstract void expire(@Nonnull final String key, final int expire);
 
 	/**
 	 * <h3 class="en-US">Get the server port</h3>
@@ -267,5 +238,25 @@ public abstract class AbstractProvider implements CacheProvider {
 	 */
 	protected final int expiryTime(final int expiry) {
 		return (expiry == Globals.DEFAULT_VALUE_INT) ? this.expireTime : expiry;
+	}
+
+	/**
+	 * <h3 class="en-US">Convert the key-value array to key-value mapping table</h3>
+	 * <h3 class="zh-CN">转换键值对数组为键值对映射表</h3>
+	 *
+	 * @param keyvalues <span class="en-US">Key-value array</span>
+	 *                  <span class="zh-CN">键值对数组</span>
+	 * @return <span class="en-US">Key-value mapping table</span>
+	 * <span class="zh-CN">键值对映射表</span>
+	 */
+	protected final Map<String, String> dataMap(@Nonnull final String... keyvalues) {
+		if (keyvalues.length % 2 != 0) {
+			return Map.of();
+		}
+		Map<String, String> dataMap = new HashMap<>();
+		for (int i = 0; i < keyvalues.length; i += 2) {
+			dataMap.put(keyvalues[i], keyvalues[i + 1]);
+		}
+		return dataMap;
 	}
 }
