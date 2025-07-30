@@ -13,4 +13,12 @@
 	<name>Cache API Package</name>
 	<url>https://nervousync.org/projects/cache/jdk11/api/index.shtml</url>
 	<description>Cache API Package, development by Nervousync Studio (NSYC)</description>
+	<dependencies>
+		<!-- Utils -->
+		<dependency>
+			<groupId>org.nervousync</groupId>
+			<artifactId>utils-jdk11</artifactId>
+			<version>1.2.4-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
 </project>

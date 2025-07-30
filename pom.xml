@@ -5,24 +5,16 @@
 	<groupId>org.nervousync</groupId>
 	<artifactId>cache-jdk11</artifactId>
 	<version>1.1.8</version>
-	<modules>
-		<module>core</module>
-		<module>jedis</module>
-		<module>lettuce</module>
-		<module>xmemcached</module>
-		<module>api</module>
-		<module>redisson</module>
-		<module>test</module>
-		<module>nodeps</module>
-	</modules>
 	<packaging>pom</packaging>
 	<name>Cache Package</name>
-	<url>https://nervousync.org/projects/cache/jdk11/index.shtml</url>
 	<description>Cache Package, development by Nervousync Studio (NSYC)</description>
-	<issueManagement>
-		<url>https://github.com/wmkm0113/cache-jdk11/issues</url>
-		<system>Github Issues</system>
-	</issueManagement>
+	<url>https://nervousync.org/projects/cache/jdk11/index.shtml</url>
+	<scm>
+		<tag>v1.1.8</tag>
+		<url>https://github.com/wmkm0113/cache-jdk11</url>
+		<connection>scm:git:https://github.com/wmkm0113/cache-jdk11.git</connection>
+		<developerConnection>scm:git:https://github.com/wmkm0113/cache-jdk11.git</developerConnection>
+	</scm>
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
@@ -30,12 +22,6 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	<scm>
-		<tag>v1.1.8</tag>
-		<url>https://github.com/wmkm0113/cache-jdk11</url>
-		<connection>scm:git:https://github.com/wmkm0113/cache-jdk11.git</connection>
-		<developerConnection>scm:git:https://github.com/wmkm0113/cache-jdk11.git</developerConnection>
-	</scm>
 	<organization>
 		<url>https://nervousync.org/index.shtml</url>
 		<name>Nervousync Studio</name>
@@ -58,14 +44,16 @@
 		<junit.jupiter.version>5.13.4</junit.jupiter.version>
 		<junit.platform.version>1.13.4</junit.platform.version>
 	</properties>
-	<dependencies>
-		<!-- Utils -->
-		<dependency>
-			<groupId>org.nervousync</groupId>
-			<artifactId>utils-jdk11</artifactId>
-			<version>1.2.4-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
+	<modules>
+		<module>core</module>
+		<module>jedis</module>
+		<module>lettuce</module>
+		<module>xmemcached</module>
+		<module>api</module>
+		<module>redisson</module>
+		<module>test</module>
+		<module>nodeps</module>
+	</modules>
 	<profiles>
 		<profile>
 			<id>release</id>
