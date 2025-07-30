@@ -58,6 +58,14 @@
 		<junit.jupiter.version>5.13.4</junit.jupiter.version>
 		<junit.platform.version>1.13.4</junit.platform.version>
 	</properties>
+	<dependencies>
+		<!-- Utils -->
+		<dependency>
+			<groupId>org.nervousync</groupId>
+			<artifactId>utils-jdk11</artifactId>
+			<version>1.2.4-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
 	<profiles>
 		<profile>
 			<id>release</id>

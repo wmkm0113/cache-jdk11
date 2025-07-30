@@ -23,7 +23,7 @@ A unified toolkit created for caching operations, using a unified program interf
 
 ## JDK Version
 **Compile:** OpenJDK 11   
-**Runtime:** OpenJDK 11+ or compatible version
+**Runtime:** OpenJDK 11+ or compatible version  
 **Jakarta EE Platform:** 10
 
 ## End of Life

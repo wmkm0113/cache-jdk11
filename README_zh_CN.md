@@ -23,7 +23,7 @@
 
 ## JDK版本
 **编译：** OpenJDK 11   
-**运行：** OpenJDK 11+ 或兼容版本
+**运行：** OpenJDK 11+ 或兼容版本  
 **Jakarta EE平台：** 10
 
 ## 生命周期
