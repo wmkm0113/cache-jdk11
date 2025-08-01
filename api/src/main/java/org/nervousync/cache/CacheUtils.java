@@ -172,7 +172,7 @@ public final class CacheUtils {
 	 */
 	public static void deregister(final String cacheName) {
 		initialize();
-		if (CacheUtils.INSTANCE == null) {
+		if (INSTANCE == null) {
 			return;
 		}
 		INSTANCE.cacheManager.deregister(cacheName);
@@ -183,9 +183,9 @@ public final class CacheUtils {
 	 * <h3 class="zh-CN">取消注册缓存</h3>
 	 */
 	public static void destroy() {
-		if (CacheUtils.INSTANCE != null) {
-			CacheUtils.INSTANCE.cacheManager.destroy();
-			CacheUtils.INSTANCE = null;
+		if (INSTANCE != null) {
+			INSTANCE.cacheManager.destroy();
+			INSTANCE = null;
 		}
 	}
 
@@ -213,13 +213,13 @@ public final class CacheUtils {
 	}
 
 	private static void initialize() {
-		if (CacheUtils.INSTANCE == null) {
+		if (INSTANCE == null) {
 			synchronized (CacheUtils.class) {
 				try {
-					CacheManager cacheManager = ServiceLoader.load(CacheManager.class)
+					INSTANCE = ServiceLoader.load(CacheManager.class)
 							.findFirst()
+							.map(CacheUtils::new)
 							.orElseThrow(() -> new CacheException(0x000C00000001L));
-					INSTANCE = new CacheUtils(cacheManager);
 				} catch (CacheException e) {
 					if (LOGGER.isDebugEnabled()) {
 						LOGGER.debug("Stack_Message_Error", e);

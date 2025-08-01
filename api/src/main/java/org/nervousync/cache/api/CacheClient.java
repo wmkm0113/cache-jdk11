@@ -17,7 +17,6 @@
 package org.nervousync.cache.api;
 
 import jakarta.annotation.Nonnull;
-import org.nervousync.commons.Globals;
 
 import java.util.List;
 
@@ -29,6 +28,12 @@ import java.util.List;
  * @version $Revision: 1.0.0 $ $Date: Nov 18, 2022 17:10:21 $
  */
 public interface CacheClient {
+
+	/**
+	 * <span class="en-US">Default cache expire time</span>
+	 * <span class="zh-CN">默认缓存有效时间</span>
+	 */
+	int DEFAULT_EXPIRE_TIME = -1;
 
 	/**
 	 * <span class="en-US">Default step value</span>
@@ -170,7 +175,7 @@ public interface CacheClient {
 	 * <span class="zh-CN">操作结果</span>
 	 */
 	default boolean add(@Nonnull final String key, @Nonnull final String value) {
-		return this.add(key, value, Globals.DEFAULT_VALUE_INT);
+		return this.add(key, value, DEFAULT_EXPIRE_TIME);
 	}
 
 	/**
@@ -259,7 +264,7 @@ public interface CacheClient {
 	 * <span class="zh-CN">读取的缓存数据，如果缓存键值不存在或已过期，则返回null</span>
 	 */
 	default String getEx(@Nonnull final String key) {
-		return this.getEx(key, Globals.DEFAULT_VALUE_INT);
+		return this.getEx(key, DEFAULT_EXPIRE_TIME);
 	}
 
 	/**
@@ -411,7 +416,7 @@ public interface CacheClient {
 	 *              <span class="zh-CN">缓存数据</span>
 	 */
 	default boolean replace(@Nonnull final String key, @Nonnull final String value) {
-		return this.replace(key, value, Globals.DEFAULT_VALUE_INT);
+		return this.replace(key, value, DEFAULT_EXPIRE_TIME);
 	}
 
 	/**
@@ -439,7 +444,7 @@ public interface CacheClient {
 	 * <span class="zh-CN">操作结果</span>
 	 */
 	default boolean set(@Nonnull final String key, @Nonnull final String value) {
-		return this.set(key, value, Globals.DEFAULT_VALUE_INT);
+		return this.set(key, value, DEFAULT_EXPIRE_TIME);
 	}
 
 	/**

@@ -310,8 +310,8 @@ public final class LettuceProviderImpl extends AbstractProvider {
 	 * <h3 class="en-US">Generate the RedisURI instance object what will use at connecting to the Redis server</h3>
 	 * <h3 class="zhs">生成连接使用的 RedisURI 实例对象</h3>
 	 *
-	 * @param serverConfig <h3 class="en-US">Cache server config information</h3>
-	 *                     <h3 class="zh-CN">缓存服务器配置信息</h3>
+	 * @param serverConfig <span class="en-US">Cache server config information</span>
+	 *                     <span class="zh-CN">缓存服务器配置信息</span>
 	 * @param userName     <span class="en-US">Authenticate username</span>
 	 *                     <span class="zh-CN">用于身份验证的用户名</span>
 	 * @param passWord     <span class="en-US">Authenticate password</span>
@@ -323,7 +323,7 @@ public final class LettuceProviderImpl extends AbstractProvider {
 		RedisURI.Builder serverBuilder = RedisURI.builder()
 				.withTimeout(Duration.ofMillis(this.getConnectTimeout() * 1000L))
 				.withHost(serverConfig.getServerAddress())
-				.withPort(serverConfig.getServerPort())
+				.withPort(super.serverPort(serverConfig.getServerPort()))
 				.withLibraryName(Globals.DEFAULT_VALUE_STRING)
 				.withLibraryVersion(Globals.DEFAULT_VALUE_STRING);
 		if (StringUtils.notBlank(passWord)) {

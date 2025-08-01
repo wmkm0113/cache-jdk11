@@ -23,7 +23,6 @@ import org.nervousync.cache.config.CacheConfig.ServerConfig;
 import org.nervousync.cache.enumeration.ClusterMode;
 import org.nervousync.cache.provider.impl.AbstractProvider;
 import org.nervousync.commons.Globals;
-import org.nervousync.utils.FileUtils;
 import org.nervousync.utils.StringUtils;
 import redis.clients.jedis.*;
 import redis.clients.jedis.params.GetExParams;
@@ -33,7 +32,6 @@ import redis.clients.jedis.util.Pool;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * <h2 class="en-US">Redis cache provider using Jedis</h2>
@@ -566,38 +564,34 @@ public final class JedisProviderImpl extends AbstractProvider {
 			JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 			this.configPool(jedisPoolConfig);
 
-			Set<String> sentinelServers = new HashSet<>();
+			Set<HostAndPort> sentinelServers = new HashSet<>();
 			serverConfigList.forEach(serverConfig ->
-					sentinelServers.add(new HostAndPort(serverConfig.getServerAddress(),
-							serverConfig.getServerPort()).toString()));
-			if (StringUtils.isEmpty(passWord)) {
-				this.jedisPool = new JedisSentinelPool(masterName, sentinelServers, jedisPoolConfig, connectTimeout);
-			} else {
-				if (StringUtils.isEmpty(userName)) {
-					this.jedisPool = new JedisSentinelPool(masterName, sentinelServers, jedisPoolConfig,
-							connectTimeout, userName, passWord, Globals.INITIALIZE_INT_VALUE);
-				} else {
-					this.jedisPool = new JedisSentinelPool(masterName, sentinelServers, jedisPoolConfig,
-							connectTimeout, passWord);
+					Optional.ofNullable(this.serverInfo(serverConfig)).ifPresent(sentinelServers::add));
+			DefaultJedisClientConfig.Builder clientBuilder =
+					DefaultJedisClientConfig.builder().connectionTimeoutMillis(connectTimeout);
+			if (StringUtils.notBlank(passWord)) {
+				clientBuilder.password(passWord);
+				if (StringUtils.notBlank(userName)) {
+					clientBuilder.clientName(userName);
 				}
 			}
+			JedisClientConfig clientConfig = clientBuilder.build();
+			this.jedisPool = new JedisSentinelPool(masterName, sentinelServers, jedisPoolConfig, clientConfig, clientConfig);
 		} else {
 			GenericObjectPoolConfig<Connection> clusterConfig = new GenericObjectPoolConfig<>();
 			this.configPool(clusterConfig);
+			HostAndPort masterServer = null;
 			Set<HostAndPort> readServers = new HashSet<>();
-			serverConfigList.stream()
-					.filter(serverConfig -> !serverConfig.getServerAddress().equalsIgnoreCase(masterName))
-					.forEach(serverConfig -> {
-						HostAndPort server = new HostAndPort(serverConfig.getServerAddress(), serverConfig.getServerPort());
-						readServers.add(server);
-					});
-			HostAndPort masterServer =
-					serverConfigList.stream()
-							.filter(serverConfig -> serverConfig.getServerAddress().equalsIgnoreCase(masterName))
-							.findFirst()
-							.map(serverConfig ->
-									new HostAndPort(serverConfig.getServerAddress(), serverConfig.getServerPort()))
-							.orElse(null);
+			for (ServerConfig serverConfig : serverConfigList) {
+				if (serverConfig == null) {
+					continue;
+				}
+				if (serverConfig.getServerAddress().equalsIgnoreCase(masterName)) {
+					masterServer = this.serverInfo(serverConfig);
+				} else {
+					readServers.add(this.serverInfo(serverConfig));
+				}
+			}
 			if (StringUtils.notBlank(passWord)) {
 				DefaultJedisClientConfig.Builder clientBuilder =
 						DefaultJedisClientConfig.builder().password(passWord)
@@ -653,5 +647,21 @@ public final class JedisProviderImpl extends AbstractProvider {
 		poolConfig.setMaxWait(Duration.ofMillis(connectTimeout));
 		poolConfig.setTestOnBorrow(Boolean.TRUE);
 		poolConfig.setTestWhileIdle(Boolean.TRUE);
+	}
+
+	/**
+	 * <h3 class="en-US">Generate the HostAndPort instance object what will use at connecting to the Redis server</h3>
+	 * <h3 class="zhs">生成连接使用的服务器信息实例对象</h3>
+	 *
+	 * @param serverConfig <span class="en-US">Cache server config information</span>
+	 *                     <span class="zh-CN">缓存服务器配置信息</span>
+	 * @return <span class="en-US">RedisURI instance object</span>
+	 * <span class="zh-CN">RedisURI 实例对象</span>
+	 */
+	private HostAndPort serverInfo(final ServerConfig serverConfig) {
+		if (serverConfig == null) {
+			return null;
+		}
+		return new HostAndPort(serverConfig.getServerAddress(), super.serverPort(serverConfig.getServerPort()));
 	}
 }
