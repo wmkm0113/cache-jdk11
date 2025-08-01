@@ -236,7 +236,7 @@ public final class RedissonProviderImpl extends AbstractProvider {
 	}
 
 	@Override
-	public long setRange(@Nonnull final String key, final long offset, @Nonnull final String value) {
+	public long setRange(@Nonnull final String key, final int offset, @Nonnull final String value) {
 		try (SeekableByteChannel channel = this.redissonClient.getBinaryStream(key).getChannel()) {
 			channel.position(offset).write(ByteBuffer.wrap(value.getBytes(Globals.DEFAULT_ENCODING)));
 		} catch (IOException e) {

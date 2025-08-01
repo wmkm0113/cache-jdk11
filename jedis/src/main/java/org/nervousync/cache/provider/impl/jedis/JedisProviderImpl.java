@@ -23,6 +23,7 @@ import org.nervousync.cache.config.CacheConfig.ServerConfig;
 import org.nervousync.cache.enumeration.ClusterMode;
 import org.nervousync.cache.provider.impl.AbstractProvider;
 import org.nervousync.commons.Globals;
+import org.nervousync.utils.FileUtils;
 import org.nervousync.utils.StringUtils;
 import redis.clients.jedis.*;
 import redis.clients.jedis.params.GetExParams;
@@ -32,6 +33,7 @@ import redis.clients.jedis.util.Pool;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * <h2 class="en-US">Redis cache provider using Jedis</h2>
@@ -132,7 +134,7 @@ public final class JedisProviderImpl extends AbstractProvider {
 	}
 
 	@Override
-	public long setRange(@Nonnull final String key, final long offset, @Nonnull final String value) {
+	public long setRange(@Nonnull final String key, final int offset, @Nonnull final String value) {
 		if (this.singleMode) {
 			return Optional.ofNullable(this.singleClient())
 					.map(jedis -> {
@@ -518,12 +520,15 @@ public final class JedisProviderImpl extends AbstractProvider {
 
 	@Override
 	protected void info() {
+		String string;
 		if (this.singleMode) {
-			Optional.ofNullable(this.singleClient())
-					.ifPresent(jedis -> this.logger.debug("Server_Info", jedis.info()));
+			string = Optional.ofNullable(this.singleClient())
+					.map(Jedis::info)
+					.orElse(Globals.DEFAULT_VALUE_STRING);
 		} else {
-			this.logger.debug("Server_Info", this.readCluster.info());
+			string = this.readCluster.info();
 		}
+		this.logger.debug("Server_Info", super.infoMap(string));
 	}
 
 	@Override

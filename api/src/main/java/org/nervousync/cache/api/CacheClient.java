@@ -470,7 +470,7 @@ public interface CacheClient {
 	 * @return <span class="en-US">The length of the string after it was modified by the command.</span>
 	 * <span class="zh-CN">字符串被命令修改后的长度。</span>
 	 */
-	long setRange(@Nonnull final String key, final long offset, @Nonnull final String value);
+	long setRange(@Nonnull final String key, final int offset, @Nonnull final String value);
 
 	/**
 	 * <h3 class="en-US">Get the length of the string which stored at the key</h3>

@@ -330,12 +330,22 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 	}
 
 	@Override
-	public long setRange(@Nonnull final String key, final long offset, @Nonnull final String value) {
-		StringBuilder stringBuilder = new StringBuilder(this.get(key));
+	public long setRange(@Nonnull final String key, final int offset, @Nonnull final String value) {
+		String current = this.get(key);
+		StringBuilder stringBuilder = new StringBuilder();
+		if (offset >= 0 && offset < current.length()) {
+			stringBuilder.append(current, 0, offset);
+		} else {
+			stringBuilder.append(current);
+		}
 		while (stringBuilder.length() < offset) {
 			stringBuilder.append(" ");
 		}
 		stringBuilder.append(value);
+		int position = Integer.max(Globals.INITIALIZE_INT_VALUE, offset) + value.length();
+		if (position < current.length()) {
+			stringBuilder.append(current, position, current.length());
+		}
 		this.set(key, stringBuilder.toString(), Globals.DEFAULT_VALUE_INT);
 		return stringBuilder.length();
 	}

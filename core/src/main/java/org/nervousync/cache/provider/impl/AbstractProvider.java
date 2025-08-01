@@ -19,17 +19,20 @@ package org.nervousync.cache.provider.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import jakarta.annotation.Nonnull;
 import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.enumeration.ClusterMode;
 import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.cache.provider.CacheProvider;
+import org.nervousync.utils.FileUtils;
 import org.nervousync.utils.LoggerUtils;
 
 import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.cache.config.CacheConfig.ServerConfig;
 import org.nervousync.commons.Globals;
+import org.nervousync.utils.StringUtils;
 
 /**
  * <h2 class="en-US">Abstract provider class, all providers must extend this class</h2>
@@ -105,7 +108,9 @@ public abstract class AbstractProvider implements CacheProvider {
 						cacheConfig.getUserName(), cacheConfig.getPassWord());
 				break;
 		}
-		this.info();
+		if (this.logger.isDebugEnabled()) {
+			this.info();
+		}
 	}
 
 	/**
@@ -258,5 +263,28 @@ public abstract class AbstractProvider implements CacheProvider {
 			dataMap.put(keyvalues[i], keyvalues[i + 1]);
 		}
 		return dataMap;
+	}
+
+	/**
+	 * <h3 class="en-US">Parse server information string into data mapping table</h3>
+	 * <h3 class="zh-CN">解析服务器信息字符串为数据映射表</h3>
+	 *
+	 * @param string <span class="en-US">Server information string</span>
+	 *                  <span class="zh-CN">服务器信息字符串</span>
+	 * @return <span class="en-US">Key-value mapping table</span>
+	 * <span class="zh-CN">键值对映射表</span>
+	 */
+	protected Map<String, String> infoMap(final String string) {
+		Map<String, String> infoMap = new HashMap<>();
+		Stream.of(StringUtils.tokenizeToStringArray(string, FileUtils.CRLF))
+				.filter(StringUtils::notBlank)
+				.filter(line -> !line.startsWith("#"))
+				.forEach(line -> {
+					String[] pair = StringUtils.tokenizeToStringArray(line, ":");
+					if (pair.length == 2) {
+						infoMap.put(pair[0], pair[1]);
+					}
+				});
+		return infoMap;
 	}
 }

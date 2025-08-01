@@ -8,7 +8,7 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>cache-jedis-jdk11</artifactId>
-	<version>1.1.8</version>
+	<version>${current.version}</version>
 	<packaging>jar</packaging>
 	<name>Jedis Provider</name>
 	<url>https://nervousync.org/projects/cache/jdk11/providers/jedis/index.shtml</url>

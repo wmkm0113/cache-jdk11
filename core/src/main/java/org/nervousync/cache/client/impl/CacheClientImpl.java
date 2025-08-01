@@ -100,7 +100,7 @@ public final class CacheClientImpl implements CacheClient {
 	}
 
 	@Override
-	public long setRange(@Nonnull final String key, final long offset, @Nonnull final String value) {
+	public long setRange(@Nonnull final String key, final int offset, @Nonnull final String value) {
 		return this.cacheProvider.setRange(key, offset, value);
 	}
 

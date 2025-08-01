@@ -8,7 +8,7 @@
 		<version>1.1.8</version>
 	</parent>
 	<artifactId>cache-nodeps-jdk11</artifactId>
-	<version>1.1.8</version>
+	<version>${current.version}</version>
 	<packaging>jar</packaging>
 	<name>Cache No-Dependencies</name>
 	<dependencies>

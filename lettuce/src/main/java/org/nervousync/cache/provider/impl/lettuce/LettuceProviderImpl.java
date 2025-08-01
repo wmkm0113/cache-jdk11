@@ -30,6 +30,7 @@ import jakarta.annotation.Nonnull;
 import org.nervousync.annotations.provider.Provider;
 import org.nervousync.cache.config.CacheConfig.ServerConfig;
 import org.nervousync.cache.provider.impl.AbstractProvider;
+import org.nervousync.commons.Globals;
 import org.nervousync.utils.StringUtils;
 
 import java.time.Duration;
@@ -76,95 +77,17 @@ public final class LettuceProviderImpl extends AbstractProvider {
 
 	@Override
 	public boolean copy(@Nonnull final String source, @Nonnull final String destination) {
-		return false;
+		return this.redisCommands.copy(source, destination);
 	}
 
 	@Override
 	public long del(@Nonnull final String... keys) {
-		return 0;
+		return this.redisCommands.del(keys);
 	}
 
 	@Override
 	public long exists(@Nonnull final String... keys) {
-		return 0;
-	}
-
-	@Override
-	public void destroy() {
-		if (this.redisConnection != null) {
-			this.redisConnection.close();
-			this.redisConnection = null;
-		}
-		if (this.clusterConnection != null) {
-			this.clusterConnection.close();
-			this.clusterConnection = null;
-		}
-		this.redisClient.close();
-		this.redisClient.shutdown();
-	}
-
-	@Override
-	protected void info() {
-		this.logger.debug("Server_Info", this.redisCommands.info());
-	}
-
-	@Override
-	protected void singletonMode(final ServerConfig serverConfig, final String userName, final String passWord) {
-		this.redisClient = RedisClient.create(this.create(serverConfig, userName, passWord));
-		this.redisConnection = ((RedisClient) this.redisClient).connect(StringCodec.UTF8);
-		this.redisCommands = this.redisConnection.sync();
-	}
-
-	@Override
-	protected void clusterMode(final List<ServerConfig> serverConfigList, final String masterName,
-	                           final String userName, final String passWord) {
-		if (serverConfigList.isEmpty()) {
-			return;
-		}
-		if (serverConfigList.size() == 1) {
-			this.singletonMode(serverConfigList.get(0), userName, passWord);
-			return;
-		}
-
-		switch (this.getClusterMode()) {
-			case Sentinel:
-				RedisURI.Builder sentinelBuilder = RedisURI.builder()
-						.withTimeout(Duration.ofMillis(this.getConnectTimeout() * 1000L))
-						.withSentinelMasterId(masterName);
-				serverConfigList.forEach(serverConfig ->
-						sentinelBuilder.withSentinel(this.create(serverConfig, userName, passWord)));
-				this.redisClient = RedisClient.create(sentinelBuilder.build());
-				this.redisConnection = ((RedisClient) this.redisClient).connect(StringCodec.UTF8);
-				this.redisCommands = this.redisConnection.sync();
-				break;
-			case Master_Slave:
-				List<RedisURI> masterList = new ArrayList<>(serverConfigList.size());
-				List<RedisURI> slaveList = new ArrayList<>(serverConfigList.size());
-				serverConfigList.forEach(serverConfig -> {
-					if (serverConfig.getServerAddress().equalsIgnoreCase(masterName)) {
-						masterList.add(this.create(serverConfig, userName, passWord));
-					} else {
-						slaveList.add(this.create(serverConfig, userName, passWord));
-					}
-				});
-				List<RedisURI> serverList = new ArrayList<>();
-				serverList.addAll(masterList);
-				serverList.addAll(slaveList);
-				this.redisClient = RedisClient.create();
-				this.redisConnection = MasterReplica.connect((RedisClient) this.redisClient, StringCodec.UTF8, serverList);
-				((StatefulRedisMasterReplicaConnection<String, String>) this.redisConnection).setReadFrom(ReadFrom.REPLICA);
-				this.redisCommands = this.redisConnection.sync();
-				break;
-			case Cluster:
-				List<RedisURI> clusterList = new ArrayList<>(serverConfigList.size());
-				serverConfigList.forEach(serverConfig -> clusterList.add(this.create(serverConfig, userName, passWord)));
-				this.redisClient = RedisClusterClient.create(clusterList);
-				((RedisClusterClient) this.redisClient)
-						.setOptions(ClusterClientOptions.builder().autoReconnect(Boolean.TRUE).maxRedirects(1).build());
-				this.clusterConnection = ((RedisClusterClient) this.redisClient).connect(StringCodec.UTF8);
-				this.redisCommands = this.clusterConnection.sync();
-				break;
-		}
+		return this.redisCommands.exists(keys);
 	}
 
 	@Override
@@ -296,13 +219,91 @@ public final class LettuceProviderImpl extends AbstractProvider {
 	}
 
 	@Override
-	public long setRange(@Nonnull final String key, final long offset, @Nonnull final String value) {
+	public long setRange(@Nonnull final String key, final int offset, @Nonnull final String value) {
 		return this.redisCommands.setrange(key, offset, value);
 	}
 
 	@Override
 	public long strLen(@Nonnull final String key) {
 		return this.redisCommands.strlen(key);
+	}
+
+	@Override
+	public void destroy() {
+		if (this.redisConnection != null) {
+			this.redisConnection.close();
+			this.redisConnection = null;
+		}
+		if (this.clusterConnection != null) {
+			this.clusterConnection.close();
+			this.clusterConnection = null;
+		}
+		this.redisClient.close();
+		this.redisClient.shutdown();
+	}
+
+	@Override
+	protected void info() {
+		this.logger.debug("Server_Info", super.infoMap(this.redisCommands.info()));
+	}
+
+	@Override
+	protected void singletonMode(final ServerConfig serverConfig, final String userName, final String passWord) {
+		this.redisClient = RedisClient.create(this.create(serverConfig, userName, passWord));
+		this.redisConnection = ((RedisClient) this.redisClient).connect(StringCodec.UTF8);
+		this.redisCommands = this.redisConnection.sync();
+	}
+
+	@Override
+	protected void clusterMode(final List<ServerConfig> serverConfigList, final String masterName,
+	                           final String userName, final String passWord) {
+		if (serverConfigList.isEmpty()) {
+			return;
+		}
+		if (serverConfigList.size() == 1) {
+			this.singletonMode(serverConfigList.get(0), userName, passWord);
+			return;
+		}
+
+		switch (this.getClusterMode()) {
+			case Sentinel:
+				RedisURI.Builder sentinelBuilder = RedisURI.builder()
+						.withTimeout(Duration.ofMillis(this.getConnectTimeout() * 1000L))
+						.withSentinelMasterId(masterName);
+				serverConfigList.forEach(serverConfig ->
+						sentinelBuilder.withSentinel(this.create(serverConfig, userName, passWord)));
+				this.redisClient = RedisClient.create(sentinelBuilder.build());
+				this.redisConnection = ((RedisClient) this.redisClient).connect(StringCodec.UTF8);
+				this.redisCommands = this.redisConnection.sync();
+				break;
+			case Master_Slave:
+				List<RedisURI> masterList = new ArrayList<>(serverConfigList.size());
+				List<RedisURI> slaveList = new ArrayList<>(serverConfigList.size());
+				serverConfigList.forEach(serverConfig -> {
+					if (serverConfig.getServerAddress().equalsIgnoreCase(masterName)) {
+						masterList.add(this.create(serverConfig, userName, passWord));
+					} else {
+						slaveList.add(this.create(serverConfig, userName, passWord));
+					}
+				});
+				List<RedisURI> serverList = new ArrayList<>();
+				serverList.addAll(masterList);
+				serverList.addAll(slaveList);
+				this.redisClient = RedisClient.create();
+				this.redisConnection = MasterReplica.connect((RedisClient) this.redisClient, StringCodec.UTF8, serverList);
+				((StatefulRedisMasterReplicaConnection<String, String>) this.redisConnection).setReadFrom(ReadFrom.REPLICA);
+				this.redisCommands = this.redisConnection.sync();
+				break;
+			case Cluster:
+				List<RedisURI> clusterList = new ArrayList<>(serverConfigList.size());
+				serverConfigList.forEach(serverConfig -> clusterList.add(this.create(serverConfig, userName, passWord)));
+				this.redisClient = RedisClusterClient.create(clusterList);
+				((RedisClusterClient) this.redisClient)
+						.setOptions(ClusterClientOptions.builder().autoReconnect(Boolean.TRUE).maxRedirects(1).build());
+				this.clusterConnection = ((RedisClusterClient) this.redisClient).connect(StringCodec.UTF8);
+				this.redisCommands = this.clusterConnection.sync();
+				break;
+		}
 	}
 
 	/**
@@ -323,7 +324,8 @@ public final class LettuceProviderImpl extends AbstractProvider {
 				.withTimeout(Duration.ofMillis(this.getConnectTimeout() * 1000L))
 				.withHost(serverConfig.getServerAddress())
 				.withPort(serverConfig.getServerPort())
-				.withLibraryVersion("6.2");
+				.withLibraryName(Globals.DEFAULT_VALUE_STRING)
+				.withLibraryVersion(Globals.DEFAULT_VALUE_STRING);
 		if (StringUtils.notBlank(passWord)) {
 			if (StringUtils.isEmpty(userName)) {
 				serverBuilder.withPassword(passWord.toCharArray());
