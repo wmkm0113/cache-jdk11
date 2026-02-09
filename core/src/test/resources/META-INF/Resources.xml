@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key="Generated_Configure">Generated configure: {0}</entry>
+    <entry key="Parsed_Configure">Parsed configure: {0}</entry>
+    <entry key="Generated_Configure_Error">Generate configure error</entry>
+</properties>

@@ -19,13 +19,11 @@ package org.nervousync.cache.config;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nonnull;
 import jakarta.xml.bind.annotation.*;
-import org.nervousync.annotations.beans.OutputConfig;
 import org.nervousync.annotations.configs.Password;
 import org.nervousync.beans.core.BeanObject;
 import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.enumeration.ClusterMode;
 import org.nervousync.commons.Globals;
-import org.nervousync.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +38,6 @@ import java.util.List;
 @XmlType(name = "cache_config", namespace = "https://nervousync.org/schemas/cache")
 @XmlRootElement(name = "cache_config", namespace = "https://nervousync.org/schemas/cache")
 @XmlAccessorType(XmlAccessType.NONE)
-@OutputConfig(formatted = true, defaultType = StringUtils.StringType.XML,
-		types = {StringUtils.StringType.XML, StringUtils.StringType.JSON, StringUtils.StringType.YAML})
 public final class CacheConfig extends BeanObject {
 
 	/**
@@ -348,7 +344,7 @@ public final class CacheConfig extends BeanObject {
 	 *
 	 * @param clusterMode <span class="en-US">Cluster mode</span>
 	 *                    <span class="zh-CN">集群类型</span>
-	 * @see org.nervousync.cache.enumeration.ClusterMode
+	 * @see ClusterMode
 	 */
 	public void setClusterMode(final ClusterMode clusterMode) {
 		this.clusterMode = clusterMode;
@@ -426,8 +422,6 @@ public final class CacheConfig extends BeanObject {
 	@XmlType(name = "server_config", namespace = "https://nervousync.org/schemas/cache")
 	@XmlRootElement(name = "server_config", namespace = "https://nervousync.org/schemas/cache")
 	@XmlAccessorType(XmlAccessType.NONE)
-	@OutputConfig(formatted = true, defaultType = StringUtils.StringType.XML,
-			types = {StringUtils.StringType.XML, StringUtils.StringType.JSON, StringUtils.StringType.YAML})
 	public static final class ServerConfig extends BeanObject {
 
 		/**

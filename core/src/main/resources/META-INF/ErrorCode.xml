@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key="0x000C00000003">Invalid_Provider_Cache_Error</entry>
+    <entry key="0x000C00000005">Server_Not_Configured_Cache_Error</entry>
+</properties>

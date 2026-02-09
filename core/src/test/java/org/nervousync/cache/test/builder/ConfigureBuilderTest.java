@@ -24,9 +24,10 @@ import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.cache.enumeration.ClusterMode;
 import org.nervousync.commons.Globals;
 import org.nervousync.configs.ConfigureManager;
+import org.nervousync.enumerations.beans.StringType;
 import org.nervousync.exceptions.builder.BuilderException;
-import org.nervousync.utils.LoggerUtils;
-import org.nervousync.utils.StringUtils;
+import org.nervousync.utils.core.BeanUtils;
+import org.nervousync.utils.logger.LoggerUtils;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public final class ConfigureBuilderTest {
@@ -62,11 +63,11 @@ public final class ConfigureBuilderTest {
 					.removeServer("ServerAddress1", 11211)
 					.authorization("userName", "passWord")
 					.build();
-			String xmlContent = cacheConfig.toString(StringUtils.StringType.XML);
+			String xmlContent = cacheConfig.toXml();
 			this.logger.info("Generated_Configure", xmlContent);
-			CacheConfig parsedConfig = StringUtils.stringToObject(xmlContent, CacheConfig.class,
+			CacheConfig parsedConfig = BeanUtils.stringToObject(xmlContent, StringType.XML, Globals.DEFAULT_ENCODING, CacheConfig.class,
 					"https://nervousync.org/schemas/cache");
-			this.logger.info("Parsed_Configure", parsedConfig.toString(StringUtils.StringType.JSON));
+			this.logger.info("Parsed_Configure", parsedConfig.toJson());
 		} catch (BuilderException e) {
 			this.logger.error("Generated_Configure_Error", e);
 		}

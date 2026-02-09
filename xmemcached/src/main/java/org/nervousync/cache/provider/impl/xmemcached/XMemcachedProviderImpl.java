@@ -30,7 +30,7 @@ import org.nervousync.cache.config.CacheConfig.ServerConfig;
 import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.cache.provider.impl.AbstractProvider;
 import org.nervousync.commons.Globals;
-import org.nervousync.utils.StringUtils;
+import org.nervousync.utils.core.StringUtils;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -407,8 +407,8 @@ public class XMemcachedProviderImpl extends AbstractProvider {
 	 * <h3 class="en-US">Generate connect string by given server address and port number</h3>
 	 * <h3 class="zhs">根据给定的服务器地址和端口号生成连接字符串</h3>
 	 *
-	 * @param serverConfig <h3 class="en-US">Cache server config information</h3>
-	 *                     <h3 class="zh-CN">缓存服务器配置信息</h3>
+	 * @param serverConfig <span class="en-US">Cache server config information</span>
+	 *                     <span class="zh-CN">缓存服务器配置信息</span>
 	 * @return <span class="en-US">Connect string</span>
 	 * <span class="zh-CN">连接字符串</span>
 	 */

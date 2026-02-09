@@ -26,13 +26,13 @@ import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.enumeration.ClusterMode;
 import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.cache.provider.CacheProvider;
-import org.nervousync.utils.FileUtils;
-import org.nervousync.utils.LoggerUtils;
 
 import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.cache.config.CacheConfig.ServerConfig;
 import org.nervousync.commons.Globals;
-import org.nervousync.utils.StringUtils;
+import org.nervousync.utils.core.StringUtils;
+import org.nervousync.utils.core.FileUtils;
+import org.nervousync.utils.logger.LoggerUtils;
 
 /**
  * <h2 class="en-US">Abstract provider class, all providers must extend this class</h2>
@@ -217,6 +217,7 @@ public abstract class AbstractProvider implements CacheProvider {
 	 * @param expire <span class="en-US">New expire time</span>
 	 *               <span class="zh-CN">新的过期时间</span>
 	 */
+	@Override
 	public abstract void expire(@Nonnull final String key, final int expire);
 
 	/**

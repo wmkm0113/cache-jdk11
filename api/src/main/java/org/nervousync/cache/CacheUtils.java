@@ -22,9 +22,9 @@ import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.configs.ConfigureManager;
-import org.nervousync.utils.LoggerUtils;
-import org.nervousync.utils.ObjectUtils;
-import org.nervousync.utils.StringUtils;
+import org.nervousync.utils.core.ObjectUtils;
+import org.nervousync.utils.core.StringUtils;
+import org.nervousync.utils.logger.LoggerUtils;
 
 import java.util.Optional;
 import java.util.ServiceLoader;
@@ -36,6 +36,7 @@ import java.util.ServiceLoader;
  * @author Steven Wee	<a href="mailto:wmkm0113@gmail.com">wmkm0113@gmail.com</a>
  * @version $Revision: 1.0.0 $ $Date: Nov 18, 2022 17:21:36 $
  */
+@SuppressWarnings("unused")
 public final class CacheUtils {
 
 	/**
@@ -140,10 +141,13 @@ public final class CacheUtils {
 		if (INSTANCE == null || StringUtils.isEmpty(cacheName)) {
 			return Boolean.FALSE;
 		}
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Check_Register_Cache_Debug", cacheName);
+		if (INSTANCE.cacheManager.registered(cacheName)) {
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("Check_Register_Cache_Debug", cacheName);
+			}
+			return Boolean.TRUE;
 		}
-		return INSTANCE.cacheManager.registered(cacheName);
+		return Boolean.FALSE;
 	}
 
 	/**

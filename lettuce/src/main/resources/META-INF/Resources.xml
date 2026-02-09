@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key="TTL_Lettuce_Cache_Debug">TTL: {0}</entry>
+    <entry key="lettuce.cache.provider.name">Redis Client implements by Lettuce</entry>
+</properties>

@@ -30,12 +30,6 @@ bin/
 .DS_Store
 # Project exclude paths
 */src/test/resources/authorization.xml
-/api/target/
-/core/target/
-/jedis/target/
-/lettuce/target/
-/nodeps/target/
-/redisson/target/
 /target/
-/test/target/
-/xmemcached/target/
+*/target/
+**/*.iml

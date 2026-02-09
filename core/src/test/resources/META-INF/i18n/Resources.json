@@ -1,0 +1,28 @@
+{
+  "groupId": "org.nervousync",
+  "bundle": "cache",
+  "messages": {
+    "en-US": {
+      "Generated_Configure": {
+        "pattern": "Generated configure: {0}"
+      },
+      "Parsed_Configure": {
+        "pattern": "Parsed configure: {0}"
+      },
+      "Generated_Configure_Error": {
+        "pattern": "Generate configure error"
+      }
+    },
+    "zh-CN": {
+      "Generated_Configure": {
+        "pattern": "生成配置信息：{0}"
+      },
+      "Parsed_Configure": {
+        "pattern": "解析配置信息：{0}"
+      },
+      "Generated_Configure_Error": {
+        "pattern": "生成配置信息出错"
+      }
+    }
+  }
+}

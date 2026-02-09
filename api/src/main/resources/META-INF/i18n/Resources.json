@@ -1,0 +1,44 @@
+{
+  "groupId": "org.nervousync",
+  "bundle": "cache",
+  "errors": {
+    "0x000C00000001": "Not_Found_Cache_Manager_Impl",
+    "0x000C00000002": "Server_Address_Cache_Error"
+  },
+  "messages": {
+    "en-US": {
+      "Not_Found_Cache_Manager_Impl": {
+        "pattern": "Not found cache manager implement class"
+      },
+      "Server_Address_Cache_Error": {
+        "pattern": "Cache server address not configured"
+      },
+      "Register_Cache_Debug": {
+        "pattern": "Register cache name: {0}, configure info: {1}"
+      },
+      "Check_Register_Cache_Debug": {
+        "pattern": "Check cache name: {0} was registered"
+      },
+      "Register_Default_Failed": {
+        "pattern": "Register default cache failed! "
+      }
+    },
+    "zh-CN": {
+      "Not_Found_Cache_Manager_Impl": {
+        "pattern": "未找到缓存管理器的实现类"
+      },
+      "Server_Address_Cache_Error": {
+        "pattern": "缓存服务器地址未设置"
+      },
+      "Register_Cache_Debug": {
+        "pattern": "注册缓存名称：{0}，缓存配置信息：{1}"
+      },
+      "Check_Register_Cache_Debug": {
+        "pattern": "检查缓存名称：{0}是否注册"
+      },
+      "Register_Default_Failed": {
+        "pattern": "注册系统缓存失败！"
+      }
+    }
+  }
+}

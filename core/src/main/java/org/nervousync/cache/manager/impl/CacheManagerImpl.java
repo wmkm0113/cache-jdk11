@@ -22,8 +22,8 @@ import org.nervousync.cache.client.impl.CacheClientImpl;
 import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.cache.provider.ProviderManager;
-import org.nervousync.utils.LoggerUtils;
-import org.nervousync.utils.StringUtils;
+import org.nervousync.utils.core.StringUtils;
+import org.nervousync.utils.logger.LoggerUtils;
 
 import java.util.*;
 

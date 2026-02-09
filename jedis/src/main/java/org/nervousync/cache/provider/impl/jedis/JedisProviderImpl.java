@@ -17,18 +17,15 @@
 package org.nervousync.cache.provider.impl.jedis;
 
 import jakarta.annotation.Nonnull;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.nervousync.annotations.provider.Provider;
 import org.nervousync.cache.config.CacheConfig.ServerConfig;
 import org.nervousync.cache.enumeration.ClusterMode;
 import org.nervousync.cache.provider.impl.AbstractProvider;
-import org.nervousync.commons.Globals;
-import org.nervousync.utils.StringUtils;
+import org.nervousync.utils.core.StringUtils;
 import redis.clients.jedis.*;
 import redis.clients.jedis.params.GetExParams;
 import redis.clients.jedis.params.LCSParams;
 import redis.clients.jedis.params.SetParams;
-import redis.clients.jedis.util.Pool;
 
 import java.time.Duration;
 import java.util.*;
@@ -44,25 +41,15 @@ import java.util.*;
 public final class JedisProviderImpl extends AbstractProvider {
 
 	/**
-	 * <span class="en-US">Is single server mode flag</span>
-	 * <span class="zh-CN">单一服务器标记</span>
-	 */
-	private boolean singleMode = Boolean.FALSE;
-	/**
-	 * <span class="en-US">Jedis client connection pool instance object</span>
-	 * <span class="zh-CN">Jedis客户端连接池实例对象</span>
-	 */
-	private Pool<Jedis> jedisPool = null;
-	/**
 	 * <span class="en-US">Jedis write cluster instance object</span>
 	 * <span class="zh-CN">Jedis写入集群实例对象</span>
 	 */
-	private JedisCluster writeCluster = null;
+	private UnifiedJedis writeNode = null;
 	/**
 	 * <span class="en-US">Jedis read cluster instance object</span>
 	 * <span class="zh-CN">Jedis读取集群实例对象</span>
 	 */
-	private JedisCluster readCluster = null;
+	private RedisClusterClient readCluster = null;
 
 	@Override
 	public int defaultPort() {
@@ -71,383 +58,129 @@ public final class JedisProviderImpl extends AbstractProvider {
 
 	@Override
 	public boolean copy(@Nonnull final String source, @Nonnull final String destination) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						boolean result = jedis.copy(source, destination, Boolean.FALSE);
-						jedis.close();
-						return result;
-					})
-					.orElse(Boolean.FALSE);
-		} else {
-			return this.writeCluster.copy(source, destination, Boolean.FALSE);
-		}
+		return this.node(Boolean.TRUE).copy(source, destination, Boolean.FALSE);
 	}
 
 	@Override
 	public long del(@Nonnull final String... keys) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						long result = jedis.del(keys);
-						jedis.close();
-						return result;
-					})
-					.orElse(0L);
-		} else {
-			return this.writeCluster.del(keys);
-		}
+		return this.node(Boolean.TRUE).del(keys);
 	}
 
 	@Override
 	public long exists(@Nonnull final String... keys) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						long result = jedis.exists(keys);
-						jedis.close();
-						return result;
-					})
-					.orElse(0L);
-		} else {
-			return this.readCluster.exists(keys);
-		}
+		return this.node(Boolean.FALSE).exists(keys);
 	}
 
 	@Override
 	public boolean set(@Nonnull final String key, @Nonnull final String value, final int expiry) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						boolean result =
-								"OK".equalsIgnoreCase(
-										jedis.set(key, value, SetParams.setParams().ex(super.expiryTime(expiry))));
-						jedis.close();
-						return result;
-					})
-					.orElse(Boolean.FALSE);
-		} else {
-			return "OK".equalsIgnoreCase(this.writeCluster.set(key, value, SetParams.setParams().ex(expiry)));
-		}
+		return "OK".equalsIgnoreCase(this.node(Boolean.TRUE).set(key, value, SetParams.setParams().ex(super.expiryTime(expiry))));
 	}
 
 	@Override
 	public long setRange(@Nonnull final String key, final int offset, @Nonnull final String value) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						long result = jedis.setrange(key, offset, value);
-						jedis.close();
-						return result;
-					})
-					.orElse(0L);
-		} else {
-			return this.writeCluster.setrange(key, offset, value);
-		}
+		return this.node(Boolean.TRUE).setrange(key, offset, value);
 	}
 
 	@Override
 	public long strLen(@Nonnull final String key) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						long result = jedis.strlen(key);
-						jedis.close();
-						return result;
-					})
-					.orElse(0L);
-		} else {
-			return this.readCluster.strlen(key);
-		}
+		return this.node(Boolean.FALSE).strlen(key);
 	}
 
 	@Override
 	public boolean add(@Nonnull final String key, @Nonnull final String value, final int expiry) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						boolean result =
-								"OK".equalsIgnoreCase(
-										jedis.set(key, value, SetParams.setParams().nx().ex(super.expiryTime(expiry))));
-						jedis.close();
-						return result;
-					})
-					.orElse(Boolean.FALSE);
-		} else {
-			return "OK".equalsIgnoreCase(this.writeCluster.set(key, value,
-					SetParams.setParams().nx().ex(super.expiryTime(expiry))));
-		}
+		return "OK".equalsIgnoreCase(this.node(Boolean.TRUE).set(key, value,
+				SetParams.setParams().nx().ex(super.expiryTime(expiry))));
 	}
 
 	@Override
 	public long append(@Nonnull final String key, @Nonnull final String append) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						long result = jedis.append(key, append);
-						jedis.close();
-						return result;
-					})
-					.orElse(0L);
-		} else {
-			return this.writeCluster.append(key, append);
-		}
+		return this.node(Boolean.TRUE).append(key, append);
 	}
 
 	@Override
 	public boolean replace(@Nonnull final String key, @Nonnull final String value, final int expiry) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						boolean result =
-								"OK".equalsIgnoreCase(
-										jedis.set(key, value, SetParams.setParams().xx().ex(super.expiryTime(expiry))));
-						jedis.close();
-						return result;
-					})
-					.orElse(Boolean.FALSE);
-		} else {
-			return "OK".equalsIgnoreCase(
-					this.writeCluster.set(key, value, SetParams.setParams().xx().ex(super.expiryTime(expiry))));
-		}
+		return "OK".equalsIgnoreCase(
+				this.node(Boolean.TRUE).set(key, value, SetParams.setParams().xx().ex(super.expiryTime(expiry))));
 	}
 
 	@Override
 	public void expire(@Nonnull final String key, final int expiry) {
-		if (this.singleMode) {
-			Optional.ofNullable(this.singleClient())
-					.ifPresent(jedis -> {
-						jedis.expire(key, super.expiryTime(expiry));
-						jedis.close();
-					});
-		} else {
-			this.writeCluster.expire(key, super.expiryTime(expiry));
-		}
+		this.node(Boolean.TRUE).expire(key, super.expiryTime(expiry));
 	}
 
 	@Override
 	public List<String> keys(@Nonnull final String pattern) {
-		final List<String> keyList = new ArrayList<>();
-		if (this.singleMode) {
-			Optional.ofNullable(this.singleClient())
-					.ifPresent(jedis -> {
-						keyList.addAll(jedis.keys(pattern));
-						jedis.close();
-					});
-		} else {
-			keyList.addAll(this.readCluster.keys(pattern));
-		}
-		return keyList;
+		return new ArrayList<>(this.node(Boolean.FALSE).keys(pattern));
 	}
 
 	@Override
 	public boolean persist(@Nonnull final String key) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						boolean result = (jedis.persist(key) == 1L);
-						jedis.close();
-						return result;
-					})
-					.orElse(Boolean.FALSE);
-		} else {
-			return this.writeCluster.persist(key) == 1L;
-		}
+		return this.node(Boolean.TRUE).persist(key) == 1L;
 	}
 
 	@Override
 	public boolean rename(@Nonnull final String key, @Nonnull final String newKey) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						boolean result = "OK".equalsIgnoreCase(jedis.rename(key, newKey));
-						jedis.close();
-						return result;
-					})
-					.orElse(Boolean.FALSE);
-		} else {
-			return "OK".equalsIgnoreCase(this.writeCluster.rename(key, newKey));
-		}
+		return "OK".equalsIgnoreCase(this.node(Boolean.TRUE).rename(key, newKey));
 	}
 
 	@Override
 	public long touch(@Nonnull final String... keys) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						long count = jedis.touch(keys);
-						jedis.close();
-						return count;
-					})
-					.orElse(0L);
-		} else {
-			return this.writeCluster.touch(keys);
-		}
+		return this.node(Boolean.TRUE).touch(keys);
 	}
 
 	@Override
 	public long ttl(@Nonnull final String key) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						long count = jedis.ttl(key);
-						jedis.close();
-						return count;
-					})
-					.orElse(0L);
-		} else {
-			return this.readCluster.ttl(key);
-		}
+		return this.node(Boolean.FALSE).ttl(key);
 	}
 
 	@Override
 	public String get(@Nonnull final String key) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						String string = jedis.get(key);
-						jedis.close();
-						return string;
-					})
-					.orElse(Globals.DEFAULT_VALUE_STRING);
-		} else {
-			return this.readCluster.get(key);
-		}
+		return this.node(Boolean.FALSE).get(key);
 	}
 
 	@Override
 	public String getDel(@Nonnull final String key) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						String string = jedis.getDel(key);
-						jedis.close();
-						return string;
-					})
-					.orElse(Globals.DEFAULT_VALUE_STRING);
-		} else {
-			return this.writeCluster.getDel(key);
-		}
+		return this.node(Boolean.TRUE).getDel(key);
 	}
 
 	@Override
 	public String getEx(@Nonnull final String key, final int expiry) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						String string = jedis.getEx(key, GetExParams.getExParams().ex(super.expiryTime(expiry)));
-						jedis.close();
-						return string;
-					})
-					.orElse(Globals.DEFAULT_VALUE_STRING);
-		} else {
-			return this.writeCluster.getEx(key, GetExParams.getExParams().ex(super.expiryTime(expiry)));
-		}
+		return this.node(Boolean.TRUE).getEx(key, GetExParams.getExParams().ex(super.expiryTime(expiry)));
 	}
 
 	@Override
 	public String getRange(@Nonnull final String key, final int begin, final int end) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						String string = jedis.getrange(key, begin, end);
-						jedis.close();
-						return string;
-					})
-					.orElse(Globals.DEFAULT_VALUE_STRING);
-		} else {
-			return this.readCluster.getrange(key, begin, end);
-		}
+		return this.node(Boolean.FALSE).getrange(key, begin, end);
 	}
 
 	@Override
 	public String getSet(@Nonnull final String key, @Nonnull final String value) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						String string = jedis.setGet(key, value);
-						jedis.close();
-						return string;
-					})
-					.orElse(Globals.DEFAULT_VALUE_STRING);
-		} else {
-			return this.writeCluster.setGet(key, value);
-		}
+		return this.node(Boolean.TRUE).setGet(key, value);
 	}
 
 	@Override
 	public long incr(@Nonnull final String key, final long step) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						long operateResult = jedis.incrBy(key, step);
-						jedis.close();
-						return operateResult;
-					})
-					.orElse(Globals.DEFAULT_VALUE_LONG);
-		} else {
-			return this.writeCluster.incrBy(key, step);
-		}
+		return this.node(Boolean.TRUE).incrBy(key, step);
 	}
 
 	@Override
 	public double incrFloat(@Nonnull final String key, final double step) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						double count = jedis.incrByFloat(key, step);
-						jedis.close();
-						return count;
-					})
-					.orElse(0d);
-		} else {
-			return this.writeCluster.incrByFloat(key, step);
-		}
+		return this.node(Boolean.TRUE).incrByFloat(key, step);
 	}
 
 	@Override
 	public String lcs(@Nonnull final String key1, @Nonnull final String key2) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						String string = jedis.lcs(key1, key2, LCSParams.LCSParams()).getMatchString();
-						jedis.close();
-						return string;
-					})
-					.orElse(Globals.DEFAULT_VALUE_STRING);
-		} else {
-			return this.readCluster.lcs(key1, key2, LCSParams.LCSParams()).getMatchString();
-		}
+		return this.node(Boolean.FALSE).lcs(key1, key2, LCSParams.LCSParams()).getMatchString();
 	}
 
 	@Override
 	public long lcsLen(@Nonnull final String key1, @Nonnull final String key2) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						long length = jedis.lcs(key1, key2, LCSParams.LCSParams()).getLen();
-						jedis.close();
-						return length;
-					})
-					.orElse(0L);
-		} else {
-			return this.readCluster.lcs(key1, key2, LCSParams.LCSParams()).getLen();
-		}
+		return this.node(Boolean.FALSE).lcs(key1, key2, LCSParams.LCSParams()).getLen();
 	}
 
 	@Override
 	public List<String> mget(@Nonnull final String... keys) {
-		final List<String> keyList = new ArrayList<>();
-		if (this.singleMode) {
-			Optional.ofNullable(this.singleClient())
-					.ifPresent(jedis -> {
-						keyList.addAll(jedis.mget(keys));
-						jedis.close();
-					});
-		} else {
-			keyList.addAll(this.readCluster.mget(keys));
-		}
-		return keyList;
+		return this.node(Boolean.FALSE).mget(keys);
 	}
 
 	@Override
@@ -455,17 +188,7 @@ public final class JedisProviderImpl extends AbstractProvider {
 		if (keyvalues.length % 2 != 0) {
 			return Boolean.FALSE;
 		}
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						boolean result = "OK".equalsIgnoreCase(jedis.mset(keyvalues));
-						jedis.close();
-						return result;
-					})
-					.orElse(Boolean.FALSE);
-		} else {
-			return "OK".equalsIgnoreCase(this.writeCluster.mset(keyvalues));
-		}
+		return "OK".equalsIgnoreCase(this.node(Boolean.TRUE).mset(keyvalues));
 	}
 
 	@Override
@@ -473,113 +196,72 @@ public final class JedisProviderImpl extends AbstractProvider {
 		if (keyvalues.length % 2 != 0) {
 			return Boolean.FALSE;
 		}
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						boolean result = jedis.msetnx(keyvalues) == 1L;
-						jedis.close();
-						return result;
-					})
-					.orElse(Boolean.FALSE);
-		} else {
-			return this.writeCluster.msetnx(keyvalues) == 1L;
-		}
+		return this.node(Boolean.TRUE).msetnx(keyvalues) == 1L;
 	}
 
 	@Override
 	public long decr(@Nonnull final String key, long step) {
-		if (this.singleMode) {
-			return Optional.ofNullable(this.singleClient())
-					.map(jedis -> {
-						long operateResult = jedis.decrBy(key, step);
-						jedis.close();
-						return operateResult;
-					})
-					.orElse(Globals.DEFAULT_VALUE_LONG);
-		} else {
-			return this.readCluster.decrBy(key, step);
-		}
+		return this.node(Boolean.FALSE).decrBy(key, step);
 	}
 
 	@Override
 	public void destroy() {
-		if (this.jedisPool != null && !this.jedisPool.isClosed()) {
-			this.jedisPool.close();
-		}
-
 		if (this.readCluster != null) {
 			this.readCluster.close();
 		}
 
-		if (this.writeCluster != null) {
-			this.writeCluster.close();
+		if (this.writeNode != null) {
+			this.writeNode.close();
 		}
 	}
 
 	@Override
 	protected void info() {
-		String string;
-		if (this.singleMode) {
-			string = Optional.ofNullable(this.singleClient())
-					.map(Jedis::info)
-					.orElse(Globals.DEFAULT_VALUE_STRING);
-		} else {
-			string = this.readCluster.info();
-		}
-		this.logger.debug("Server_Info", super.infoMap(string));
+		this.logger.debug("Server_Info", super.infoMap(this.node(Boolean.FALSE).info()));
 	}
 
 	@Override
 	protected void singletonMode(final ServerConfig cachedServer, final String userName, final String passWord) {
-		GenericObjectPoolConfig<Jedis> jedisPoolConfig = new GenericObjectPoolConfig<>();
-
-		jedisPoolConfig.setMaxTotal(this.getMaximumClient());
-		jedisPoolConfig.setMaxIdle(this.getClientPoolSize());
-		jedisPoolConfig.setMaxWait(Duration.ofMillis(this.getConnectTimeout() * 1000L));
-		jedisPoolConfig.setTestOnBorrow(Boolean.TRUE);
-		jedisPoolConfig.setTestWhileIdle(Boolean.TRUE);
-
-		int connectTimeout = this.getConnectTimeout() * 1000;
-
-		if (StringUtils.isEmpty(passWord)) {
-			this.jedisPool = new JedisPool(jedisPoolConfig, cachedServer.getServerAddress(),
-					super.serverPort(cachedServer.getServerPort()), connectTimeout);
-		} else {
-			if (StringUtils.isEmpty(userName)) {
-				this.jedisPool = new JedisPool(jedisPoolConfig, cachedServer.getServerAddress(),
-						super.serverPort(cachedServer.getServerPort()), connectTimeout, passWord);
-			} else {
-				this.jedisPool = new JedisPool(jedisPoolConfig, cachedServer.getServerAddress(),
-						super.serverPort(cachedServer.getServerPort()), connectTimeout, userName, passWord);
+		ConnectionPoolConfig poolConfig = new ConnectionPoolConfig();
+		this.configPool(poolConfig);
+		DefaultJedisClientConfig.Builder clientBuilder =
+				DefaultJedisClientConfig.builder().connectionTimeoutMillis(this.getConnectTimeout() * 1000);
+		if (StringUtils.notBlank(passWord)) {
+			clientBuilder.password(passWord);
+			if (StringUtils.notBlank(userName)) {
+				clientBuilder.clientName(userName);
 			}
 		}
-		this.singleMode = Boolean.TRUE;
+		this.writeNode = RedisClient.builder()
+				.hostAndPort(cachedServer.getServerAddress(), super.serverPort(cachedServer.getServerPort()))
+				.clientConfig(clientBuilder.build())
+				.poolConfig(poolConfig)
+				.build();
 	}
 
 	@Override
 	protected void clusterMode(final List<ServerConfig> serverConfigList, final String masterName,
 	                           final String userName, final String passWord) {
-		int connectTimeout = this.getConnectTimeout() * 1000;
+		DefaultJedisClientConfig.Builder clientBuilder =
+				DefaultJedisClientConfig.builder().connectionTimeoutMillis(this.getConnectTimeout() * 1000);
+		if (StringUtils.notBlank(passWord)) {
+			clientBuilder.password(passWord);
+			if (StringUtils.notBlank(userName)) {
+				clientBuilder.clientName(userName);
+			}
+		}
+		ConnectionPoolConfig poolConfig = new ConnectionPoolConfig();
+		this.configPool(poolConfig);
 		if (ClusterMode.Sentinel.equals(this.getClusterMode())) {
-			JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-			this.configPool(jedisPoolConfig);
-
 			Set<HostAndPort> sentinelServers = new HashSet<>();
 			serverConfigList.forEach(serverConfig ->
 					Optional.ofNullable(this.serverInfo(serverConfig)).ifPresent(sentinelServers::add));
-			DefaultJedisClientConfig.Builder clientBuilder =
-					DefaultJedisClientConfig.builder().connectionTimeoutMillis(connectTimeout);
-			if (StringUtils.notBlank(passWord)) {
-				clientBuilder.password(passWord);
-				if (StringUtils.notBlank(userName)) {
-					clientBuilder.clientName(userName);
-				}
-			}
-			JedisClientConfig clientConfig = clientBuilder.build();
-			this.jedisPool = new JedisSentinelPool(masterName, sentinelServers, jedisPoolConfig, clientConfig, clientConfig);
+			this.writeNode = RedisSentinelClient.builder().masterName(masterName)
+					.sentinels(sentinelServers)
+					.clientConfig(clientBuilder.build())
+					.poolConfig(poolConfig)
+					.build();
 		} else {
-			GenericObjectPoolConfig<Connection> clusterConfig = new GenericObjectPoolConfig<>();
-			this.configPool(clusterConfig);
 			HostAndPort masterServer = null;
 			Set<HostAndPort> readServers = new HashSet<>();
 			for (ServerConfig serverConfig : serverConfigList) {
@@ -592,45 +274,21 @@ public final class JedisProviderImpl extends AbstractProvider {
 					readServers.add(this.serverInfo(serverConfig));
 				}
 			}
-			if (StringUtils.notBlank(passWord)) {
-				DefaultJedisClientConfig.Builder clientBuilder =
-						DefaultJedisClientConfig.builder().password(passWord)
-								.connectionTimeoutMillis(connectTimeout);
-				if (StringUtils.notBlank(userName)) {
-					clientBuilder.clientName(userName);
-				}
-				this.readCluster =
-						new JedisCluster(readServers, clientBuilder.build(), this.getRetryCount(), clusterConfig);
-				this.writeCluster =
-						new JedisCluster(masterServer, clientBuilder.build(), this.getRetryCount(), clusterConfig);
-			} else {
-				this.readCluster =
-						new JedisCluster(readServers, connectTimeout, this.getRetryCount(), clusterConfig);
-				this.writeCluster =
-						new JedisCluster(masterServer, connectTimeout, this.getRetryCount(), clusterConfig);
+			DefaultJedisClientConfig config = clientBuilder.build();
+			RedisClusterClient.Builder readClientBuilder = RedisClusterClient.builder();
+			if (this.getRetryCount() > 0) {
+				readClientBuilder.maxAttempts(this.getRetryCount());
 			}
+			this.readCluster = readClientBuilder.nodes(readServers).clientConfig(config).poolConfig(poolConfig).build();
+			this.writeNode = RedisClient.builder().hostAndPort(masterServer).clientConfig(config).poolConfig(poolConfig).build();
 		}
-		this.singleMode = Boolean.FALSE;
 	}
 
-	/**
-	 * <h3 class="en-US">Get the client instance object of the single server</h3>
-	 * <h3 class="zhs">获取单服务器的客户端实例对象</h3>
-	 *
-	 * @return <span class="en-US">Client instance object</span>
-	 * <span class="zh-CN">客户端实例对象</span>
-	 */
-	private Jedis singleClient() {
-		Jedis jedis = this.jedisPool.getResource();
-		int retryCount = 0;
-		while (jedis == null || !jedis.isConnected()) {
-			if (retryCount >= this.getRetryCount()) {
-				break;
-			}
-			retryCount++;
-			jedis = this.jedisPool.getResource();
+	private UnifiedJedis node(final boolean write) {
+		if (write) {
+			return this.writeNode;
 		}
-		return jedis;
+		return ClusterMode.Cluster.equals(this.getClusterMode()) ? this.readCluster : this.writeNode;
 	}
 
 	/**
@@ -640,7 +298,7 @@ public final class JedisProviderImpl extends AbstractProvider {
 	 * @param poolConfig <span class="en-US">Jedis connection pool configure</span>
 	 *                   <span class="zh-CN">Jedis连接池配置</span>
 	 */
-	private void configPool(final GenericObjectPoolConfig<?> poolConfig) {
+	private void configPool(final ConnectionPoolConfig poolConfig) {
 		int connectTimeout = this.getConnectTimeout() * 1000;
 		poolConfig.setMaxTotal(this.getMaximumClient());
 		poolConfig.setMaxIdle(this.getClientPoolSize());
@@ -650,7 +308,7 @@ public final class JedisProviderImpl extends AbstractProvider {
 	}
 
 	/**
-	 * <h3 class="en-US">Generate the HostAndPort instance object what will use at connecting to the Redis server</h3>
+	 * <h3 class="en-US">Generate the HostAndPort instance object which will use at connecting to the Redis server</h3>
 	 * <h3 class="zhs">生成连接使用的服务器信息实例对象</h3>
 	 *
 	 * @param serverConfig <span class="en-US">Cache server config information</span>

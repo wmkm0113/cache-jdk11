@@ -17,8 +17,8 @@
 package org.nervousync.cache.provider;
 
 import org.nervousync.annotations.provider.Provider;
-import org.nervousync.utils.LoggerUtils;
-import org.nervousync.utils.StringUtils;
+import org.nervousync.utils.core.StringUtils;
+import org.nervousync.utils.logger.LoggerUtils;
 
 import java.util.*;
 

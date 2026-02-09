@@ -1,0 +1,91 @@
+{
+  "groupId": "org.nervousync",
+  "bundle": "cache",
+  "errors": {
+    "0x000C00001001": "Configure_Invalid"
+  },
+  "messages": {
+    "en-US": {
+      "No_Auth_File": {
+        "pattern": "Can't found the authorization file, ignore..."
+      },
+      "Generated_Configure": {
+        "pattern": "Generated configure: {0}"
+      },
+      "Register_Result": {
+        "pattern": "Register cache result: {0}"
+      },
+      "Register_Check": {
+        "pattern": "Cache {0} registered: {1}"
+      },
+      "Read_Debug": {
+        "pattern": "Read cache information, Key: {0}, value: {1}"
+      },
+      "Read_After_Debug": {
+        "pattern": "After {1} operate read cache information, Key: {0}, value: {2}"
+      },
+      "Read_After_Return_Debug": {
+        "pattern": "After {1} operate read cache information, Key: {0}, value: {2}, return value: {3}"
+      },
+      "Updatable_Configure": {
+        "pattern": "Updatable configure: {0}"
+      },
+      "Configure_Invalid": {
+        "pattern": "Server configure information invalid! "
+      },
+      "Operate_Result_Debug": {
+        "pattern": "Operate {0} result: {1}"
+      },
+      "Exists_Debug": {
+        "pattern": "Exists keys: {0}"
+      },
+      "TTL_Debug": {
+        "pattern": "TTL: {0}"
+      },
+      "Length_Debug": {
+        "pattern": "Data length: {0}"
+      }
+    },
+    "zh-CN": {
+      "No_Auth_File": {
+        "pattern": "未找到配置信息，忽略当前测试"
+      },
+      "Generated_Configure": {
+        "pattern": "生成的配置信息：{0}"
+      },
+      "Register_Result": {
+        "pattern": "注册缓存结果：{0}"
+      },
+      "Register_Check": {
+        "pattern": "缓存 {0} 注册状态：{1}"
+      },
+      "Read_Debug": {
+        "pattern": "读取缓存信息，键：{0}，值：{1}"
+      },
+      "Read_After_Debug": {
+        "pattern": "在{1}操作后读取缓存信息，键：{0}，值：{2}"
+      },
+      "Read_After_Return_Debug": {
+        "pattern": "在{1}操作后读取缓存信息，键：{0}，值：{2}，操作返回值：{3}"
+      },
+      "Updatable_Configure": {
+        "pattern": "更新的配置信息：{0}"
+      },
+      "Configure_Invalid": {
+        "pattern": "服务器配置信息错误！"
+      },
+      "Operate_Result_Debug": {
+        "pattern": "操作 {0} 执行结果：{1}"
+      },
+      "Exists_Debug": {
+        "pattern": "已存在的键值：{0}"
+      },
+      "TTL_Debug": {
+        "pattern": "有效期：{0}"
+      },
+      "Length_Debug": {
+        "pattern": "数据长度：{0}"
+      }
+    }
+  }
+}

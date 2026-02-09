@@ -27,6 +27,7 @@ import java.util.List;
  * @author Steven Wee	<a href="mailto:wmkm0113@gmail.com">wmkm0113@gmail.com</a>
  * @version $Revision: 1.0.0 $ $Date: Sep 14, 2020 10:30:21 $
  */
+@SuppressWarnings("unused")
 public interface CacheProvider {
 
 	/**

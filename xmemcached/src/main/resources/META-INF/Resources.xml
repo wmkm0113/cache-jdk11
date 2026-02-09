@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key="No_Auth_File">Can't found the authorization file, ignore...</entry>
+    <entry key="xmemcached.cache.provider.name">Xmemcached Client</entry>
+    <entry key="Init_Memcached_Cache_Error">An error occurs when initialize memcached client</entry>
+    <entry key="Destroy_Memcached_Cache_Error">Destroy memcached client instance error</entry>
+    <entry key="Data_Operate_Cache_Error">An error occurs when execute cache operate: {0}</entry>
+</properties>

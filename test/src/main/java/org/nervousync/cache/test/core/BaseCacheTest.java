@@ -2,6 +2,7 @@ package org.nervousync.cache.test.core;
 
 import org.apache.logging.log4j.Level;
 import org.junit.jupiter.api.*;
+import org.nervousync.builder.ParentBuilder;
 import org.nervousync.cache.CacheUtils;
 import org.nervousync.cache.builder.CacheConfigBuilder;
 import org.nervousync.cache.commons.CacheGlobals;
@@ -10,9 +11,9 @@ import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.commons.Globals;
 import org.nervousync.configs.ConfigureManager;
 import org.nervousync.exceptions.builder.BuilderException;
-import org.nervousync.utils.LoggerUtils;
-import org.nervousync.utils.PropertiesUtils;
-import org.nervousync.utils.StringUtils;
+import org.nervousync.utils.core.StringUtils;
+import org.nervousync.utils.logger.LoggerUtils;
+import org.nervousync.utils.properties.PropertiesUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -83,7 +84,7 @@ public abstract class BaseCacheTest {
 			this.logger.info("No_Auth_File");
 			return;
 		}
-		CacheConfigBuilder<?> configBuilder = CacheConfigBuilder.newBuilder()
+		CacheConfigBuilder<ParentBuilder> configBuilder = CacheConfigBuilder.newBuilder()
 				.providerName(this.providerName)
 				.connectTimeout(CacheGlobals.DEFAULT_CONNECTION_TIMEOUT)
 				.expireTime(5)
@@ -105,7 +106,7 @@ public abstract class BaseCacheTest {
 		}
 
 		for (int i = 0; i < serverCount; i++) {
-			CacheConfigBuilder.ServerConfigBuilder serverConfigBuilder =
+			CacheConfigBuilder.ServerConfigBuilder<CacheConfigBuilder<ParentBuilder>> serverConfigBuilder =
 					configBuilder.serverBuilder(serverAddresses[i]).weight(Integer.parseInt(serverWeights[i]));
 			if (serverPorts.length > 0) {
 				serverConfigBuilder.port(Integer.parseInt(serverPorts[i]));
@@ -120,7 +121,7 @@ public abstract class BaseCacheTest {
 			return;
 		}
 		Assertions.assertNotNull(cacheConfig);
-		this.logger.info("Generated_Configure", cacheConfig.toString(StringUtils.StringType.XML));
+		this.logger.info("Generated_Configure", cacheConfig.toXml());
 
 		this.logger.info("Register_Result", CacheUtils.register("TestCache", cacheConfig));
 		this.logger.info("Register_Check", "TestCache", CacheUtils.registered("TestCache"));

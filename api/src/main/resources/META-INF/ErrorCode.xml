@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key="0x000C00000001">Not_Found_Cache_Manager_Impl</entry>
+    <entry key="0x000C00000002">Server_Address_Cache_Error</entry>
+</properties>

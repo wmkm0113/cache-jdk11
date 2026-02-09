@@ -31,7 +31,7 @@ import org.nervousync.annotations.provider.Provider;
 import org.nervousync.cache.config.CacheConfig.ServerConfig;
 import org.nervousync.cache.provider.impl.AbstractProvider;
 import org.nervousync.commons.Globals;
-import org.nervousync.utils.StringUtils;
+import org.nervousync.utils.core.StringUtils;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -307,7 +307,7 @@ public final class LettuceProviderImpl extends AbstractProvider {
 	}
 
 	/**
-	 * <h3 class="en-US">Generate the RedisURI instance object what will use at connecting to the Redis server</h3>
+	 * <h3 class="en-US">Generate the RedisURI instance object which will use at connecting to the Redis server</h3>
 	 * <h3 class="zhs">生成连接使用的 RedisURI 实例对象</h3>
 	 *
 	 * @param serverConfig <span class="en-US">Cache server config information</span>

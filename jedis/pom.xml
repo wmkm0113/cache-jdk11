@@ -1,85 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Licensed to the Nervousync Studio (NSYC) under one or more
-  ~ contributor license agreements. See the NOTICE file distributed with
-  ~ this work for additional information regarding copyright ownership.
-  ~ The ASF licenses this file to You under the Apache License, Version 2.0
-  ~ (the "License"); you may not use this file except in compliance with
-  ~ the License.  You may obtain a copy of the License at
-  ~
-  ~      http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<parent>
-		<artifactId>cache-jdk11</artifactId>
-		<groupId>org.nervousync</groupId>
-		<version>1.1.8</version>
-	</parent>
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>cache-jedis-jdk11</artifactId>
-	<version>${current.version}</version>
-	<packaging>jar</packaging>
-	<name>Jedis Provider</name>
-	<url>https://nervousync.org/projects/cache/jdk11/providers/jedis/index.shtml</url>
-	<description>Cache Provider Implements By Jedis, development by Nervousync Studio (NSYC)</description>
-	<properties>
-		<jedis.version>6.0.0</jedis.version>
-	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>org.nervousync</groupId>
-			<artifactId>cache-api-jdk11</artifactId>
-			<version>1.1.8-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.nervousync</groupId>
-			<artifactId>cache-core-jdk11</artifactId>
-			<version>${current.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.nervousync</groupId>
-			<artifactId>cache-test-jdk11</artifactId>
-			<version>1.0.1</version>
-			<scope>test</scope>
-		</dependency>
-		<!-- Jedis Support -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-pool2</artifactId>
-			<version>2.12.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20250517</version>
-		</dependency>
-		<dependency>
-			<groupId>redis.clients</groupId>
-			<artifactId>jedis</artifactId>
-			<version>${jedis.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.commons</groupId>
-					<artifactId>commons-pool2</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.json</groupId>
-					<artifactId>json</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-	</dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.nervousync</groupId>
+        <artifactId>cache-parent</artifactId>
+        <version>1.2.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>cache-jedis</artifactId>
+    <packaging>jar</packaging>
+    <name>Jedis Provider</name>
+    <url>https://nervousync.org/projects/cache/providers/jedis/index.shtml</url>
+    <description>Cache Provider Implements By Jedis, development by Nervousync Studio (NSYC)</description>
+    <properties>
+        <jedis.version>7.2.1</jedis.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.nervousync</groupId>
+            <artifactId>cache-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.nervousync</groupId>
+            <artifactId>cache-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Jedis Support -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>2.12.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20251224</version>
+        </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>${jedis.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-pool2</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.json</groupId>
+                    <artifactId>json</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
 </project>

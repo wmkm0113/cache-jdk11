@@ -21,7 +21,7 @@ import org.nervousync.annotations.provider.Provider;
 import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.cache.provider.impl.AbstractProvider;
 import org.nervousync.commons.Globals;
-import org.nervousync.utils.StringUtils;
+import org.nervousync.utils.core.StringUtils;
 import org.redisson.Redisson;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
@@ -348,7 +348,7 @@ public final class RedissonProviderImpl extends AbstractProvider {
 	}
 
 	/**
-	 * <h3 class="en-US">Generate connect string by given server address and port number</h3>
+	 * <h3 class="en-US">Generate a connection string by the given server address and port number</h3>
 	 * <h3 class="zhs">根据给定的服务器地址和端口号生成连接字符串</h3>
 	 *
 	 * @param serverAddress <span class="en-US">Server address</span>
