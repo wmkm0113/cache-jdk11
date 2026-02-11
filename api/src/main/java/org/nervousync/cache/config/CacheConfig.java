@@ -19,12 +19,13 @@ package org.nervousync.cache.config;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nonnull;
 import jakarta.xml.bind.annotation.*;
+import org.nervousync.annotations.beans.OutputConfig;
 import org.nervousync.annotations.configs.Password;
-import org.nervousync.beans.core.BeanObject;
 import org.nervousync.cache.commons.CacheGlobals;
 import org.nervousync.cache.enumeration.ClusterMode;
 import org.nervousync.commons.Globals;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,10 +36,11 @@ import java.util.List;
  * @author Steven Wee	<a href="mailto:wmkm0113@gmail.com">wmkm0113@gmail.com</a>
  * @version $Revision: 1.0.0 $ $Date: Apr 25, 2017 15:09:14 $
  */
+@OutputConfig
 @XmlType(name = "cache_config", namespace = "https://nervousync.org/schemas/cache")
 @XmlRootElement(name = "cache_config", namespace = "https://nervousync.org/schemas/cache")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class CacheConfig extends BeanObject {
+public final class CacheConfig implements Serializable {
 
 	/**
 	 * <span class="en-US">Serial version UID</span>
@@ -419,10 +421,11 @@ public final class CacheConfig extends BeanObject {
 	 * @author Steven Wee	<a href="mailto:wmkm0113@gmail.com">wmkm0113@gmail.com</a>
 	 * @version $Revision: 1.0.0 $ $Date: Apr 25, 2017 3:09:14 PM $
 	 */
+	@OutputConfig
 	@XmlType(name = "server_config", namespace = "https://nervousync.org/schemas/cache")
 	@XmlRootElement(name = "server_config", namespace = "https://nervousync.org/schemas/cache")
 	@XmlAccessorType(XmlAccessType.NONE)
-	public static final class ServerConfig extends BeanObject {
+	public static final class ServerConfig implements Serializable {
 
 		/**
 		 * <span class="en-US">Serial version UID</span>

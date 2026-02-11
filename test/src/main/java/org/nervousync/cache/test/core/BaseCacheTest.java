@@ -1,6 +1,5 @@
 package org.nervousync.cache.test.core;
 
-import org.apache.logging.log4j.Level;
 import org.junit.jupiter.api.*;
 import org.nervousync.builder.ParentBuilder;
 import org.nervousync.cache.CacheUtils;
@@ -10,7 +9,9 @@ import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.cache.exceptions.CacheException;
 import org.nervousync.commons.Globals;
 import org.nervousync.configs.ConfigureManager;
+import org.nervousync.enumerations.logger.LogLevel;
 import org.nervousync.exceptions.builder.BuilderException;
+import org.nervousync.utils.core.BeanUtils;
 import org.nervousync.utils.core.StringUtils;
 import org.nervousync.utils.logger.LoggerUtils;
 import org.nervousync.utils.properties.PropertiesUtils;
@@ -47,7 +48,7 @@ public abstract class BaseCacheTest {
 	private final String providerName;
 
 	static {
-		LoggerUtils.initLoggerConfigure(Level.DEBUG);
+		LoggerUtils.initLoggerConfigure(LogLevel.DEBUG);
 		PROPERTIES = PropertiesUtils.loadProperties("src/test/resources/authorization.xml");
 	}
 
@@ -121,7 +122,7 @@ public abstract class BaseCacheTest {
 			return;
 		}
 		Assertions.assertNotNull(cacheConfig);
-		this.logger.info("Generated_Configure", cacheConfig.toXml());
+		this.logger.info("Generated_Configure", BeanUtils.objectToString(cacheConfig));
 
 		this.logger.info("Register_Result", CacheUtils.register("TestCache", cacheConfig));
 		this.logger.info("Register_Check", "TestCache", CacheUtils.registered("TestCache"));

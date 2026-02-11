@@ -16,7 +16,6 @@
  */
 package org.nervousync.cache.test.builder;
 
-import org.apache.logging.log4j.Level;
 import org.junit.jupiter.api.*;
 import org.nervousync.cache.builder.CacheConfigBuilder;
 import org.nervousync.cache.commons.CacheGlobals;
@@ -24,7 +23,7 @@ import org.nervousync.cache.config.CacheConfig;
 import org.nervousync.cache.enumeration.ClusterMode;
 import org.nervousync.commons.Globals;
 import org.nervousync.configs.ConfigureManager;
-import org.nervousync.enumerations.beans.StringType;
+import org.nervousync.enumerations.logger.LogLevel;
 import org.nervousync.exceptions.builder.BuilderException;
 import org.nervousync.utils.core.BeanUtils;
 import org.nervousync.utils.logger.LoggerUtils;
@@ -35,7 +34,7 @@ public final class ConfigureBuilderTest {
 	private final LoggerUtils.Logger logger = LoggerUtils.getLogger(this.getClass());
 
 	static {
-		LoggerUtils.initLoggerConfigure(Level.DEBUG);
+		LoggerUtils.initLoggerConfigure(LogLevel.DEBUG);
 	}
 
 	@BeforeAll
@@ -63,11 +62,10 @@ public final class ConfigureBuilderTest {
 					.removeServer("ServerAddress1", 11211)
 					.authorization("userName", "passWord")
 					.build();
-			String xmlContent = cacheConfig.toXml();
+			String xmlContent = BeanUtils.objectToString(cacheConfig);
 			this.logger.info("Generated_Configure", xmlContent);
-			CacheConfig parsedConfig = BeanUtils.stringToObject(xmlContent, StringType.XML, Globals.DEFAULT_ENCODING, CacheConfig.class,
-					"https://nervousync.org/schemas/cache");
-			this.logger.info("Parsed_Configure", parsedConfig.toJson());
+			CacheConfig parsedConfig = BeanUtils.stringToObject(xmlContent, CacheConfig.class, "https://nervousync.org/schemas/cache");
+			this.logger.info("Parsed_Configure", BeanUtils.objectToString(parsedConfig));
 		} catch (BuilderException e) {
 			this.logger.error("Generated_Configure_Error", e);
 		}
