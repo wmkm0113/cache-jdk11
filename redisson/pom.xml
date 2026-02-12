@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.nervousync</groupId>
         <artifactId>cache-parent</artifactId>
-        <version>1.2.0-SNAPSHOT</version>
+        <version>1.2.0</version>
     </parent>
     <artifactId>cache-redisson</artifactId>
     <packaging>jar</packaging>
