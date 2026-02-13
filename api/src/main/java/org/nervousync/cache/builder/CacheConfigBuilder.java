@@ -53,7 +53,7 @@ public final class CacheConfigBuilder<P extends ParentBuilder> extends AbstractB
 	 */
 	private final List<CacheConfig.ServerConfig> serverConfigList = new ArrayList<>();
 	/**
-	 * <h2 class="en-US">Configure information modified flag</h2>
+	 * <h2 class="en-US">Configure the information modified flag</h2>
 	 * <h2 class="zh-CN">配置信息修改标记</h2>
 	 */
 	private boolean modified = Boolean.FALSE;
@@ -114,7 +114,7 @@ public final class CacheConfigBuilder<P extends ParentBuilder> extends AbstractB
 	}
 
 	/**
-	 * <h3 class="en-US">Static method for create cache configure builder</h3>
+	 * <h3 class="en-US">Static method for creation cache configure builder</h3>
 	 * <h3 class="zh-CN">静态方法用于创建缓存配置构造器</h3>
 	 *
 	 * @param cacheConfig <span class="en-US">Current configure instance or null for generate new configure</span>
@@ -198,7 +198,7 @@ public final class CacheConfigBuilder<P extends ParentBuilder> extends AbstractB
 	}
 
 	/**
-	 * <h3 class="en-US">Configure limit size of generated client instance</h3>
+	 * <h3 class="en-US">Configure the limit size of the generated client instance</h3>
 	 * <h3 class="zh-CN">设置允许创建的客户端实例阈值</h3>
 	 *
 	 * @param maximumClient <span class="en-US">Limit size of generated client instance</span>
@@ -416,7 +416,7 @@ public final class CacheConfigBuilder<P extends ParentBuilder> extends AbstractB
 		 */
 		private final CacheConfig.ServerConfig serverConfig;
 		/**
-		 * <h2 class="en-US">Configure information modified flag</h2>
+		 * <h2 class="en-US">Configure the information modified flag</h2>
 		 * <h2 class="zh-CN">配置信息修改标记</h2>
 		 */
 		private boolean modified = Boolean.FALSE;

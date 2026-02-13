@@ -319,7 +319,7 @@ public final class CacheConfig implements Serializable {
 	}
 
 	/**
-	 * <h3 class="en-US">Configure limit size of generated client instance</h3>
+	 * <h3 class="en-US">Configure the limit size of the generated client instance</h3>
 	 * <h3 class="zh-CN">设置允许创建的客户端实例阈值</h3>
 	 *
 	 * @param maximumClient <span class="en-US">Limit size of generated client instance</span>
@@ -364,7 +364,7 @@ public final class CacheConfig implements Serializable {
 	}
 
 	/**
-	 * <h3 class="en-US">Configure master name</h3>
+	 * <h3 class="en-US">Configure the master name</h3>
 	 * <h3 class="zh-CN">设置集群主服务器名称</h3>
 	 *
 	 * @param masterName <span class="en-US">Master name</span>
@@ -513,7 +513,7 @@ public final class CacheConfig implements Serializable {
 		}
 
 		/**
-		 * <h3 class="en-US">Configure cache server address</h3>
+		 * <h3 class="en-US">Configure the cache server address</h3>
 		 * <h3 class="zh-CN">设置缓存服务器地址</h3>
 		 *
 		 * @param serverAddress <span class="en-US">Cache server address</span>
@@ -535,7 +535,7 @@ public final class CacheConfig implements Serializable {
 		}
 
 		/**
-		 * <h3 class="en-US">Configure cache server port</h3>
+		 * <h3 class="en-US">Configure the cache server port</h3>
 		 * <h3 class="zh-CN">设置缓存服务器端口</h3>
 		 *
 		 * @param serverPort <span class="en-US">Cache server port</span>

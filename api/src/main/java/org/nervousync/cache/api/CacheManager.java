@@ -28,7 +28,7 @@ import org.nervousync.cache.config.CacheConfig;
 public interface CacheManager {
 
 	/**
-	 * <h3 class="en-US">Register cache instance by given cache name and config instance</h3>
+	 * <h3 class="en-US">Register a cache instance by given cache name and config instance</h3>
 	 * <h3 class="zh-CN">使用指定的缓存名称、配置信息注册缓存</h3>
 	 *
 	 * @param cacheName   <span class="en-US">Cache identifies name</span>
@@ -39,7 +39,7 @@ public interface CacheManager {
 	boolean register(final String cacheName, final CacheConfig cacheConfig);
 
 	/**
-	 * <h3 class="en-US">Check given cache name was registered</h3>
+	 * <h3 class="en-US">Check the given cache name was registered</h3>
 	 * <h3 class="zh-CN">使用指定的缓存名称、配置信息注册缓存</h3>
 	 *
 	 * @param cacheName <span class="en-US">Cache identifies name</span>
@@ -48,7 +48,7 @@ public interface CacheManager {
 	boolean registered(final String cacheName);
 
 	/**
-	 * <h3 class="en-US">Retrieve cache client instance by given cache name</h3>
+	 * <h3 class="en-US">Retrieve cache client instance by the given cache name</h3>
 	 * <h3 class="zh-CN">使用指定的缓存名称获取缓存操作客户端</h3>
 	 *
 	 * @param cacheName <span class="en-US">Cache identifies name</span>
@@ -59,7 +59,7 @@ public interface CacheManager {
 	CacheClient client(final String cacheName);
 
 	/**
-	 * <h3 class="en-US">Remove cache instance from the registered list</h3>
+	 * <h3 class="en-US">Remove a cache instance from the registered list</h3>
 	 * <h3 class="zh-CN">移除指定的缓存</h3>
 	 *
 	 * @param cacheName <span class="en-US">Cache identifies name</span>
@@ -68,7 +68,7 @@ public interface CacheManager {
 	void deregister(final String cacheName);
 
 	/**
-	 * <h3 class="en-US">Destroy manager instance</h3>
+	 * <h3 class="en-US">Destroy the current manager instance</h3>
 	 * <h3 class="zh-CN">销毁当前的管理实例</h3>
 	 */
 	void destroy();

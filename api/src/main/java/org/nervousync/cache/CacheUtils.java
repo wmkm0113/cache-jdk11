@@ -130,7 +130,7 @@ public final class CacheUtils {
 	}
 
 	/**
-	 * <h3 class="en-US">Check given cache name was registered</h3>
+	 * <h3 class="en-US">Check the given cache name was registered</h3>
 	 * <h3 class="zh-CN">使用指定的缓存名称、配置信息注册缓存</h3>
 	 *
 	 * @param cacheName <span class="en-US">Cache identifies name</span>
@@ -151,7 +151,7 @@ public final class CacheUtils {
 	}
 
 	/**
-	 * <h3 class="en-US">Retrieve the cache client by given cache name</h3>
+	 * <h3 class="en-US">Retrieve the cache client by the given cache name</h3>
 	 * <h3 class="zh-CN">根据给定的缓存识别名称获取缓存客户端</h3>
 	 *
 	 * @param cacheName <span class="en-US">Cache identifies name</span>
@@ -183,7 +183,7 @@ public final class CacheUtils {
 	}
 
 	/**
-	 * <h3 class="en-US">Destroy singleton instance</h3>
+	 * <h3 class="en-US">Destroy the singleton instance</h3>
 	 * <h3 class="zh-CN">取消注册缓存</h3>
 	 */
 	public static void destroy() {

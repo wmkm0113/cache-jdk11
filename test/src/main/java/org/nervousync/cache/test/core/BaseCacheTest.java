@@ -109,10 +109,9 @@ public abstract class BaseCacheTest {
 		for (int i = 0; i < serverCount; i++) {
 			CacheConfigBuilder.ServerConfigBuilder<CacheConfigBuilder<ParentBuilder>> serverConfigBuilder =
 					configBuilder.serverBuilder(serverAddresses[i]).weight(Integer.parseInt(serverWeights[i]));
-			if (serverPorts.length > 0) {
-				serverConfigBuilder.port(Integer.parseInt(serverPorts[i]));
-			}
-			configBuilder = serverConfigBuilder.confirm();
+			configBuilder = (serverPorts.length > 0)
+					? serverConfigBuilder.port(Integer.parseInt(serverPorts[i])).confirm()
+					: serverConfigBuilder.confirm();
 		}
 
 		CacheConfig cacheConfig =

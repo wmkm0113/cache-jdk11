@@ -209,7 +209,7 @@ public abstract class AbstractProvider implements CacheProvider {
 	                                    final String userName, final String passWord) throws CacheException;
 
 	/**
-	 * <h3 class="en-US">Set expire time to new given expire value which cache key was given</h3>
+	 * <h3 class="en-US">Set expire time to the new given expiry value which cache key was given</h3>
 	 * <h3 class="zh-CN">将指定的缓存键值过期时间设置为指定的新值</h3>
 	 *
 	 * @param key    <span class="en-US">Cache key</span>
@@ -247,7 +247,7 @@ public abstract class AbstractProvider implements CacheProvider {
 	}
 
 	/**
-	 * <h3 class="en-US">Convert the key-value array to key-value mapping table</h3>
+	 * <h3 class="en-US">Convert the key-value array to a key-value mapping table</h3>
 	 * <h3 class="zh-CN">转换键值对数组为键值对映射表</h3>
 	 *
 	 * @param keyvalues <span class="en-US">Key-value array</span>
@@ -267,7 +267,7 @@ public abstract class AbstractProvider implements CacheProvider {
 	}
 
 	/**
-	 * <h3 class="en-US">Parse server information string into data mapping table</h3>
+	 * <h3 class="en-US">Parse server information string into a data mapping table</h3>
 	 * <h3 class="zh-CN">解析服务器信息字符串为数据映射表</h3>
 	 *
 	 * @param string <span class="en-US">Server information string</span>

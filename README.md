@@ -1,8 +1,8 @@
 # Cache Toolkit
 
-[![Maven Central](https://img.shields.io/maven-central/v/org.nervousync/cache-jdk11?color=green&label=Release)](https://mvnrepository.com/artifact/org.nervousync/cache-jdk11)
-![Maven Snapshot](https://img.shields.io/maven-metadata/v?label=Snaohot&metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Forg%2Fnervousync%2Fcache-nodeps-jdk11%2Fmaven-metadata.xml)
-[![License](https://img.shields.io/github/license/wmkm0113/cache-jdk11)](https://github.com/wmkm0113/cache-jdk11/blob/mainline/LICENSE)
+[![Maven Central](https://img.shields.io/maven-central/v/org.nervousync/cache-bom?color=green&label=Release)](https://mvnrepository.com/artifact/org.nervousync/cache-bom)
+![Maven Snapshot](https://img.shields.io/maven-metadata/v?label=Snapshot&metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Forg%2Fnervousync%2Fcache-bom%2Fmaven-metadata.xml)
+[![License](https://img.shields.io/github/license/wmkm0113/cache)](https://github.com/wmkm0113/cache/blob/mainline/LICENSE)
 ![Language](https://img.shields.io/badge/language-Java-green)
 [![Twitter:wmkm0113](https://img.shields.io/twitter/follow/wmkm0113?label=Follow)](https://twitter.com/wmkm0113)
 
@@ -76,8 +76,8 @@ A unified toolkit created for caching operations, using a unified program interf
 ```
 
 ### 2. Initialize and obtain the cache utility instance
-Program developers obtain the cache manager instance object by calling the getInstance static method of org.nervousync.cache.CacheUtils.
-When obtaining the cache manager instance object, if the cache manager has not been initialized, the toolkit will automatically perform the initialization work and search for the existing cache manager implementation class through Java's SPI mechanism.
+Program developers get the cache manager instance object by calling the getInstance static method of org.nervousync.cache.CacheUtils.
+When getting the cache manager instance object, if the cache manager has not been initialized, the toolkit will automatically perform the initialization work and search for the existing cache manager implementation class through Java's SPI mechanism.
 If the cache manager implementation class is not found, it will throw Exception information appears. During the initialization process, the system's default cache configuration information is also read and registered through the configuration file manager.
 
 ### 3. Register cache server configure information
@@ -86,22 +86,21 @@ The system uses the configuration file manager to read the cache configuration i
 Initialize the cache, and the register method returns the registration result of the boolean type.
 
 ### 4. Obtain cache server client instance and operate data
-Program developers obtain the cache server operation client by calling the client method of the org.nervousync.cache.CacheUtils instance object, passing in the cache name as the parameter.
+Program developers get the cache server operation client by calling the client method of the org.nervousync.cache.CacheUtils instance object, passing in the cache name as the parameter.
 Returns null if the cache name is not registered.
 
 ### 5. Customize cache client manager implements class
 Program developers can customize the cache manager to implement the customized cache client manager they need. The specific method is:
 1. Create a cache client manager implementation class and implement the org.nervousync.cache.api.CacheManager interface.
-2. Create the /META-INF/services/org.nervousync.cache.api.CacheManager file and write the complete name of the implementation class (package name + class name) in the file.   
+2. Create the /META-INF/services/org.nervousync.cache.api.CacheManager file and write the complete name of the implementation class (package name and class name) in the file.   
    **Notice:** If there are multiple cache client manager implementation classes in the entire project, the system will select the first implementation class based on the loading order.
 
 ## Contributions and feedback
-Friends are welcome to translate the prompt information, error messages,
-etc. in this document and project into more languages to help more users better understand and use this toolkit.   
+Friends are welcome to translate the prompt information, error messages, etc. in this document and project into more languages to help more users better understand and use this toolkit.   
 If you find problems during use or need to improve or add related functions, please submit an issue to this project
-or send email to [wmkm0113\@gmail.com](mailto:wmkm0113@gmail.com?subject=bugs_and_features)   
+or email [wmkm0113\@gmail.com](mailto:wmkm0113@gmail.com?subject=bugs_and_features)   
 For better communication, please include the following information when submitting an issue or sending an email:
-1. The purpose is: discover bugs/function improvements/add new features
+1. The purpose is: discovering bugs/function improvements/add new features
 2. Please paste the following information (if it exists): incoming data, expected results, error stack information
 3. Where do you think there may be a problem with the code (if provided, it can help us find and solve the problem as soon as possible)
 
@@ -114,7 +113,7 @@ For customized special features, please send an email directly to [wmkm0113\@gma
 ## Donations
 To support this project, you can make a donation to:
 
-* Bitcoin address: bc1ql7elx2j625x7f9tvax90v6zgwp55wy7uawtdtz
-* Ethereum address: 0xd88a49056E6ECE59e89c7e5724729A0FB0872986
-* Solana address: GSwycoeVZHRW72TcvW38qLfqsWhFbwDbxamaEuwEwQjW
-* BNB address: 0xd88a49056E6ECE59e89c7e5724729A0FB0872986
+- Bitcoin address: bc1q3nfj9gafu3x25ea260g7cyhh5s9gnx347tznsf
+- Ethereum address: 0x849D143e943bAA6Dd078d02ebAEc205E2b00a7CA
+- Solana address: 4Fvujk8DEkVAtYwzim1vrobNm4s72Ra6Xrsu83v2hqE2
+- BNB address: 0x849D143e943bAA6Dd078d02ebAEc205E2b00a7CA

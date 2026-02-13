@@ -65,7 +65,7 @@ public final class ProviderManager {
 	}
 
 	/**
-	 * <h3 class="en-US">Check the register status of given provider name</h3>
+	 * <h3 class="en-US">Check the register status of the given provider name</h3>
 	 * <h3 class="zhs">检查给定的缓存适配器名称是否已经注册</h3>
 	 *
 	 * @param providerName <span class="en-US">Cache provider name</span>
@@ -81,7 +81,7 @@ public final class ProviderManager {
 	}
 
 	/**
-	 * <h3 class="en-US">Retrieve provider class by given provider name</h3>
+	 * <h3 class="en-US">Retrieve the provider class by the given provider name</h3>
 	 * <h3 class="zhs">根据指定的适配器名称获取注册的适配器类</h3>
 	 *
 	 * @param providerName <span class="en-US">Cache provider name</span>
@@ -97,7 +97,7 @@ public final class ProviderManager {
 	}
 
 	/**
-	 * <h3 class="en-US">Register cache provider implements class manual</h3>
+	 * <h3 class="en-US">Registers cache provider implements class manual</h3>
 	 * <h3 class="zhs">注册缓存适配器</h3>
 	 *
 	 * @param providerClass <span class="en-US">Cache provider implements class</span>

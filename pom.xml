@@ -74,9 +74,9 @@
         <maven.gpg.version>3.2.8</maven.gpg.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <junit.jupiter.version>5.14.1</junit.jupiter.version>
+        <junit.jupiter.version>5.14.2</junit.jupiter.version>
         <nervousync.utils.version>1.3.0</nervousync.utils.version>
-        <reactor.version>3.8.2</reactor.version>
+        <reactor.version>3.8.3</reactor.version>
         <netty.version>4.2.10.Final</netty.version>
     </properties>
     <dependencyManagement>

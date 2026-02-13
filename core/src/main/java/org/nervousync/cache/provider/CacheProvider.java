@@ -79,7 +79,7 @@ public interface CacheProvider {
 	long exists(@Nonnull final String... keys);
 
 	/**
-	 * <h3 class="en-US">Set expire time to new given expire value which cache key was given</h3>
+	 * <h3 class="en-US">Set expire time to the new given expiry value which cache key was given</h3>
 	 * <h3 class="zh-CN">将指定的缓存键值过期时间设置为指定的新值</h3>
 	 *
 	 * @param key    <span class="en-US">Cache key</span>
@@ -90,7 +90,7 @@ public interface CacheProvider {
 	void expire(@Nonnull final String key, final int expire);
 
 	/**
-	 * <h3 class="en-US">Returns all keys matching pattern</h3>
+	 * <h3 class="en-US">Returns all keys matching the pattern</h3>
 	 * <h3 class="zh-CN">使用给定的规则获取缓存键列表</h3>
 	 *
 	 * @param pattern <span class="en-US">Matching pattern string</span>
@@ -151,7 +151,7 @@ public interface CacheProvider {
 	 */
 
 	/**
-	 * <h3 class="en-US">Add a new key-value to cache server and set expire time</h3>
+	 * <h3 class="en-US">Add a new key-value to the cache server and set expire time</h3>
 	 * <h3 class="zh-CN">使用指定的过期时间添加缓存信息</h3>
 	 *
 	 * @param key    <span class="en-US">Cache key</span>
@@ -227,7 +227,7 @@ public interface CacheProvider {
 	String getEx(@Nonnull final String key, final int expire);
 
 	/**
-	 * <h3 class="en-US">Read the part of cache value from the cache key which cache key was given</h3>
+	 * <h3 class="en-US">Read the part of the cache value from the cache key which cache key was given</h3>
 	 * <h3 class="zh-CN">读取指定缓存键值对应的缓存数据的部分字符串</h3>
 	 *
 	 * @param key   <span class="en-US">Cache key</span>
@@ -355,7 +355,7 @@ public interface CacheProvider {
 	boolean replace(@Nonnull final String key, @Nonnull final String value, final int expire);
 
 	/**
-	 * <h3 class="en-US">Set key-value to cache server and set expire time</h3>
+	 * <h3 class="en-US">Set key-value to the cache server and set expire time</h3>
 	 * <h3 class="zh-CN">使用指定的过期时间设置缓存信息</h3>
 	 *
 	 * @param key    <span class="en-US">Cache key</span>

@@ -16,7 +16,11 @@
     <dependencies>
         <dependency>
             <groupId>org.nervousync</groupId>
-            <artifactId>utils-all</artifactId>
+            <artifactId>utils-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.nervousync</groupId>
+            <artifactId>utils-config</artifactId>
         </dependency>
         <dependency>
             <groupId>jakarta.annotation</groupId>
